@@ -15,6 +15,8 @@ import coloredlogs
 import traceback
 from ast import literal_eval
 
+from typing import Optional
+
 import mythril.support.signatures as sigs
 from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 from mythril.concolic import concolic_execution
@@ -497,6 +499,19 @@ def add_analysis_args(options):
         default=2,
         help="Maximum number of transactions issued by laser",
     )
+    # ---------------------------------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------------- #
+    options.add_argument(
+        "-mc",
+        "--multi-contract",
+        help = 'hex-encoded bytecode string ("6060604052...") main sub ',
+        metavar = "BYTECODE",
+        nargs = '+',
+    )
+    # ---------------------------------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------------- #
     options.add_argument(
         "--execution-timeout",
         type=int,
@@ -689,7 +704,7 @@ def set_config(args: Namespace):
     return config
 
 
-def load_code(disassembler: MythrilDisassembler, args: Namespace):
+def load_code(disassembler: MythrilDisassembler, args: Namespace, index: Optional[int]):
     """
     Loads code into disassembly and returns address
     :param disassembler:
@@ -706,6 +721,15 @@ def load_code(disassembler: MythrilDisassembler, args: Namespace):
         bytecode = "".join([l.strip() for l in args.codefile if len(l.strip()) > 0])
         bytecode = bytecode[2:] if bytecode.startswith("0x") else bytecode
         address, _ = disassembler.load_from_bytecode(bytecode, args.bin_runtime)
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    elif args.__dict__.get("multi_contract", False):
+        code = args.multi_contract[index][2:] if args.multi_contract[index].startswith("0x") else args.multi_contract[index]
+        address, _ = disassembler.load_from_bytecode(code, args.bin_runtime)
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
     elif args.__dict__.get("address", False):
         # Get bytecode from a contract address
         address, _ = disassembler.load_from_address(args.address)
@@ -758,6 +782,7 @@ def execute_command(
     address: str,
     parser: ArgumentParser,
     args: Namespace,
+    sub: Optional[list[MythrilDisassembler]],
 ):
     """
     Execute command
@@ -807,9 +832,15 @@ def execute_command(
             exit_with_error("text", "Analysis error encountered: " + format(e))
 
     elif args.command in ANALYZE_LIST + FOUNDRY_LIST:
+        
         analyzer = MythrilAnalyzer(
-            strategy=strategy, disassembler=disassembler, address=address, cmd_args=args
+            strategy=strategy, disassembler=disassembler, address=address, cmd_args=args, sub = sub
         )
+
+        print(analyzer.contracts)
+        print(analyzer.sub_contracts)
+        return
+
 
         if not disassembler.contracts:
             exit_with_error(
@@ -858,6 +889,8 @@ def execute_command(
                 exit_with_error(args.outform, "Error saving json: " + str(e))
 
         else:
+        #--------------------------------------여기까지 완료 ----------------------------------
+
             try:
                 report = analyzer.fire_lasers(
                     modules=[m.strip() for m in args.modules.strip().split(",")]
@@ -904,6 +937,13 @@ def parse_args_and_execute(parser: ArgumentParser, args: Namespace) -> None:
     :param parser: The parser
     :param args: The args
     """
+
+    # fields = [field for field in args.__dict__.keys()]
+    # for key, value in args.__dict__.items():
+    #     print(f"field name: {key}")
+    #     print(f"value type: {type(value)}")
+    #     print(value)
+    # return
 
     if args.epic:
         path = os.path.dirname(os.path.realpath(__file__))
@@ -957,17 +997,32 @@ def parse_args_and_execute(parser: ArgumentParser, args: Namespace) -> None:
         solc_json = args.__dict__.get("solc_json", None)
         solv = args.__dict__.get("solv", None)
         solc_args = args.__dict__.get("solc_args", None)
-        disassembler = MythrilDisassembler(
-            eth=config.eth,
-            solc_version=solv,
-            solc_settings_json=solc_json,
-            enable_online_lookup=query_signature,
-            solc_args=solc_args,
-        )
 
-        address = load_code(disassembler, args)
+        disassembler = []
+        address = []
+        
+        if "multi_contract" in args.__dict__.keys():
+            for i in range(len(args.__dict__.get("multi_contract"))):
+                disassembler.append(MythrilDisassembler(
+                    eth=config.eth,
+                    solc_version=solv,
+                    solc_settings_json=solc_json,
+                    enable_online_lookup=query_signature,
+                    solc_args=solc_args,
+                ))
+                address.append(load_code(disassembler[i], args, i))
+        else:
+            disassembler.append(MythrilDisassembler(
+                    eth=config.eth,
+                    solc_version=solv,
+                    solc_settings_json=solc_json,
+                    enable_online_lookup=query_signature,
+                    solc_args=solc_args,
+            ))
+            address.append(load_code(disassembler[0], args))
+
         execute_command(
-            disassembler=disassembler, address=address, parser=parser, args=args
+            disassembler=disassembler[0], address=address[0], parser=parser, args=args, sub = disassembler[1:]
         )
     except CriticalError as ce:
         exit_with_error(args.__dict__.get("outform", "text"), str(ce))

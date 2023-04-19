@@ -36,6 +36,7 @@ class MythrilAnalyzer:
         cmd_args: Namespace,
         strategy: str = "dfs",
         address: Optional[str] = None,
+        sub: Optional[list[MythrilDisassembler]] = None,
     ):
         """
 
@@ -68,6 +69,17 @@ class MythrilAnalyzer:
         args.iprof = cmd_args.enable_iprof
         args.solver_log = cmd_args.solver_log
         args.transaction_sequences = cmd_args.transaction_sequences
+
+        # -------------------------------------------------------------------
+        # -------------------------------------------------------------------
+        # -------------------------------------------------------------------
+        self.sub_contracts = []
+        for sub_disassembler in sub:
+            self.sub_contracts.append(sub_disassembler.contracts[0])
+        # -------------------------------------------------------------------
+        # -------------------------------------------------------------------
+        # -------------------------------------------------------------------
+
 
     def dump_statespace(self, contract: EVMContract = None) -> str:
         """
