@@ -704,7 +704,7 @@ def set_config(args: Namespace):
     return config
 
 
-def load_code(disassembler: MythrilDisassembler, args: Namespace, index: Optional[int]):
+def load_code(disassembler: MythrilDisassembler, args: Namespace, index: Optional[int] = 0):
     """
     Loads code into disassembly and returns address
     :param disassembler:
@@ -996,7 +996,7 @@ def parse_args_and_execute(parser: ArgumentParser, args: Namespace) -> None:
         disassembler = []
         address = []
         
-        if "multi_contract" in args.__dict__.keys():
+        if args.__dict__.get("multi_contract"):
             for i in range(len(args.__dict__.get("multi_contract"))):
                 disassembler.append(MythrilDisassembler(
                     eth=config.eth,
