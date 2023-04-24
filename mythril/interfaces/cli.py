@@ -837,11 +837,6 @@ def execute_command(
             strategy=strategy, disassembler=disassembler, address=address, cmd_args=args, sub = sub
         )
 
-        print(analyzer.contracts)
-        print(analyzer.sub_contracts)
-        return
-
-
         if not disassembler.contracts:
             exit_with_error(
                 args.outform, "input files do not contain any valid contracts"

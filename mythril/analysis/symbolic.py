@@ -36,6 +36,8 @@ from typing import Union, List, Type, Optional
 from mythril.solidity.soliditycontract import EVMContract, SolidityContract
 from .ops import Call, VarType, get_variable
 
+from mythril.mythril.mythril_disassembler import MythrilDisassembler
+
 
 class SymExecWrapper:
     """Wrapper class for the LASER Symbolic virtual machine.
@@ -60,6 +62,7 @@ class SymExecWrapper:
         disable_dependency_pruning: bool = False,
         run_analysis_modules: bool = True,
         custom_modules_directory: str = "",
+        sub_contracts: Optional[List[MythrilDisassembler]] = None,
     ):
         """
 
@@ -173,12 +176,14 @@ class SymExecWrapper:
                 creation_code=contract.creation_code,
                 contract_name=contract.name,
                 world_state=world_state,
+                sub_contracts = sub_contracts,
             )
         elif isinstance(contract, EVMContract) and contract.creation_code:
             self.laser.sym_exec(
                 creation_code=contract.creation_code,
                 contract_name=contract.name,
                 world_state=world_state,
+                sub_contracts = sub_contracts,
             )
         else:
             account = Account(

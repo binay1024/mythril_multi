@@ -164,6 +164,7 @@ class MythrilAnalyzer:
                     compulsory_statespace=False,
                     disable_dependency_pruning=self.disable_dependency_pruning,
                     custom_modules_directory=self.custom_modules_directory,
+                    sub_contracts = self.sub_contracts
                 )
                 issues = fire_lasers(sym, modules)
                 execution_info = sym.execution_info
