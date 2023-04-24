@@ -36,7 +36,7 @@ from typing import Union, List, Type, Optional
 from mythril.solidity.soliditycontract import EVMContract, SolidityContract
 from .ops import Call, VarType, get_variable
 
-from mythril.mythril.mythril_disassembler import MythrilDisassembler
+# from mythril.mythril.mythril_disassembler import MythrilDisassembler
 
 
 class SymExecWrapper:
@@ -62,7 +62,7 @@ class SymExecWrapper:
         disable_dependency_pruning: bool = False,
         run_analysis_modules: bool = True,
         custom_modules_directory: str = "",
-        sub_contracts: Optional[List[MythrilDisassembler]] = None,
+        sub_contracts: Optional[List[EVMContract]] = None,
     ):
         """
 

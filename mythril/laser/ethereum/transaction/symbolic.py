@@ -20,7 +20,8 @@ from mythril.laser.ethereum.transaction.transaction_models import (
 from mythril.laser.smt import symbol_factory, Or, Bool, BitVec
 from mythril.support.support_args import args as cmd_args
 
-from mythril.mythril.mythril_disassembler import MythrilDisassembler
+# from mythril.mythril.mythril_disassembler import MythrilDisassembler
+from mythril.solidity.soliditycontract import EVMContract
 
 
 FUNCTION_HASH_BYTE_LENGTH = 4
@@ -160,7 +161,7 @@ def execute_contract_creation(
     world_state=None,
     origin=ACTORS["CREATOR"],
     caller=ACTORS["CREATOR"],
-    sub_contracts: Optional[List[MythrilDisassembler]]= None,
+    sub_contracts: Optional[List[EVMContract]]= None,
 ) -> Account:
     """Executes a contract creation transaction from all open states.
 
@@ -188,7 +189,7 @@ def execute_contract_creation(
                     ),
                     gas_limit=8000000,  # block gas limit
                     origin=origin,
-                    code=sub_contracts[i],
+                    code=Disassembly(sub_contracts[i].code),
                     caller=caller,
                     contract_name=contract_name,
                     call_data=None,
@@ -307,6 +308,7 @@ def _setup_global_state_for_execution(
     global_state.node = new_node
     new_node.states.append(global_state)
     laser_evm.work_list.append(global_state)
+    print(len(laser_evm.work_list))
 
 
 def execute_transaction(*args, **kwargs):

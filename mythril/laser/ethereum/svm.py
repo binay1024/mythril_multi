@@ -31,7 +31,8 @@ from mythril.laser.ethereum.transaction import (
 from mythril.laser.smt import symbol_factory
 from mythril.support.support_args import args
 
-from mythril.mythril.mythril_disassembler import MythrilDisassembler
+# from mythril.mythril.mythril_disassembler import MythrilDisassembler
+from mythril.solidity.soliditycontract import EVMContract
 
 log = logging.getLogger(__name__)
 
@@ -151,7 +152,7 @@ class LaserEVM:
         target_address: int = None,
         creation_code: str = None,
         contract_name: str = None,
-        sub_contracts: Optional[List[MythrilDisassembler]] = None,
+        sub_contracts: Optional[List[EVMContract]] = None,
     ) -> None:
         """Starts symbolic execution
         There are two modes of execution.
@@ -188,6 +189,8 @@ class LaserEVM:
             created_account, sub_accounts = execute_contract_creation(
                 self, creation_code, contract_name, world_state=world_state, sub_contracts = sub_contracts
             )
+            print(created_account, sub_accounts)
+            return
             log.info(
                 "Finished contract creation, found {} open states".format(
                     len(self.open_states)
