@@ -506,8 +506,9 @@ def add_analysis_args(options):
         "-mc",
         "--multi-contract",
         help = 'hex-encoded bytecode string ("6060604052...") main sub ',
-        metavar = "BYTECODE",
+        metavar = "BYTECODEFILE",
         nargs = '+',
+        type=argparse.FileType("r"),
     )
     # ---------------------------------------------------------------------------------------- #
     # ---------------------------------------------------------------------------------------- #
@@ -725,8 +726,9 @@ def load_code(disassembler: MythrilDisassembler, args: Namespace, index: Optiona
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     elif args.__dict__.get("multi_contract", False):
-        code = args.multi_contract[index][2:] if args.multi_contract[index].startswith("0x") else args.multi_contract[index]
-        address, _ = disassembler.load_from_bytecode(code, args.bin_runtime)
+        bytecode = "".join([l.strip() for l in args.multi_contract[index] if len(l.strip()) > 0])
+        bytecode = bytecode[2:] if bytecode.startswith("0x") else bytecode
+        address, _ = disassembler.load_from_bytecode(bytecode, args.bin_runtime)
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
