@@ -245,8 +245,12 @@ def _setup_global_state_for_execution(
     # sub contract TX
     # tx_len이 0이면 for문을 돌지 않음
     for i in range(tx_len):
-        new_global_state = sub_transaction[i].initial_global_state()
-        global_state = deepcopy(new_global_state)
+        if global_state is None:
+            global_state = sub_transaction[i].initial_global_state()
+            # global_state = deepcopy(new_global_state)
+        # else:
+        #     # new_global_state = sub_transaction[i].initial_global_state()
+            
         global_state.transaction_stack.append((sub_transaction[i], None))
         # initial_constraints는 추가할 필요없을 듯
         global_state.world_state.constraints.append(
@@ -276,8 +280,13 @@ def _setup_global_state_for_execution(
         new_node.states.append(global_state)
         laser_evm.work_list.append(global_state)
 
+    print("sub contract TX")
+    print(laser_evm.work_list)
+    print(len(laser_evm.work_list))
+
     # main contract TX
-    global_state = transaction.initial_global_state()
+    if global_state is None:
+        global_state = transaction.initial_global_state()
     global_state.transaction_stack.append((transaction, None))
     global_state.world_state.constraints += initial_constraints or []
 
@@ -308,6 +317,9 @@ def _setup_global_state_for_execution(
     global_state.node = new_node
     new_node.states.append(global_state)
     laser_evm.work_list.append(global_state)
+
+    print("main contract TX")
+    print(laser_evm.work_list)
     print(len(laser_evm.work_list))
 
 

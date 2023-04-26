@@ -189,7 +189,9 @@ class LaserEVM:
             created_account, sub_accounts = execute_contract_creation(
                 self, creation_code, contract_name, world_state=world_state, sub_contracts = sub_contracts
             )
-            print(created_account, sub_accounts)
+            print(created_account)
+            # print(sub_accounts)
+            print(sub_accounts[0].address)
             return
             log.info(
                 "Finished contract creation, found {} open states".format(
