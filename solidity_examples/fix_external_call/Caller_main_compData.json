@@ -1,0 +1,1152 @@
+{
+	"compilerInput": "{\"language\":\"Solidity\",\"sources\":{\"contracts/fix_multi_call/Caller_main.sol\":{\"content\":\"// SPDX-License-Identifier: GPL-3.0\\n\\npragma solidity >=0.8.2 <0.9.0;\\n\\n// contract Callee_sub {\\n\\n//     uint256 number;\\n//     function store(uint256 num) public {}\\n//     function retrieve() public returns (uint256){}\\n// }\\n\\nimport \\\"contracts/fix_multi_call/Callee_sub.sol\\\";\\n\\ncontract Caller_main {\\n\\n    uint256 number;\\n    address addr;\\n    Callee_sub sub;\\n\\n    constructor (){\\n        sub = new Callee_sub();\\n    }\\n    \\n    function fix_call_store(uint256 num) public returns (uint256){\\n        return sub.store(num);\\n    }\\n\\n    // function store(uint256 num) public {\\n    //     number = num;\\n    // }\\n\\n    // function retrieve() public returns (uint256){\\n    //     return number;\\n    // }\\n    // // 这个要留着的\\n    // // function call_without_ABI(address _sub, string memory func_name, uint func_para) public returns (bytes memory){\\n    // //     bytes memory _calldata;\\n    // //     addr = _sub;\\n    // //     _calldata = abi.encodeWithSignature(func_name, func_para);\\n    // //     addr.call(_calldata);\\n    // //     return _calldata;\\n    // // }\\n\\n    // function call_with_ABI(address _sub, string memory func_name, uint func_para) public returns (bool success){\\n                       \\n    //     sub = Callee_sub(_sub);\\n    //     if (sub.retrieve() == 3){\\n    //         return false;\\n    //     }\\n    //     return true;\\n    // }\\n    \\n\\n}\"},\"contracts/fix_multi_call/Callee_sub.sol\":{\"content\":\"// SPDX-License-Identifier: GPL-3.0\\n\\npragma solidity >=0.8.2 <0.9.0;\\n\\n\\ncontract Callee_sub {\\n\\n    uint256 number;\\n\\n  \\n    function store(uint256 num) public returns (uint256){\\n        number = num+1;\\n        return number;\\n    }\\n\\n    function retrieve() public returns (uint256){\\n        return number;\\n    }\\n}\"}},\"settings\":{\"optimizer\":{\"enabled\":false,\"runs\":200},\"outputSelection\":{\"*\":{\"\":[\"ast\"],\"*\":[\"abi\",\"metadata\",\"devdoc\",\"userdoc\",\"storageLayout\",\"evm.legacyAssembly\",\"evm.bytecode\",\"evm.deployedBytecode\",\"evm.methodIdentifiers\",\"evm.gasEstimates\",\"evm.assembly\"]}}}}",
+	"name": "Caller_main",
+	"metadata": "{\"compiler\":{\"version\":\"0.8.7+commit.e28d00a7\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"num\",\"type\":\"uint256\"}],\"name\":\"fix_call_store\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/fix_multi_call/Caller_main.sol\":\"Caller_main\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/fix_multi_call/Callee_sub.sol\":{\"keccak256\":\"0x2691a37b1b1ad2f34a17c13ddae1bd9a1fc5075e8f46d272a6d8c3f57fd0adf5\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://8d4a582a8dbf1c6223d3fa08144e46c76ed6e160ded8e9f3012b362a5493dcdc\",\"dweb:/ipfs/QmdX4mquyndUfCTUj9Ckh71YTxjRsUWEz2GLeqPWaPgvfa\"]},\"contracts/fix_multi_call/Caller_main.sol\":{\"keccak256\":\"0x3534626e7698009c1c5defe6b2373f9ba73c307aef7022750f2d1dc4bb8b9e11\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://af54769749f36353da25c65a289efb0e1b5d1ba4a5507c94417acd1c69f62710\",\"dweb:/ipfs/QmZtAeHM5efVv3oM1wjJ5UXFVa8iis3RTnYdWLGa3PBBuN\"]}},\"version\":1}",
+	"bytecode": {
+		"functionDebugData": {
+			"@_49": {
+				"entryPoint": null,
+				"id": 49,
+				"parameterSlots": 0,
+				"returnSlots": 0
+			}
+		},
+		"generatedSources": [],
+		"linkReferences": {},
+		"object": "608060405234801561001057600080fd5b5060405161001d9061007f565b604051809103906000f080158015610039573d6000803e3d6000fd5b50600260006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff16021790555061008c565b61021e806102bb83390190565b6102208061009b6000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c8063d324082e14610030575b600080fd5b61004a60048036038101906100459190610140565b610060565b60405161005791906101a9565b60405180910390f35b6000600260009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16636057361d836040518263ffffffff1660e01b81526004016100bd91906101a9565b602060405180830381600087803b1580156100d757600080fd5b505af11580156100eb573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061010f919061016d565b9050919050565b600081359050610125816101d3565b92915050565b60008151905061013a816101d3565b92915050565b600060208284031215610156576101556101ce565b5b600061016484828501610116565b91505092915050565b600060208284031215610183576101826101ce565b5b60006101918482850161012b565b91505092915050565b6101a3816101c4565b82525050565b60006020820190506101be600083018461019a565b92915050565b6000819050919050565b600080fd5b6101dc816101c4565b81146101e757600080fd5b5056fea2646970667358221220732d1dd87f112fde4b433fe8799e2189220afba08297a9c570cd51d0abcb38f264736f6c63430008070033608060405234801561001057600080fd5b506101fe806100206000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c80632e64cec11461003b5780636057361d14610059575b600080fd5b610043610089565b6040516100509190610102565b60405180910390f35b610073600480360381019061006e91906100c6565b610092565b6040516100809190610102565b60405180910390f35b60008054905090565b60006001826100a1919061011d565b6000819055506000549050919050565b6000813590506100c0816101b1565b92915050565b6000602082840312156100dc576100db6101ac565b5b60006100ea848285016100b1565b91505092915050565b6100fc81610173565b82525050565b600060208201905061011760008301846100f3565b92915050565b600061012882610173565b915061013383610173565b9250827fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff038211156101685761016761017d565b5b828201905092915050565b6000819050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b600080fd5b6101ba81610173565b81146101c557600080fd5b5056fea26469706673582212208ac8aa5c0d358e56eaeac20681fa1a209d5f6a767568285fcbd589676711ea9664736f6c63430008070033",
+		"opcodes": "PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH2 0x10 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x40 MLOAD PUSH2 0x1D SWAP1 PUSH2 0x7F JUMP JUMPDEST PUSH1 0x40 MLOAD DUP1 SWAP2 SUB SWAP1 PUSH1 0x0 CREATE DUP1 ISZERO DUP1 ISZERO PUSH2 0x39 JUMPI RETURNDATASIZE PUSH1 0x0 DUP1 RETURNDATACOPY RETURNDATASIZE PUSH1 0x0 REVERT JUMPDEST POP PUSH1 0x2 PUSH1 0x0 PUSH2 0x100 EXP DUP2 SLOAD DUP2 PUSH20 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF MUL NOT AND SWAP1 DUP4 PUSH20 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF AND MUL OR SWAP1 SSTORE POP PUSH2 0x8C JUMP JUMPDEST PUSH2 0x21E DUP1 PUSH2 0x2BB DUP4 CODECOPY ADD SWAP1 JUMP JUMPDEST PUSH2 0x220 DUP1 PUSH2 0x9B PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN INVALID PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH2 0x10 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x4 CALLDATASIZE LT PUSH2 0x2B JUMPI PUSH1 0x0 CALLDATALOAD PUSH1 0xE0 SHR DUP1 PUSH4 0xD324082E EQ PUSH2 0x30 JUMPI JUMPDEST PUSH1 0x0 DUP1 REVERT JUMPDEST PUSH2 0x4A PUSH1 0x4 DUP1 CALLDATASIZE SUB DUP2 ADD SWAP1 PUSH2 0x45 SWAP2 SWAP1 PUSH2 0x140 JUMP JUMPDEST PUSH2 0x60 JUMP JUMPDEST PUSH1 0x40 MLOAD PUSH2 0x57 SWAP2 SWAP1 PUSH2 0x1A9 JUMP JUMPDEST PUSH1 0x40 MLOAD DUP1 SWAP2 SUB SWAP1 RETURN JUMPDEST PUSH1 0x0 PUSH1 0x2 PUSH1 0x0 SWAP1 SLOAD SWAP1 PUSH2 0x100 EXP SWAP1 DIV PUSH20 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF AND PUSH20 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF AND PUSH4 0x6057361D DUP4 PUSH1 0x40 MLOAD DUP3 PUSH4 0xFFFFFFFF AND PUSH1 0xE0 SHL DUP2 MSTORE PUSH1 0x4 ADD PUSH2 0xBD SWAP2 SWAP1 PUSH2 0x1A9 JUMP JUMPDEST PUSH1 0x20 PUSH1 0x40 MLOAD DUP1 DUP4 SUB DUP2 PUSH1 0x0 DUP8 DUP1 EXTCODESIZE ISZERO DUP1 ISZERO PUSH2 0xD7 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP GAS CALL ISZERO DUP1 ISZERO PUSH2 0xEB JUMPI RETURNDATASIZE PUSH1 0x0 DUP1 RETURNDATACOPY RETURNDATASIZE PUSH1 0x0 REVERT JUMPDEST POP POP POP POP PUSH1 0x40 MLOAD RETURNDATASIZE PUSH1 0x1F NOT PUSH1 0x1F DUP3 ADD AND DUP3 ADD DUP1 PUSH1 0x40 MSTORE POP DUP2 ADD SWAP1 PUSH2 0x10F SWAP2 SWAP1 PUSH2 0x16D JUMP JUMPDEST SWAP1 POP SWAP2 SWAP1 POP JUMP JUMPDEST PUSH1 0x0 DUP2 CALLDATALOAD SWAP1 POP PUSH2 0x125 DUP2 PUSH2 0x1D3 JUMP JUMPDEST SWAP3 SWAP2 POP POP JUMP JUMPDEST PUSH1 0x0 DUP2 MLOAD SWAP1 POP PUSH2 0x13A DUP2 PUSH2 0x1D3 JUMP JUMPDEST SWAP3 SWAP2 POP POP JUMP JUMPDEST PUSH1 0x0 PUSH1 0x20 DUP3 DUP5 SUB SLT ISZERO PUSH2 0x156 JUMPI PUSH2 0x155 PUSH2 0x1CE JUMP JUMPDEST JUMPDEST PUSH1 0x0 PUSH2 0x164 DUP5 DUP3 DUP6 ADD PUSH2 0x116 JUMP JUMPDEST SWAP2 POP POP SWAP3 SWAP2 POP POP JUMP JUMPDEST PUSH1 0x0 PUSH1 0x20 DUP3 DUP5 SUB SLT ISZERO PUSH2 0x183 JUMPI PUSH2 0x182 PUSH2 0x1CE JUMP JUMPDEST JUMPDEST PUSH1 0x0 PUSH2 0x191 DUP5 DUP3 DUP6 ADD PUSH2 0x12B JUMP JUMPDEST SWAP2 POP POP SWAP3 SWAP2 POP POP JUMP JUMPDEST PUSH2 0x1A3 DUP2 PUSH2 0x1C4 JUMP JUMPDEST DUP3 MSTORE POP POP JUMP JUMPDEST PUSH1 0x0 PUSH1 0x20 DUP3 ADD SWAP1 POP PUSH2 0x1BE PUSH1 0x0 DUP4 ADD DUP5 PUSH2 0x19A JUMP JUMPDEST SWAP3 SWAP2 POP POP JUMP JUMPDEST PUSH1 0x0 DUP2 SWAP1 POP SWAP2 SWAP1 POP JUMP JUMPDEST PUSH1 0x0 DUP1 REVERT JUMPDEST PUSH2 0x1DC DUP2 PUSH2 0x1C4 JUMP JUMPDEST DUP2 EQ PUSH2 0x1E7 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP JUMP INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 PUSH20 0x2D1DD87F112FDE4B433FE8799E2189220AFBA082 SWAP8 0xA9 0xC5 PUSH17 0xCD51D0ABCB38F264736F6C634300080700 CALLER PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH2 0x10 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH2 0x1FE DUP1 PUSH2 0x20 PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN INVALID PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH2 0x10 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x4 CALLDATASIZE LT PUSH2 0x36 JUMPI PUSH1 0x0 CALLDATALOAD PUSH1 0xE0 SHR DUP1 PUSH4 0x2E64CEC1 EQ PUSH2 0x3B JUMPI DUP1 PUSH4 0x6057361D EQ PUSH2 0x59 JUMPI JUMPDEST PUSH1 0x0 DUP1 REVERT JUMPDEST PUSH2 0x43 PUSH2 0x89 JUMP JUMPDEST PUSH1 0x40 MLOAD PUSH2 0x50 SWAP2 SWAP1 PUSH2 0x102 JUMP JUMPDEST PUSH1 0x40 MLOAD DUP1 SWAP2 SUB SWAP1 RETURN JUMPDEST PUSH2 0x73 PUSH1 0x4 DUP1 CALLDATASIZE SUB DUP2 ADD SWAP1 PUSH2 0x6E SWAP2 SWAP1 PUSH2 0xC6 JUMP JUMPDEST PUSH2 0x92 JUMP JUMPDEST PUSH1 0x40 MLOAD PUSH2 0x80 SWAP2 SWAP1 PUSH2 0x102 JUMP JUMPDEST PUSH1 0x40 MLOAD DUP1 SWAP2 SUB SWAP1 RETURN JUMPDEST PUSH1 0x0 DUP1 SLOAD SWAP1 POP SWAP1 JUMP JUMPDEST PUSH1 0x0 PUSH1 0x1 DUP3 PUSH2 0xA1 SWAP2 SWAP1 PUSH2 0x11D JUMP JUMPDEST PUSH1 0x0 DUP2 SWAP1 SSTORE POP PUSH1 0x0 SLOAD SWAP1 POP SWAP2 SWAP1 POP JUMP JUMPDEST PUSH1 0x0 DUP2 CALLDATALOAD SWAP1 POP PUSH2 0xC0 DUP2 PUSH2 0x1B1 JUMP JUMPDEST SWAP3 SWAP2 POP POP JUMP JUMPDEST PUSH1 0x0 PUSH1 0x20 DUP3 DUP5 SUB SLT ISZERO PUSH2 0xDC JUMPI PUSH2 0xDB PUSH2 0x1AC JUMP JUMPDEST JUMPDEST PUSH1 0x0 PUSH2 0xEA DUP5 DUP3 DUP6 ADD PUSH2 0xB1 JUMP JUMPDEST SWAP2 POP POP SWAP3 SWAP2 POP POP JUMP JUMPDEST PUSH2 0xFC DUP2 PUSH2 0x173 JUMP JUMPDEST DUP3 MSTORE POP POP JUMP JUMPDEST PUSH1 0x0 PUSH1 0x20 DUP3 ADD SWAP1 POP PUSH2 0x117 PUSH1 0x0 DUP4 ADD DUP5 PUSH2 0xF3 JUMP JUMPDEST SWAP3 SWAP2 POP POP JUMP JUMPDEST PUSH1 0x0 PUSH2 0x128 DUP3 PUSH2 0x173 JUMP JUMPDEST SWAP2 POP PUSH2 0x133 DUP4 PUSH2 0x173 JUMP JUMPDEST SWAP3 POP DUP3 PUSH32 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF SUB DUP3 GT ISZERO PUSH2 0x168 JUMPI PUSH2 0x167 PUSH2 0x17D JUMP JUMPDEST JUMPDEST DUP3 DUP3 ADD SWAP1 POP SWAP3 SWAP2 POP POP JUMP JUMPDEST PUSH1 0x0 DUP2 SWAP1 POP SWAP2 SWAP1 POP JUMP JUMPDEST PUSH32 0x4E487B7100000000000000000000000000000000000000000000000000000000 PUSH1 0x0 MSTORE PUSH1 0x11 PUSH1 0x4 MSTORE PUSH1 0x24 PUSH1 0x0 REVERT JUMPDEST PUSH1 0x0 DUP1 REVERT JUMPDEST PUSH2 0x1BA DUP2 PUSH2 0x173 JUMP JUMPDEST DUP2 EQ PUSH2 0x1C5 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP JUMP INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 DUP11 0xC8 0xAA 0x5C 0xD CALLDATALOAD DUP15 JUMP 0xEA 0xEA 0xC2 MOD DUP2 STATICCALL BYTE KECCAK256 SWAP14 0x5F PUSH11 0x767568285FCBD589676711 0xEA SWAP7 PUSH5 0x736F6C6343 STOP ADDMOD SMOD STOP CALLER ",
+		"sourceMap": "275:1082:1:-:0;;;362:53;;;;;;;;;;392:16;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;386:3;;:22;;;;;;;;;;;;;;;;;;275:1082;;;;;;;;;;:::o;:::-;;;;;;;"
+	},
+	"abi": [
+		{
+			"inputs": [],
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "num",
+					"type": "uint256"
+				}
+			],
+			"name": "fix_call_store",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"storageLayout": {
+		"storage": [
+			{
+				"astId": 33,
+				"contract": "contracts/fix_multi_call/Caller_main.sol:Caller_main",
+				"label": "number",
+				"offset": 0,
+				"slot": "0",
+				"type": "t_uint256"
+			},
+			{
+				"astId": 35,
+				"contract": "contracts/fix_multi_call/Caller_main.sol:Caller_main",
+				"label": "addr",
+				"offset": 0,
+				"slot": "1",
+				"type": "t_address"
+			},
+			{
+				"astId": 38,
+				"contract": "contracts/fix_multi_call/Caller_main.sol:Caller_main",
+				"label": "sub",
+				"offset": 0,
+				"slot": "2",
+				"type": "t_contract(Callee_sub)28"
+			}
+		],
+		"types": {
+			"t_address": {
+				"encoding": "inplace",
+				"label": "address",
+				"numberOfBytes": "20"
+			},
+			"t_contract(Callee_sub)28": {
+				"encoding": "inplace",
+				"label": "contract Callee_sub",
+				"numberOfBytes": "20"
+			},
+			"t_uint256": {
+				"encoding": "inplace",
+				"label": "uint256",
+				"numberOfBytes": "32"
+			}
+		}
+	},
+	"web3Deploy": "var caller_mainContract = new web3.eth.Contract([{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"num\",\"type\":\"uint256\"}],\"name\":\"fix_call_store\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]);\nvar caller_main = caller_mainContract.deploy({\n     data: '0x608060405234801561001057600080fd5b5060405161001d9061007f565b604051809103906000f080158015610039573d6000803e3d6000fd5b50600260006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff16021790555061008c565b61021e806102bb83390190565b6102208061009b6000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c8063d324082e14610030575b600080fd5b61004a60048036038101906100459190610140565b610060565b60405161005791906101a9565b60405180910390f35b6000600260009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16636057361d836040518263ffffffff1660e01b81526004016100bd91906101a9565b602060405180830381600087803b1580156100d757600080fd5b505af11580156100eb573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061010f919061016d565b9050919050565b600081359050610125816101d3565b92915050565b60008151905061013a816101d3565b92915050565b600060208284031215610156576101556101ce565b5b600061016484828501610116565b91505092915050565b600060208284031215610183576101826101ce565b5b60006101918482850161012b565b91505092915050565b6101a3816101c4565b82525050565b60006020820190506101be600083018461019a565b92915050565b6000819050919050565b600080fd5b6101dc816101c4565b81146101e757600080fd5b5056fea2646970667358221220732d1dd87f112fde4b433fe8799e2189220afba08297a9c570cd51d0abcb38f264736f6c63430008070033608060405234801561001057600080fd5b506101fe806100206000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c80632e64cec11461003b5780636057361d14610059575b600080fd5b610043610089565b6040516100509190610102565b60405180910390f35b610073600480360381019061006e91906100c6565b610092565b6040516100809190610102565b60405180910390f35b60008054905090565b60006001826100a1919061011d565b6000819055506000549050919050565b6000813590506100c0816101b1565b92915050565b6000602082840312156100dc576100db6101ac565b5b60006100ea848285016100b1565b91505092915050565b6100fc81610173565b82525050565b600060208201905061011760008301846100f3565b92915050565b600061012882610173565b915061013383610173565b9250827fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff038211156101685761016761017d565b5b828201905092915050565b6000819050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b600080fd5b6101ba81610173565b81146101c557600080fd5b5056fea26469706673582212208ac8aa5c0d358e56eaeac20681fa1a209d5f6a767568285fcbd589676711ea9664736f6c63430008070033', \n     arguments: [\n     ]\n}).send({\n     from: web3.eth.accounts[0], \n     gas: '4700000'\n   }, function (e, contract){\n    console.log(e, contract);\n    if (typeof contract.address !== 'undefined') {\n         console.log('Contract mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash);\n    }\n })",
+	"functionHashes": {
+		"d324082e": "fix_call_store(uint256)"
+	},
+	"gasEstimates": {
+		"Creation": {
+			"codeDepositCost": "108800",
+			"executionCost": "infinite",
+			"totalCost": "infinite"
+		},
+		"External": {
+			"fix_call_store(uint256)": "infinite"
+		}
+	},
+	"devdoc": {
+		"kind": "dev",
+		"methods": {},
+		"version": 1
+	},
+	"userdoc": {
+		"kind": "user",
+		"methods": {},
+		"version": 1
+	},
+	"Runtime Bytecode": {
+		"functionDebugData": {
+			"@fix_call_store_62": {
+				"entryPoint": 96,
+				"id": 62,
+				"parameterSlots": 1,
+				"returnSlots": 1
+			},
+			"abi_decode_t_uint256": {
+				"entryPoint": 278,
+				"id": null,
+				"parameterSlots": 2,
+				"returnSlots": 1
+			},
+			"abi_decode_t_uint256_fromMemory": {
+				"entryPoint": 299,
+				"id": null,
+				"parameterSlots": 2,
+				"returnSlots": 1
+			},
+			"abi_decode_tuple_t_uint256": {
+				"entryPoint": 320,
+				"id": null,
+				"parameterSlots": 2,
+				"returnSlots": 1
+			},
+			"abi_decode_tuple_t_uint256_fromMemory": {
+				"entryPoint": 365,
+				"id": null,
+				"parameterSlots": 2,
+				"returnSlots": 1
+			},
+			"abi_encode_t_uint256_to_t_uint256_fromStack": {
+				"entryPoint": 410,
+				"id": null,
+				"parameterSlots": 2,
+				"returnSlots": 0
+			},
+			"abi_encode_tuple_t_uint256__to_t_uint256__fromStack_reversed": {
+				"entryPoint": 425,
+				"id": null,
+				"parameterSlots": 2,
+				"returnSlots": 1
+			},
+			"allocate_unbounded": {
+				"entryPoint": null,
+				"id": null,
+				"parameterSlots": 0,
+				"returnSlots": 1
+			},
+			"cleanup_t_uint256": {
+				"entryPoint": 452,
+				"id": null,
+				"parameterSlots": 1,
+				"returnSlots": 1
+			},
+			"revert_error_c1322bf8034eace5e0b5c7295db60986aa89aae5e0ea0873e4689e076861a5db": {
+				"entryPoint": null,
+				"id": null,
+				"parameterSlots": 0,
+				"returnSlots": 0
+			},
+			"revert_error_dbdddcbe895c83990c08b3492a0e83918d802a52331272ac6fdb6a7c4aea3b1b": {
+				"entryPoint": 462,
+				"id": null,
+				"parameterSlots": 0,
+				"returnSlots": 0
+			},
+			"validator_revert_t_uint256": {
+				"entryPoint": 467,
+				"id": null,
+				"parameterSlots": 1,
+				"returnSlots": 0
+			}
+		},
+		"generatedSources": [
+			{
+				"ast": {
+					"nodeType": "YulBlock",
+					"src": "0:1880:2",
+					"statements": [
+						{
+							"body": {
+								"nodeType": "YulBlock",
+								"src": "59:87:2",
+								"statements": [
+									{
+										"nodeType": "YulAssignment",
+										"src": "69:29:2",
+										"value": {
+											"arguments": [
+												{
+													"name": "offset",
+													"nodeType": "YulIdentifier",
+													"src": "91:6:2"
+												}
+											],
+											"functionName": {
+												"name": "calldataload",
+												"nodeType": "YulIdentifier",
+												"src": "78:12:2"
+											},
+											"nodeType": "YulFunctionCall",
+											"src": "78:20:2"
+										},
+										"variableNames": [
+											{
+												"name": "value",
+												"nodeType": "YulIdentifier",
+												"src": "69:5:2"
+											}
+										]
+									},
+									{
+										"expression": {
+											"arguments": [
+												{
+													"name": "value",
+													"nodeType": "YulIdentifier",
+													"src": "134:5:2"
+												}
+											],
+											"functionName": {
+												"name": "validator_revert_t_uint256",
+												"nodeType": "YulIdentifier",
+												"src": "107:26:2"
+											},
+											"nodeType": "YulFunctionCall",
+											"src": "107:33:2"
+										},
+										"nodeType": "YulExpressionStatement",
+										"src": "107:33:2"
+									}
+								]
+							},
+							"name": "abi_decode_t_uint256",
+							"nodeType": "YulFunctionDefinition",
+							"parameters": [
+								{
+									"name": "offset",
+									"nodeType": "YulTypedName",
+									"src": "37:6:2",
+									"type": ""
+								},
+								{
+									"name": "end",
+									"nodeType": "YulTypedName",
+									"src": "45:3:2",
+									"type": ""
+								}
+							],
+							"returnVariables": [
+								{
+									"name": "value",
+									"nodeType": "YulTypedName",
+									"src": "53:5:2",
+									"type": ""
+								}
+							],
+							"src": "7:139:2"
+						},
+						{
+							"body": {
+								"nodeType": "YulBlock",
+								"src": "215:80:2",
+								"statements": [
+									{
+										"nodeType": "YulAssignment",
+										"src": "225:22:2",
+										"value": {
+											"arguments": [
+												{
+													"name": "offset",
+													"nodeType": "YulIdentifier",
+													"src": "240:6:2"
+												}
+											],
+											"functionName": {
+												"name": "mload",
+												"nodeType": "YulIdentifier",
+												"src": "234:5:2"
+											},
+											"nodeType": "YulFunctionCall",
+											"src": "234:13:2"
+										},
+										"variableNames": [
+											{
+												"name": "value",
+												"nodeType": "YulIdentifier",
+												"src": "225:5:2"
+											}
+										]
+									},
+									{
+										"expression": {
+											"arguments": [
+												{
+													"name": "value",
+													"nodeType": "YulIdentifier",
+													"src": "283:5:2"
+												}
+											],
+											"functionName": {
+												"name": "validator_revert_t_uint256",
+												"nodeType": "YulIdentifier",
+												"src": "256:26:2"
+											},
+											"nodeType": "YulFunctionCall",
+											"src": "256:33:2"
+										},
+										"nodeType": "YulExpressionStatement",
+										"src": "256:33:2"
+									}
+								]
+							},
+							"name": "abi_decode_t_uint256_fromMemory",
+							"nodeType": "YulFunctionDefinition",
+							"parameters": [
+								{
+									"name": "offset",
+									"nodeType": "YulTypedName",
+									"src": "193:6:2",
+									"type": ""
+								},
+								{
+									"name": "end",
+									"nodeType": "YulTypedName",
+									"src": "201:3:2",
+									"type": ""
+								}
+							],
+							"returnVariables": [
+								{
+									"name": "value",
+									"nodeType": "YulTypedName",
+									"src": "209:5:2",
+									"type": ""
+								}
+							],
+							"src": "152:143:2"
+						},
+						{
+							"body": {
+								"nodeType": "YulBlock",
+								"src": "367:263:2",
+								"statements": [
+									{
+										"body": {
+											"nodeType": "YulBlock",
+											"src": "413:83:2",
+											"statements": [
+												{
+													"expression": {
+														"arguments": [],
+														"functionName": {
+															"name": "revert_error_dbdddcbe895c83990c08b3492a0e83918d802a52331272ac6fdb6a7c4aea3b1b",
+															"nodeType": "YulIdentifier",
+															"src": "415:77:2"
+														},
+														"nodeType": "YulFunctionCall",
+														"src": "415:79:2"
+													},
+													"nodeType": "YulExpressionStatement",
+													"src": "415:79:2"
+												}
+											]
+										},
+										"condition": {
+											"arguments": [
+												{
+													"arguments": [
+														{
+															"name": "dataEnd",
+															"nodeType": "YulIdentifier",
+															"src": "388:7:2"
+														},
+														{
+															"name": "headStart",
+															"nodeType": "YulIdentifier",
+															"src": "397:9:2"
+														}
+													],
+													"functionName": {
+														"name": "sub",
+														"nodeType": "YulIdentifier",
+														"src": "384:3:2"
+													},
+													"nodeType": "YulFunctionCall",
+													"src": "384:23:2"
+												},
+												{
+													"kind": "number",
+													"nodeType": "YulLiteral",
+													"src": "409:2:2",
+													"type": "",
+													"value": "32"
+												}
+											],
+											"functionName": {
+												"name": "slt",
+												"nodeType": "YulIdentifier",
+												"src": "380:3:2"
+											},
+											"nodeType": "YulFunctionCall",
+											"src": "380:32:2"
+										},
+										"nodeType": "YulIf",
+										"src": "377:119:2"
+									},
+									{
+										"nodeType": "YulBlock",
+										"src": "506:117:2",
+										"statements": [
+											{
+												"nodeType": "YulVariableDeclaration",
+												"src": "521:15:2",
+												"value": {
+													"kind": "number",
+													"nodeType": "YulLiteral",
+													"src": "535:1:2",
+													"type": "",
+													"value": "0"
+												},
+												"variables": [
+													{
+														"name": "offset",
+														"nodeType": "YulTypedName",
+														"src": "525:6:2",
+														"type": ""
+													}
+												]
+											},
+											{
+												"nodeType": "YulAssignment",
+												"src": "550:63:2",
+												"value": {
+													"arguments": [
+														{
+															"arguments": [
+																{
+																	"name": "headStart",
+																	"nodeType": "YulIdentifier",
+																	"src": "585:9:2"
+																},
+																{
+																	"name": "offset",
+																	"nodeType": "YulIdentifier",
+																	"src": "596:6:2"
+																}
+															],
+															"functionName": {
+																"name": "add",
+																"nodeType": "YulIdentifier",
+																"src": "581:3:2"
+															},
+															"nodeType": "YulFunctionCall",
+															"src": "581:22:2"
+														},
+														{
+															"name": "dataEnd",
+															"nodeType": "YulIdentifier",
+															"src": "605:7:2"
+														}
+													],
+													"functionName": {
+														"name": "abi_decode_t_uint256",
+														"nodeType": "YulIdentifier",
+														"src": "560:20:2"
+													},
+													"nodeType": "YulFunctionCall",
+													"src": "560:53:2"
+												},
+												"variableNames": [
+													{
+														"name": "value0",
+														"nodeType": "YulIdentifier",
+														"src": "550:6:2"
+													}
+												]
+											}
+										]
+									}
+								]
+							},
+							"name": "abi_decode_tuple_t_uint256",
+							"nodeType": "YulFunctionDefinition",
+							"parameters": [
+								{
+									"name": "headStart",
+									"nodeType": "YulTypedName",
+									"src": "337:9:2",
+									"type": ""
+								},
+								{
+									"name": "dataEnd",
+									"nodeType": "YulTypedName",
+									"src": "348:7:2",
+									"type": ""
+								}
+							],
+							"returnVariables": [
+								{
+									"name": "value0",
+									"nodeType": "YulTypedName",
+									"src": "360:6:2",
+									"type": ""
+								}
+							],
+							"src": "301:329:2"
+						},
+						{
+							"body": {
+								"nodeType": "YulBlock",
+								"src": "713:274:2",
+								"statements": [
+									{
+										"body": {
+											"nodeType": "YulBlock",
+											"src": "759:83:2",
+											"statements": [
+												{
+													"expression": {
+														"arguments": [],
+														"functionName": {
+															"name": "revert_error_dbdddcbe895c83990c08b3492a0e83918d802a52331272ac6fdb6a7c4aea3b1b",
+															"nodeType": "YulIdentifier",
+															"src": "761:77:2"
+														},
+														"nodeType": "YulFunctionCall",
+														"src": "761:79:2"
+													},
+													"nodeType": "YulExpressionStatement",
+													"src": "761:79:2"
+												}
+											]
+										},
+										"condition": {
+											"arguments": [
+												{
+													"arguments": [
+														{
+															"name": "dataEnd",
+															"nodeType": "YulIdentifier",
+															"src": "734:7:2"
+														},
+														{
+															"name": "headStart",
+															"nodeType": "YulIdentifier",
+															"src": "743:9:2"
+														}
+													],
+													"functionName": {
+														"name": "sub",
+														"nodeType": "YulIdentifier",
+														"src": "730:3:2"
+													},
+													"nodeType": "YulFunctionCall",
+													"src": "730:23:2"
+												},
+												{
+													"kind": "number",
+													"nodeType": "YulLiteral",
+													"src": "755:2:2",
+													"type": "",
+													"value": "32"
+												}
+											],
+											"functionName": {
+												"name": "slt",
+												"nodeType": "YulIdentifier",
+												"src": "726:3:2"
+											},
+											"nodeType": "YulFunctionCall",
+											"src": "726:32:2"
+										},
+										"nodeType": "YulIf",
+										"src": "723:119:2"
+									},
+									{
+										"nodeType": "YulBlock",
+										"src": "852:128:2",
+										"statements": [
+											{
+												"nodeType": "YulVariableDeclaration",
+												"src": "867:15:2",
+												"value": {
+													"kind": "number",
+													"nodeType": "YulLiteral",
+													"src": "881:1:2",
+													"type": "",
+													"value": "0"
+												},
+												"variables": [
+													{
+														"name": "offset",
+														"nodeType": "YulTypedName",
+														"src": "871:6:2",
+														"type": ""
+													}
+												]
+											},
+											{
+												"nodeType": "YulAssignment",
+												"src": "896:74:2",
+												"value": {
+													"arguments": [
+														{
+															"arguments": [
+																{
+																	"name": "headStart",
+																	"nodeType": "YulIdentifier",
+																	"src": "942:9:2"
+																},
+																{
+																	"name": "offset",
+																	"nodeType": "YulIdentifier",
+																	"src": "953:6:2"
+																}
+															],
+															"functionName": {
+																"name": "add",
+																"nodeType": "YulIdentifier",
+																"src": "938:3:2"
+															},
+															"nodeType": "YulFunctionCall",
+															"src": "938:22:2"
+														},
+														{
+															"name": "dataEnd",
+															"nodeType": "YulIdentifier",
+															"src": "962:7:2"
+														}
+													],
+													"functionName": {
+														"name": "abi_decode_t_uint256_fromMemory",
+														"nodeType": "YulIdentifier",
+														"src": "906:31:2"
+													},
+													"nodeType": "YulFunctionCall",
+													"src": "906:64:2"
+												},
+												"variableNames": [
+													{
+														"name": "value0",
+														"nodeType": "YulIdentifier",
+														"src": "896:6:2"
+													}
+												]
+											}
+										]
+									}
+								]
+							},
+							"name": "abi_decode_tuple_t_uint256_fromMemory",
+							"nodeType": "YulFunctionDefinition",
+							"parameters": [
+								{
+									"name": "headStart",
+									"nodeType": "YulTypedName",
+									"src": "683:9:2",
+									"type": ""
+								},
+								{
+									"name": "dataEnd",
+									"nodeType": "YulTypedName",
+									"src": "694:7:2",
+									"type": ""
+								}
+							],
+							"returnVariables": [
+								{
+									"name": "value0",
+									"nodeType": "YulTypedName",
+									"src": "706:6:2",
+									"type": ""
+								}
+							],
+							"src": "636:351:2"
+						},
+						{
+							"body": {
+								"nodeType": "YulBlock",
+								"src": "1058:53:2",
+								"statements": [
+									{
+										"expression": {
+											"arguments": [
+												{
+													"name": "pos",
+													"nodeType": "YulIdentifier",
+													"src": "1075:3:2"
+												},
+												{
+													"arguments": [
+														{
+															"name": "value",
+															"nodeType": "YulIdentifier",
+															"src": "1098:5:2"
+														}
+													],
+													"functionName": {
+														"name": "cleanup_t_uint256",
+														"nodeType": "YulIdentifier",
+														"src": "1080:17:2"
+													},
+													"nodeType": "YulFunctionCall",
+													"src": "1080:24:2"
+												}
+											],
+											"functionName": {
+												"name": "mstore",
+												"nodeType": "YulIdentifier",
+												"src": "1068:6:2"
+											},
+											"nodeType": "YulFunctionCall",
+											"src": "1068:37:2"
+										},
+										"nodeType": "YulExpressionStatement",
+										"src": "1068:37:2"
+									}
+								]
+							},
+							"name": "abi_encode_t_uint256_to_t_uint256_fromStack",
+							"nodeType": "YulFunctionDefinition",
+							"parameters": [
+								{
+									"name": "value",
+									"nodeType": "YulTypedName",
+									"src": "1046:5:2",
+									"type": ""
+								},
+								{
+									"name": "pos",
+									"nodeType": "YulTypedName",
+									"src": "1053:3:2",
+									"type": ""
+								}
+							],
+							"src": "993:118:2"
+						},
+						{
+							"body": {
+								"nodeType": "YulBlock",
+								"src": "1215:124:2",
+								"statements": [
+									{
+										"nodeType": "YulAssignment",
+										"src": "1225:26:2",
+										"value": {
+											"arguments": [
+												{
+													"name": "headStart",
+													"nodeType": "YulIdentifier",
+													"src": "1237:9:2"
+												},
+												{
+													"kind": "number",
+													"nodeType": "YulLiteral",
+													"src": "1248:2:2",
+													"type": "",
+													"value": "32"
+												}
+											],
+											"functionName": {
+												"name": "add",
+												"nodeType": "YulIdentifier",
+												"src": "1233:3:2"
+											},
+											"nodeType": "YulFunctionCall",
+											"src": "1233:18:2"
+										},
+										"variableNames": [
+											{
+												"name": "tail",
+												"nodeType": "YulIdentifier",
+												"src": "1225:4:2"
+											}
+										]
+									},
+									{
+										"expression": {
+											"arguments": [
+												{
+													"name": "value0",
+													"nodeType": "YulIdentifier",
+													"src": "1305:6:2"
+												},
+												{
+													"arguments": [
+														{
+															"name": "headStart",
+															"nodeType": "YulIdentifier",
+															"src": "1318:9:2"
+														},
+														{
+															"kind": "number",
+															"nodeType": "YulLiteral",
+															"src": "1329:1:2",
+															"type": "",
+															"value": "0"
+														}
+													],
+													"functionName": {
+														"name": "add",
+														"nodeType": "YulIdentifier",
+														"src": "1314:3:2"
+													},
+													"nodeType": "YulFunctionCall",
+													"src": "1314:17:2"
+												}
+											],
+											"functionName": {
+												"name": "abi_encode_t_uint256_to_t_uint256_fromStack",
+												"nodeType": "YulIdentifier",
+												"src": "1261:43:2"
+											},
+											"nodeType": "YulFunctionCall",
+											"src": "1261:71:2"
+										},
+										"nodeType": "YulExpressionStatement",
+										"src": "1261:71:2"
+									}
+								]
+							},
+							"name": "abi_encode_tuple_t_uint256__to_t_uint256__fromStack_reversed",
+							"nodeType": "YulFunctionDefinition",
+							"parameters": [
+								{
+									"name": "headStart",
+									"nodeType": "YulTypedName",
+									"src": "1187:9:2",
+									"type": ""
+								},
+								{
+									"name": "value0",
+									"nodeType": "YulTypedName",
+									"src": "1199:6:2",
+									"type": ""
+								}
+							],
+							"returnVariables": [
+								{
+									"name": "tail",
+									"nodeType": "YulTypedName",
+									"src": "1210:4:2",
+									"type": ""
+								}
+							],
+							"src": "1117:222:2"
+						},
+						{
+							"body": {
+								"nodeType": "YulBlock",
+								"src": "1385:35:2",
+								"statements": [
+									{
+										"nodeType": "YulAssignment",
+										"src": "1395:19:2",
+										"value": {
+											"arguments": [
+												{
+													"kind": "number",
+													"nodeType": "YulLiteral",
+													"src": "1411:2:2",
+													"type": "",
+													"value": "64"
+												}
+											],
+											"functionName": {
+												"name": "mload",
+												"nodeType": "YulIdentifier",
+												"src": "1405:5:2"
+											},
+											"nodeType": "YulFunctionCall",
+											"src": "1405:9:2"
+										},
+										"variableNames": [
+											{
+												"name": "memPtr",
+												"nodeType": "YulIdentifier",
+												"src": "1395:6:2"
+											}
+										]
+									}
+								]
+							},
+							"name": "allocate_unbounded",
+							"nodeType": "YulFunctionDefinition",
+							"returnVariables": [
+								{
+									"name": "memPtr",
+									"nodeType": "YulTypedName",
+									"src": "1378:6:2",
+									"type": ""
+								}
+							],
+							"src": "1345:75:2"
+						},
+						{
+							"body": {
+								"nodeType": "YulBlock",
+								"src": "1471:32:2",
+								"statements": [
+									{
+										"nodeType": "YulAssignment",
+										"src": "1481:16:2",
+										"value": {
+											"name": "value",
+											"nodeType": "YulIdentifier",
+											"src": "1492:5:2"
+										},
+										"variableNames": [
+											{
+												"name": "cleaned",
+												"nodeType": "YulIdentifier",
+												"src": "1481:7:2"
+											}
+										]
+									}
+								]
+							},
+							"name": "cleanup_t_uint256",
+							"nodeType": "YulFunctionDefinition",
+							"parameters": [
+								{
+									"name": "value",
+									"nodeType": "YulTypedName",
+									"src": "1453:5:2",
+									"type": ""
+								}
+							],
+							"returnVariables": [
+								{
+									"name": "cleaned",
+									"nodeType": "YulTypedName",
+									"src": "1463:7:2",
+									"type": ""
+								}
+							],
+							"src": "1426:77:2"
+						},
+						{
+							"body": {
+								"nodeType": "YulBlock",
+								"src": "1598:28:2",
+								"statements": [
+									{
+										"expression": {
+											"arguments": [
+												{
+													"kind": "number",
+													"nodeType": "YulLiteral",
+													"src": "1615:1:2",
+													"type": "",
+													"value": "0"
+												},
+												{
+													"kind": "number",
+													"nodeType": "YulLiteral",
+													"src": "1618:1:2",
+													"type": "",
+													"value": "0"
+												}
+											],
+											"functionName": {
+												"name": "revert",
+												"nodeType": "YulIdentifier",
+												"src": "1608:6:2"
+											},
+											"nodeType": "YulFunctionCall",
+											"src": "1608:12:2"
+										},
+										"nodeType": "YulExpressionStatement",
+										"src": "1608:12:2"
+									}
+								]
+							},
+							"name": "revert_error_c1322bf8034eace5e0b5c7295db60986aa89aae5e0ea0873e4689e076861a5db",
+							"nodeType": "YulFunctionDefinition",
+							"src": "1509:117:2"
+						},
+						{
+							"body": {
+								"nodeType": "YulBlock",
+								"src": "1721:28:2",
+								"statements": [
+									{
+										"expression": {
+											"arguments": [
+												{
+													"kind": "number",
+													"nodeType": "YulLiteral",
+													"src": "1738:1:2",
+													"type": "",
+													"value": "0"
+												},
+												{
+													"kind": "number",
+													"nodeType": "YulLiteral",
+													"src": "1741:1:2",
+													"type": "",
+													"value": "0"
+												}
+											],
+											"functionName": {
+												"name": "revert",
+												"nodeType": "YulIdentifier",
+												"src": "1731:6:2"
+											},
+											"nodeType": "YulFunctionCall",
+											"src": "1731:12:2"
+										},
+										"nodeType": "YulExpressionStatement",
+										"src": "1731:12:2"
+									}
+								]
+							},
+							"name": "revert_error_dbdddcbe895c83990c08b3492a0e83918d802a52331272ac6fdb6a7c4aea3b1b",
+							"nodeType": "YulFunctionDefinition",
+							"src": "1632:117:2"
+						},
+						{
+							"body": {
+								"nodeType": "YulBlock",
+								"src": "1798:79:2",
+								"statements": [
+									{
+										"body": {
+											"nodeType": "YulBlock",
+											"src": "1855:16:2",
+											"statements": [
+												{
+													"expression": {
+														"arguments": [
+															{
+																"kind": "number",
+																"nodeType": "YulLiteral",
+																"src": "1864:1:2",
+																"type": "",
+																"value": "0"
+															},
+															{
+																"kind": "number",
+																"nodeType": "YulLiteral",
+																"src": "1867:1:2",
+																"type": "",
+																"value": "0"
+															}
+														],
+														"functionName": {
+															"name": "revert",
+															"nodeType": "YulIdentifier",
+															"src": "1857:6:2"
+														},
+														"nodeType": "YulFunctionCall",
+														"src": "1857:12:2"
+													},
+													"nodeType": "YulExpressionStatement",
+													"src": "1857:12:2"
+												}
+											]
+										},
+										"condition": {
+											"arguments": [
+												{
+													"arguments": [
+														{
+															"name": "value",
+															"nodeType": "YulIdentifier",
+															"src": "1821:5:2"
+														},
+														{
+															"arguments": [
+																{
+																	"name": "value",
+																	"nodeType": "YulIdentifier",
+																	"src": "1846:5:2"
+																}
+															],
+															"functionName": {
+																"name": "cleanup_t_uint256",
+																"nodeType": "YulIdentifier",
+																"src": "1828:17:2"
+															},
+															"nodeType": "YulFunctionCall",
+															"src": "1828:24:2"
+														}
+													],
+													"functionName": {
+														"name": "eq",
+														"nodeType": "YulIdentifier",
+														"src": "1818:2:2"
+													},
+													"nodeType": "YulFunctionCall",
+													"src": "1818:35:2"
+												}
+											],
+											"functionName": {
+												"name": "iszero",
+												"nodeType": "YulIdentifier",
+												"src": "1811:6:2"
+											},
+											"nodeType": "YulFunctionCall",
+											"src": "1811:43:2"
+										},
+										"nodeType": "YulIf",
+										"src": "1808:63:2"
+									}
+								]
+							},
+							"name": "validator_revert_t_uint256",
+							"nodeType": "YulFunctionDefinition",
+							"parameters": [
+								{
+									"name": "value",
+									"nodeType": "YulTypedName",
+									"src": "1791:5:2",
+									"type": ""
+								}
+							],
+							"src": "1755:122:2"
+						}
+					]
+				},
+				"contents": "{\n\n    function abi_decode_t_uint256(offset, end) -> value {\n        value := calldataload(offset)\n        validator_revert_t_uint256(value)\n    }\n\n    function abi_decode_t_uint256_fromMemory(offset, end) -> value {\n        value := mload(offset)\n        validator_revert_t_uint256(value)\n    }\n\n    function abi_decode_tuple_t_uint256(headStart, dataEnd) -> value0 {\n        if slt(sub(dataEnd, headStart), 32) { revert_error_dbdddcbe895c83990c08b3492a0e83918d802a52331272ac6fdb6a7c4aea3b1b() }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_uint256(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_decode_tuple_t_uint256_fromMemory(headStart, dataEnd) -> value0 {\n        if slt(sub(dataEnd, headStart), 32) { revert_error_dbdddcbe895c83990c08b3492a0e83918d802a52331272ac6fdb6a7c4aea3b1b() }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_uint256_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_encode_t_uint256_to_t_uint256_fromStack(value, pos) {\n        mstore(pos, cleanup_t_uint256(value))\n    }\n\n    function abi_encode_tuple_t_uint256__to_t_uint256__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_uint256_to_t_uint256_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function allocate_unbounded() -> memPtr {\n        memPtr := mload(64)\n    }\n\n    function cleanup_t_uint256(value) -> cleaned {\n        cleaned := value\n    }\n\n    function revert_error_c1322bf8034eace5e0b5c7295db60986aa89aae5e0ea0873e4689e076861a5db() {\n        revert(0, 0)\n    }\n\n    function revert_error_dbdddcbe895c83990c08b3492a0e83918d802a52331272ac6fdb6a7c4aea3b1b() {\n        revert(0, 0)\n    }\n\n    function validator_revert_t_uint256(value) {\n        if iszero(eq(value, cleanup_t_uint256(value))) { revert(0, 0) }\n    }\n\n}\n",
+				"id": 2,
+				"language": "Yul",
+				"name": "#utility.yul"
+			}
+		],
+		"immutableReferences": {},
+		"linkReferences": {},
+		"object": "608060405234801561001057600080fd5b506004361061002b5760003560e01c8063d324082e14610030575b600080fd5b61004a60048036038101906100459190610140565b610060565b60405161005791906101a9565b60405180910390f35b6000600260009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16636057361d836040518263ffffffff1660e01b81526004016100bd91906101a9565b602060405180830381600087803b1580156100d757600080fd5b505af11580156100eb573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061010f919061016d565b9050919050565b600081359050610125816101d3565b92915050565b60008151905061013a816101d3565b92915050565b600060208284031215610156576101556101ce565b5b600061016484828501610116565b91505092915050565b600060208284031215610183576101826101ce565b5b60006101918482850161012b565b91505092915050565b6101a3816101c4565b82525050565b60006020820190506101be600083018461019a565b92915050565b6000819050919050565b600080fd5b6101dc816101c4565b81146101e757600080fd5b5056fea2646970667358221220732d1dd87f112fde4b433fe8799e2189220afba08297a9c570cd51d0abcb38f264736f6c63430008070033",
+		"opcodes": "PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH2 0x10 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x4 CALLDATASIZE LT PUSH2 0x2B JUMPI PUSH1 0x0 CALLDATALOAD PUSH1 0xE0 SHR DUP1 PUSH4 0xD324082E EQ PUSH2 0x30 JUMPI JUMPDEST PUSH1 0x0 DUP1 REVERT JUMPDEST PUSH2 0x4A PUSH1 0x4 DUP1 CALLDATASIZE SUB DUP2 ADD SWAP1 PUSH2 0x45 SWAP2 SWAP1 PUSH2 0x140 JUMP JUMPDEST PUSH2 0x60 JUMP JUMPDEST PUSH1 0x40 MLOAD PUSH2 0x57 SWAP2 SWAP1 PUSH2 0x1A9 JUMP JUMPDEST PUSH1 0x40 MLOAD DUP1 SWAP2 SUB SWAP1 RETURN JUMPDEST PUSH1 0x0 PUSH1 0x2 PUSH1 0x0 SWAP1 SLOAD SWAP1 PUSH2 0x100 EXP SWAP1 DIV PUSH20 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF AND PUSH20 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF AND PUSH4 0x6057361D DUP4 PUSH1 0x40 MLOAD DUP3 PUSH4 0xFFFFFFFF AND PUSH1 0xE0 SHL DUP2 MSTORE PUSH1 0x4 ADD PUSH2 0xBD SWAP2 SWAP1 PUSH2 0x1A9 JUMP JUMPDEST PUSH1 0x20 PUSH1 0x40 MLOAD DUP1 DUP4 SUB DUP2 PUSH1 0x0 DUP8 DUP1 EXTCODESIZE ISZERO DUP1 ISZERO PUSH2 0xD7 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP GAS CALL ISZERO DUP1 ISZERO PUSH2 0xEB JUMPI RETURNDATASIZE PUSH1 0x0 DUP1 RETURNDATACOPY RETURNDATASIZE PUSH1 0x0 REVERT JUMPDEST POP POP POP POP PUSH1 0x40 MLOAD RETURNDATASIZE PUSH1 0x1F NOT PUSH1 0x1F DUP3 ADD AND DUP3 ADD DUP1 PUSH1 0x40 MSTORE POP DUP2 ADD SWAP1 PUSH2 0x10F SWAP2 SWAP1 PUSH2 0x16D JUMP JUMPDEST SWAP1 POP SWAP2 SWAP1 POP JUMP JUMPDEST PUSH1 0x0 DUP2 CALLDATALOAD SWAP1 POP PUSH2 0x125 DUP2 PUSH2 0x1D3 JUMP JUMPDEST SWAP3 SWAP2 POP POP JUMP JUMPDEST PUSH1 0x0 DUP2 MLOAD SWAP1 POP PUSH2 0x13A DUP2 PUSH2 0x1D3 JUMP JUMPDEST SWAP3 SWAP2 POP POP JUMP JUMPDEST PUSH1 0x0 PUSH1 0x20 DUP3 DUP5 SUB SLT ISZERO PUSH2 0x156 JUMPI PUSH2 0x155 PUSH2 0x1CE JUMP JUMPDEST JUMPDEST PUSH1 0x0 PUSH2 0x164 DUP5 DUP3 DUP6 ADD PUSH2 0x116 JUMP JUMPDEST SWAP2 POP POP SWAP3 SWAP2 POP POP JUMP JUMPDEST PUSH1 0x0 PUSH1 0x20 DUP3 DUP5 SUB SLT ISZERO PUSH2 0x183 JUMPI PUSH2 0x182 PUSH2 0x1CE JUMP JUMPDEST JUMPDEST PUSH1 0x0 PUSH2 0x191 DUP5 DUP3 DUP6 ADD PUSH2 0x12B JUMP JUMPDEST SWAP2 POP POP SWAP3 SWAP2 POP POP JUMP JUMPDEST PUSH2 0x1A3 DUP2 PUSH2 0x1C4 JUMP JUMPDEST DUP3 MSTORE POP POP JUMP JUMPDEST PUSH1 0x0 PUSH1 0x20 DUP3 ADD SWAP1 POP PUSH2 0x1BE PUSH1 0x0 DUP4 ADD DUP5 PUSH2 0x19A JUMP JUMPDEST SWAP3 SWAP2 POP POP JUMP JUMPDEST PUSH1 0x0 DUP2 SWAP1 POP SWAP2 SWAP1 POP JUMP JUMPDEST PUSH1 0x0 DUP1 REVERT JUMPDEST PUSH2 0x1DC DUP2 PUSH2 0x1C4 JUMP JUMPDEST DUP2 EQ PUSH2 0x1E7 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP JUMP INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 PUSH20 0x2D1DD87F112FDE4B433FE8799E2189220AFBA082 SWAP8 0xA9 0xC5 PUSH17 0xCD51D0ABCB38F264736F6C634300080700 CALLER ",
+		"sourceMap": "275:1082:1:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;425:99;;;;;;;;;;;;;:::i;:::-;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;;478:7;503:3;;;;;;;;;;;:9;;;513:3;503:14;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;496:21;;425:99;;;:::o;7:139:2:-;53:5;91:6;78:20;69:29;;107:33;134:5;107:33;:::i;:::-;7:139;;;;:::o;152:143::-;209:5;240:6;234:13;225:22;;256:33;283:5;256:33;:::i;:::-;152:143;;;;:::o;301:329::-;360:6;409:2;397:9;388:7;384:23;380:32;377:119;;;415:79;;:::i;:::-;377:119;535:1;560:53;605:7;596:6;585:9;581:22;560:53;:::i;:::-;550:63;;506:117;301:329;;;;:::o;636:351::-;706:6;755:2;743:9;734:7;730:23;726:32;723:119;;;761:79;;:::i;:::-;723:119;881:1;906:64;962:7;953:6;942:9;938:22;906:64;:::i;:::-;896:74;;852:128;636:351;;;;:::o;993:118::-;1080:24;1098:5;1080:24;:::i;:::-;1075:3;1068:37;993:118;;:::o;1117:222::-;1210:4;1248:2;1237:9;1233:18;1225:26;;1261:71;1329:1;1318:9;1314:17;1305:6;1261:71;:::i;:::-;1117:222;;;;:::o;1426:77::-;1463:7;1492:5;1481:16;;1426:77;;;:::o;1632:117::-;1741:1;1738;1731:12;1755:122;1828:24;1846:5;1828:24;:::i;:::-;1821:5;1818:35;1808:63;;1867:1;1864;1857:12;1808:63;1755:122;:::o"
+	},
+	"Assembly": ".code\n  PUSH 80\t\t\tcontract Caller_main {\\n\\n    ...\n  PUSH 40\t\t\tcontract Caller_main {\\n\\n    ...\n  MSTORE \t\t\tcontract Caller_main {\\n\\n    ...\n  CALLVALUE \t\t\tconstructor (){\\n        sub =...\n  DUP1 \t\t\tconstructor (){\\n        sub =...\n  ISZERO \t\t\tconstructor (){\\n        sub =...\n  PUSH [tag] 1\t\t\tconstructor (){\\n        sub =...\n  JUMPI \t\t\tconstructor (){\\n        sub =...\n  PUSH 0\t\t\tconstructor (){\\n        sub =...\n  DUP1 \t\t\tconstructor (){\\n        sub =...\n  REVERT \t\t\tconstructor (){\\n        sub =...\ntag 1\t\t\tconstructor (){\\n        sub =...\n  JUMPDEST \t\t\tconstructor (){\\n        sub =...\n  POP \t\t\tconstructor (){\\n        sub =...\n  PUSH 40\t\t\tnew Callee_sub()\n  MLOAD \t\t\tnew Callee_sub()\n  PUSH [tag] 4\t\t\tnew Callee_sub()\n  SWAP1 \t\t\tnew Callee_sub()\n  PUSH [tag] 5\t\t\tnew Callee_sub()\n  JUMP [in]\t\t\tnew Callee_sub()\ntag 4\t\t\tnew Callee_sub()\n  JUMPDEST \t\t\tnew Callee_sub()\n  PUSH 40\t\t\tnew Callee_sub()\n  MLOAD \t\t\tnew Callee_sub()\n  DUP1 \t\t\tnew Callee_sub()\n  SWAP2 \t\t\tnew Callee_sub()\n  SUB \t\t\tnew Callee_sub()\n  SWAP1 \t\t\tnew Callee_sub()\n  PUSH 0\t\t\tnew Callee_sub()\n  CREATE \t\t\tnew Callee_sub()\n  DUP1 \t\t\tnew Callee_sub()\n  ISZERO \t\t\tnew Callee_sub()\n  DUP1 \t\t\tnew Callee_sub()\n  ISZERO \t\t\tnew Callee_sub()\n  PUSH [tag] 6\t\t\tnew Callee_sub()\n  JUMPI \t\t\tnew Callee_sub()\n  RETURNDATASIZE \t\t\tnew Callee_sub()\n  PUSH 0\t\t\tnew Callee_sub()\n  DUP1 \t\t\tnew Callee_sub()\n  RETURNDATACOPY \t\t\tnew Callee_sub()\n  RETURNDATASIZE \t\t\tnew Callee_sub()\n  PUSH 0\t\t\tnew Callee_sub()\n  REVERT \t\t\tnew Callee_sub()\ntag 6\t\t\tnew Callee_sub()\n  JUMPDEST \t\t\tnew Callee_sub()\n  POP \t\t\tnew Callee_sub()\n  PUSH 2\t\t\tsub\n  PUSH 0\t\t\tsub\n  PUSH 100\t\t\tsub = new Callee_sub()\n  EXP \t\t\tsub = new Callee_sub()\n  DUP2 \t\t\tsub = new Callee_sub()\n  SLOAD \t\t\tsub = new Callee_sub()\n  DUP2 \t\t\tsub = new Callee_sub()\n  PUSH FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF\t\t\tsub = new Callee_sub()\n  MUL \t\t\tsub = new Callee_sub()\n  NOT \t\t\tsub = new Callee_sub()\n  AND \t\t\tsub = new Callee_sub()\n  SWAP1 \t\t\tsub = new Callee_sub()\n  DUP4 \t\t\tsub = new Callee_sub()\n  PUSH FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF\t\t\tsub = new Callee_sub()\n  AND \t\t\tsub = new Callee_sub()\n  MUL \t\t\tsub = new Callee_sub()\n  OR \t\t\tsub = new Callee_sub()\n  SWAP1 \t\t\tsub = new Callee_sub()\n  SSTORE \t\t\tsub = new Callee_sub()\n  POP \t\t\tsub = new Callee_sub()\n  PUSH [tag] 7\t\t\tcontract Caller_main {\\n\\n    ...\n  JUMP \t\t\tcontract Caller_main {\\n\\n    ...\ntag 5\t\t\tcontract Caller_main {\\n\\n    ...\n  JUMPDEST \t\t\tcontract Caller_main {\\n\\n    ...\n  PUSH #[$] 0000000000000000000000000000000000000000000000000000000000000001\t\t\tcontract Caller_main {\\n\\n    ...\n  DUP1 \t\t\tcontract Caller_main {\\n\\n    ...\n  PUSH [$] 0000000000000000000000000000000000000000000000000000000000000001\t\t\tcontract Caller_main {\\n\\n    ...\n  DUP4 \t\t\tcontract Caller_main {\\n\\n    ...\n  CODECOPY \t\t\tcontract Caller_main {\\n\\n    ...\n  ADD \t\t\tcontract Caller_main {\\n\\n    ...\n  SWAP1 \t\t\tcontract Caller_main {\\n\\n    ...\n  JUMP [out]\t\t\tcontract Caller_main {\\n\\n    ...\ntag 7\t\t\tcontract Caller_main {\\n\\n    ...\n  JUMPDEST \t\t\tcontract Caller_main {\\n\\n    ...\n  PUSH #[$] 0000000000000000000000000000000000000000000000000000000000000000\t\t\tcontract Caller_main {\\n\\n    ...\n  DUP1 \t\t\tcontract Caller_main {\\n\\n    ...\n  PUSH [$] 0000000000000000000000000000000000000000000000000000000000000000\t\t\tcontract Caller_main {\\n\\n    ...\n  PUSH 0\t\t\tcontract Caller_main {\\n\\n    ...\n  CODECOPY \t\t\tcontract Caller_main {\\n\\n    ...\n  PUSH 0\t\t\tcontract Caller_main {\\n\\n    ...\n  RETURN \t\t\tcontract Caller_main {\\n\\n    ...\n.data\n  0:\n    .code\n      PUSH 80\t\t\tcontract Caller_main {\\n\\n    ...\n      PUSH 40\t\t\tcontract Caller_main {\\n\\n    ...\n      MSTORE \t\t\tcontract Caller_main {\\n\\n    ...\n      CALLVALUE \t\t\tcontract Caller_main {\\n\\n    ...\n      DUP1 \t\t\tcontract Caller_main {\\n\\n    ...\n      ISZERO \t\t\tcontract Caller_main {\\n\\n    ...\n      PUSH [tag] 1\t\t\tcontract Caller_main {\\n\\n    ...\n      JUMPI \t\t\tcontract Caller_main {\\n\\n    ...\n      PUSH 0\t\t\tcontract Caller_main {\\n\\n    ...\n      DUP1 \t\t\tcontract Caller_main {\\n\\n    ...\n      REVERT \t\t\tcontract Caller_main {\\n\\n    ...\n    tag 1\t\t\tcontract Caller_main {\\n\\n    ...\n      JUMPDEST \t\t\tcontract Caller_main {\\n\\n    ...\n      POP \t\t\tcontract Caller_main {\\n\\n    ...\n      PUSH 4\t\t\tcontract Caller_main {\\n\\n    ...\n      CALLDATASIZE \t\t\tcontract Caller_main {\\n\\n    ...\n      LT \t\t\tcontract Caller_main {\\n\\n    ...\n      PUSH [tag] 2\t\t\tcontract Caller_main {\\n\\n    ...\n      JUMPI \t\t\tcontract Caller_main {\\n\\n    ...\n      PUSH 0\t\t\tcontract Caller_main {\\n\\n    ...\n      CALLDATALOAD \t\t\tcontract Caller_main {\\n\\n    ...\n      PUSH E0\t\t\tcontract Caller_main {\\n\\n    ...\n      SHR \t\t\tcontract Caller_main {\\n\\n    ...\n      DUP1 \t\t\tcontract Caller_main {\\n\\n    ...\n      PUSH D324082E\t\t\tcontract Caller_main {\\n\\n    ...\n      EQ \t\t\tcontract Caller_main {\\n\\n    ...\n      PUSH [tag] 3\t\t\tcontract Caller_main {\\n\\n    ...\n      JUMPI \t\t\tcontract Caller_main {\\n\\n    ...\n    tag 2\t\t\tcontract Caller_main {\\n\\n    ...\n      JUMPDEST \t\t\tcontract Caller_main {\\n\\n    ...\n      PUSH 0\t\t\tcontract Caller_main {\\n\\n    ...\n      DUP1 \t\t\tcontract Caller_main {\\n\\n    ...\n      REVERT \t\t\tcontract Caller_main {\\n\\n    ...\n    tag 3\t\t\tfunction fix_call_store(uint25...\n      JUMPDEST \t\t\tfunction fix_call_store(uint25...\n      PUSH [tag] 4\t\t\tfunction fix_call_store(uint25...\n      PUSH 4\t\t\tfunction fix_call_store(uint25...\n      DUP1 \t\t\tfunction fix_call_store(uint25...\n      CALLDATASIZE \t\t\tfunction fix_call_store(uint25...\n      SUB \t\t\tfunction fix_call_store(uint25...\n      DUP2 \t\t\tfunction fix_call_store(uint25...\n      ADD \t\t\tfunction fix_call_store(uint25...\n      SWAP1 \t\t\tfunction fix_call_store(uint25...\n      PUSH [tag] 5\t\t\tfunction fix_call_store(uint25...\n      SWAP2 \t\t\tfunction fix_call_store(uint25...\n      SWAP1 \t\t\tfunction fix_call_store(uint25...\n      PUSH [tag] 6\t\t\tfunction fix_call_store(uint25...\n      JUMP [in]\t\t\tfunction fix_call_store(uint25...\n    tag 5\t\t\tfunction fix_call_store(uint25...\n      JUMPDEST \t\t\tfunction fix_call_store(uint25...\n      PUSH [tag] 7\t\t\tfunction fix_call_store(uint25...\n      JUMP [in]\t\t\tfunction fix_call_store(uint25...\n    tag 4\t\t\tfunction fix_call_store(uint25...\n      JUMPDEST \t\t\tfunction fix_call_store(uint25...\n      PUSH 40\t\t\tfunction fix_call_store(uint25...\n      MLOAD \t\t\tfunction fix_call_store(uint25...\n      PUSH [tag] 8\t\t\tfunction fix_call_store(uint25...\n      SWAP2 \t\t\tfunction fix_call_store(uint25...\n      SWAP1 \t\t\tfunction fix_call_store(uint25...\n      PUSH [tag] 9\t\t\tfunction fix_call_store(uint25...\n      JUMP [in]\t\t\tfunction fix_call_store(uint25...\n    tag 8\t\t\tfunction fix_call_store(uint25...\n      JUMPDEST \t\t\tfunction fix_call_store(uint25...\n      PUSH 40\t\t\tfunction fix_call_store(uint25...\n      MLOAD \t\t\tfunction fix_call_store(uint25...\n      DUP1 \t\t\tfunction fix_call_store(uint25...\n      SWAP2 \t\t\tfunction fix_call_store(uint25...\n      SUB \t\t\tfunction fix_call_store(uint25...\n      SWAP1 \t\t\tfunction fix_call_store(uint25...\n      RETURN \t\t\tfunction fix_call_store(uint25...\n    tag 7\t\t\tfunction fix_call_store(uint25...\n      JUMPDEST \t\t\tfunction fix_call_store(uint25...\n      PUSH 0\t\t\tuint256\n      PUSH 2\t\t\tsub\n      PUSH 0\t\t\tsub\n      SWAP1 \t\t\tsub\n      SLOAD \t\t\tsub\n      SWAP1 \t\t\tsub\n      PUSH 100\t\t\tsub\n      EXP \t\t\tsub\n      SWAP1 \t\t\tsub\n      DIV \t\t\tsub\n      PUSH FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF\t\t\tsub\n      AND \t\t\tsub\n      PUSH FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF\t\t\tsub.store\n      AND \t\t\tsub.store\n      PUSH 6057361D\t\t\tsub.store\n      DUP4 \t\t\tnum\n      PUSH 40\t\t\tsub.store(num)\n      MLOAD \t\t\tsub.store(num)\n      DUP3 \t\t\tsub.store(num)\n      PUSH FFFFFFFF\t\t\tsub.store(num)\n      AND \t\t\tsub.store(num)\n      PUSH E0\t\t\tsub.store(num)\n      SHL \t\t\tsub.store(num)\n      DUP2 \t\t\tsub.store(num)\n      MSTORE \t\t\tsub.store(num)\n      PUSH 4\t\t\tsub.store(num)\n      ADD \t\t\tsub.store(num)\n      PUSH [tag] 11\t\t\tsub.store(num)\n      SWAP2 \t\t\tsub.store(num)\n      SWAP1 \t\t\tsub.store(num)\n      PUSH [tag] 9\t\t\tsub.store(num)\n      JUMP [in]\t\t\tsub.store(num)\n    tag 11\t\t\tsub.store(num)\n      JUMPDEST \t\t\tsub.store(num)\n      PUSH 20\t\t\tsub.store(num)\n      PUSH 40\t\t\tsub.store(num)\n      MLOAD \t\t\tsub.store(num)\n      DUP1 \t\t\tsub.store(num)\n      DUP4 \t\t\tsub.store(num)\n      SUB \t\t\tsub.store(num)\n      DUP2 \t\t\tsub.store(num)\n      PUSH 0\t\t\tsub.store(num)\n      DUP8 \t\t\tsub.store(num)\n      DUP1 \t\t\tsub.store(num)\n      EXTCODESIZE \t\t\tsub.store(num)\n      ISZERO \t\t\tsub.store(num)\n      DUP1 \t\t\tsub.store(num)\n      ISZERO \t\t\tsub.store(num)\n      PUSH [tag] 12\t\t\tsub.store(num)\n      JUMPI \t\t\tsub.store(num)\n      PUSH 0\t\t\tsub.store(num)\n      DUP1 \t\t\tsub.store(num)\n      REVERT \t\t\tsub.store(num)\n    tag 12\t\t\tsub.store(num)\n      JUMPDEST \t\t\tsub.store(num)\n      POP \t\t\tsub.store(num)\n      GAS \t\t\tsub.store(num)\n      CALL \t\t\tsub.store(num)\n      ISZERO \t\t\tsub.store(num)\n      DUP1 \t\t\tsub.store(num)\n      ISZERO \t\t\tsub.store(num)\n      PUSH [tag] 14\t\t\tsub.store(num)\n      JUMPI \t\t\tsub.store(num)\n      RETURNDATASIZE \t\t\tsub.store(num)\n      PUSH 0\t\t\tsub.store(num)\n      DUP1 \t\t\tsub.store(num)\n      RETURNDATACOPY \t\t\tsub.store(num)\n      RETURNDATASIZE \t\t\tsub.store(num)\n      PUSH 0\t\t\tsub.store(num)\n      REVERT \t\t\tsub.store(num)\n    tag 14\t\t\tsub.store(num)\n      JUMPDEST \t\t\tsub.store(num)\n      POP \t\t\tsub.store(num)\n      POP \t\t\tsub.store(num)\n      POP \t\t\tsub.store(num)\n      POP \t\t\tsub.store(num)\n      PUSH 40\t\t\tsub.store(num)\n      MLOAD \t\t\tsub.store(num)\n      RETURNDATASIZE \t\t\tsub.store(num)\n      PUSH 1F\t\t\tsub.store(num)\n      NOT \t\t\tsub.store(num)\n      PUSH 1F\t\t\tsub.store(num)\n      DUP3 \t\t\tsub.store(num)\n      ADD \t\t\tsub.store(num)\n      AND \t\t\tsub.store(num)\n      DUP3 \t\t\tsub.store(num)\n      ADD \t\t\tsub.store(num)\n      DUP1 \t\t\tsub.store(num)\n      PUSH 40\t\t\tsub.store(num)\n      MSTORE \t\t\tsub.store(num)\n      POP \t\t\tsub.store(num)\n      DUP2 \t\t\tsub.store(num)\n      ADD \t\t\tsub.store(num)\n      SWAP1 \t\t\tsub.store(num)\n      PUSH [tag] 15\t\t\tsub.store(num)\n      SWAP2 \t\t\tsub.store(num)\n      SWAP1 \t\t\tsub.store(num)\n      PUSH [tag] 16\t\t\tsub.store(num)\n      JUMP [in]\t\t\tsub.store(num)\n    tag 15\t\t\tsub.store(num)\n      JUMPDEST \t\t\tsub.store(num)\n      SWAP1 \t\t\treturn sub.store(num)\n      POP \t\t\treturn sub.store(num)\n      SWAP2 \t\t\tfunction fix_call_store(uint25...\n      SWAP1 \t\t\tfunction fix_call_store(uint25...\n      POP \t\t\tfunction fix_call_store(uint25...\n      JUMP [out]\t\t\tfunction fix_call_store(uint25...\n    tag 18\t\t\t-License-Identifier: GPL-3.0\\n...\n      JUMPDEST \t\t\t-License-Identifier: GPL-3.0\\n...\n      PUSH 0\t\t\t>=0.8\n      DUP2 \t\t\tb {\\n\\n/\n      CALLDATALOAD \t\t\tact Callee_sub {\\n\\n//\n      SWAP1 \t\t\t\\n// contract Callee_sub {\\n\\n...\n      POP \t\t\t\\n// contract Callee_sub {\\n\\n...\n      PUSH [tag] 20\t\t\t256 number;\\n//     function s...\n      DUP2 \t\t\t stor\n      PUSH [tag] 21\t\t\t256 number;\\n//     function s...\n      JUMP [in]\t\t\t256 number;\\n//     function s...\n    tag 20\t\t\t256 number;\\n//     function s...\n      JUMPDEST \t\t\t256 number;\\n//     function s...\n      SWAP3 \t\t\t-License-Identifier: GPL-3.0\\n...\n      SWAP2 \t\t\t-License-Identifier: GPL-3.0\\n...\n      POP \t\t\t-License-Identifier: GPL-3.0\\n...\n      POP \t\t\t-License-Identifier: GPL-3.0\\n...\n      JUMP [out]\t\t\t-License-Identifier: GPL-3.0\\n...\n    tag 22\t\t\t) public {}\\n//     function r...\n      JUMPDEST \t\t\t) public {}\\n//     function r...\n      PUSH 0\t\t\tnt256\n      DUP2 \t\t\ts/fix_\n      MLOAD \t\t\tntracts/fix_m\n      SWAP1 \t\t\tmport \"contracts/fix_m\n      POP \t\t\tmport \"contracts/fix_m\n      PUSH [tag] 24\t\t\t/Callee_sub.sol\";\\n\\ncontract ...\n      DUP2 \t\t\t Call\n      PUSH [tag] 21\t\t\t/Callee_sub.sol\";\\n\\ncontract ...\n      JUMP [in]\t\t\t/Callee_sub.sol\";\\n\\ncontract ...\n    tag 24\t\t\t/Callee_sub.sol\";\\n\\ncontract ...\n      JUMPDEST \t\t\t/Callee_sub.sol\";\\n\\ncontract ...\n      SWAP3 \t\t\t) public {}\\n//     function r...\n      SWAP2 \t\t\t) public {}\\n//     function r...\n      POP \t\t\t) public {}\\n//     function r...\n      POP \t\t\t) public {}\\n//     function r...\n      JUMP [out]\t\t\t) public {}\\n//     function r...\n    tag 6\t\t\t  uint256 number;\\n    address...\n      JUMPDEST \t\t\t  uint256 number;\\n    address...\n      PUSH 0\t\t\t  cons\n      PUSH 20\t\t\t\\n \n      DUP3 \t\t\tallee_sub\n      DUP5 \t\t\tb = new\n      SUB \t\t\t  sub = new Callee_sub(\n      SLT \t\t\t      sub = new Callee_sub();\\...\n      ISZERO \t\t\t\\n        sub = new Callee_sub...\n      PUSH [tag] 26\t\t\t\\n        sub = new Callee_sub...\n      JUMPI \t\t\t\\n        sub = new Callee_sub...\n      PUSH [tag] 27\t\t\t\\n    \\n    function fix_call_...\n      PUSH [tag] 28\t\t\t\\n    \\n    function fix_call_...\n      JUMP [in]\t\t\t\\n    \\n    function fix_call_...\n    tag 27\t\t\t\\n    \\n    function fix_call_...\n      JUMPDEST \t\t\t\\n    \\n    function fix_call_...\n    tag 26\t\t\t\\n        sub = new Callee_sub...\n      JUMPDEST \t\t\t\\n        sub = new Callee_sub...\n      PUSH 0\t\t\tn\n      PUSH [tag] 29\t\t\t public {\\n    //     number =...\n      DUP5 \t\t\t    // \n      DUP3 \t\t\t   // \n      DUP6 \t\t\ter = num;\n      ADD \t\t\tnumber = num;\\n    // }\n      PUSH [tag] 18\t\t\t public {\\n    //     number =...\n      JUMP [in]\t\t\t public {\\n    //     number =...\n    tag 29\t\t\t public {\\n    //     number =...\n      JUMPDEST \t\t\t public {\\n    //     number =...\n      SWAP2 \t\t\tnt256 num) public {\\n    //   ...\n      POP \t\t\tnt256 num) public {\\n    //   ...\n      POP \t\t\t.store(num);\\n    }\\n\\n    // ...\n      SWAP3 \t\t\t  uint256 number;\\n    address...\n      SWAP2 \t\t\t  uint256 number;\\n    address...\n      POP \t\t\t  uint256 number;\\n    address...\n      POP \t\t\t  uint256 number;\\n    address...\n      JUMP [out]\t\t\t  uint256 number;\\n    address...\n    tag 16\t\t\tic returns (uint256){\\n    // ...\n      JUMPDEST \t\t\tic returns (uint256){\\n    // ...\n      PUSH 0\t\t\t留着的\\n  \n      PUSH 20\t\t\tsu\n      DUP3 \t\t\tBI(addres\n      DUP5 \t\t\twithout\n      SUB \t\t\tall_without_ABI(address\n      SLT \t\t\ton call_without_ABI(address _s...\n      ISZERO \t\t\tction call_without_ABI(address...\n      PUSH [tag] 31\t\t\tction call_without_ABI(address...\n      JUMPI \t\t\tction call_without_ABI(address...\n      PUSH [tag] 32\t\t\ttring memory func_name, uint f...\n      PUSH [tag] 28\t\t\ttring memory func_name, uint f...\n      JUMP [in]\t\t\ttring memory func_name, uint f...\n    tag 32\t\t\ttring memory func_name, uint f...\n      JUMPDEST \t\t\ttring memory func_name, uint f...\n    tag 31\t\t\tction call_without_ABI(address...\n      JUMPDEST \t\t\tction call_without_ABI(address...\n      PUSH 0\t\t\t \n      PUSH [tag] 33\t\t\t     _calldata = abi.encodeWit...\n      DUP5 \t\t\t_para);\n      DUP3 \t\t\tame, f\n      DUP6 \t\t\tture(func\n      ADD \t\t\tignature(func_name, fu\n      PUSH [tag] 22\t\t\t     _calldata = abi.encodeWit...\n      JUMP [in]\t\t\t     _calldata = abi.encodeWit...\n    tag 33\t\t\t     _calldata = abi.encodeWit...\n      JUMPDEST \t\t\t     _calldata = abi.encodeWit...\n      SWAP2 \t\t\t\\n    // //     _calldata = ab...\n      POP \t\t\t\\n    // //     _calldata = ab...\n      POP \t\t\tmemory _calldata;\\n    // //  ...\n      SWAP3 \t\t\tic returns (uint256){\\n    // ...\n      SWAP2 \t\t\tic returns (uint256){\\n    // ...\n      POP \t\t\tic returns (uint256){\\n    // ...\n      POP \t\t\tic returns (uint256){\\n    // ...\n      JUMP [out]\t\t\tic returns (uint256){\\n    // ...\n    tag 34\t\t\t(_calldata);\\n    // //     re...\n      JUMPDEST \t\t\t(_calldata);\\n    // //     re...\n      PUSH [tag] 36\t\t\t(address _sub, string me\n      DUP2 \t\t\ting m\n      PUSH [tag] 37\t\t\t(address _sub, string me\n      JUMP [in]\t\t\t(address _sub, string me\n    tag 36\t\t\t(address _sub, string me\n      JUMPDEST \t\t\t(address _sub, string me\n      DUP3 \t\t\th_A\n      MSTORE \t\t\tall_with_ABI(address _sub, str...\n      POP \t\t\t(_calldata);\\n    // //     re...\n      POP \t\t\t(_calldata);\\n    // //     re...\n      JUMP [out]\t\t\t(_calldata);\\n    // //     re...\n    tag 9\t\t\te, uint func_para) public retu...\n      JUMPDEST \t\t\te, uint func_para) public retu...\n      PUSH 0\t\t\tllee\n      PUSH 20\t\t\tri\n      DUP3 \t\t\tif (sub.r\n      ADD \t\t\t    if (sub.retrie\n      SWAP1 \t\t\t\\n    //     if (sub.retrie\n      POP \t\t\t\\n    //     if (sub.retrie\n      PUSH [tag] 39\t\t\t{\\n    //         return false...\n      PUSH 0\t\t\t \n      DUP4 \t\t\tturn true\n      ADD \t\t\t  return true;\\n  \n      DUP5 \t\t\t    //\n      PUSH [tag] 34\t\t\t{\\n    //         return false...\n      JUMP [in]\t\t\t{\\n    //         return false...\n    tag 39\t\t\t{\\n    //         return false...\n      JUMPDEST \t\t\t{\\n    //         return false...\n      SWAP3 \t\t\te, uint func_para) public retu...\n      SWAP2 \t\t\te, uint func_para) public retu...\n      POP \t\t\te, uint func_para) public retu...\n      POP \t\t\te, uint func_para) public retu...\n      JUMP [out]\t\t\te, uint func_para) public retu...\n    tag 37\t\t\t\n      JUMPDEST \t\t\t\n      PUSH 0\t\t\t\n      DUP2 \t\t\t\n      SWAP1 \t\t\t\n      POP \t\t\t\n      SWAP2 \t\t\t\n      SWAP1 \t\t\t\n      POP \t\t\t\n      JUMP [out]\t\t\t\n    tag 28\t\t\t\n      JUMPDEST \t\t\t\n      PUSH 0\t\t\t\n      DUP1 \t\t\t\n      REVERT \t\t\t\n    tag 21\t\t\t\n      JUMPDEST \t\t\t\n      PUSH [tag] 47\t\t\t\n      DUP2 \t\t\t\n      PUSH [tag] 37\t\t\t\n      JUMP [in]\t\t\t\n    tag 47\t\t\t\n      JUMPDEST \t\t\t\n      DUP2 \t\t\t\n      EQ \t\t\t\n      PUSH [tag] 48\t\t\t\n      JUMPI \t\t\t\n      PUSH 0\t\t\t\n      DUP1 \t\t\t\n      REVERT \t\t\t\n    tag 48\t\t\t\n      JUMPDEST \t\t\t\n      POP \t\t\t\n      JUMP [out]\t\t\t\n    .data\n  1:\n    .code\n      PUSH 80\t\t\t/ contract Callee_sub {\\n\\n// ...\n      PUSH 40\t\t\t/ contract Callee_sub {\\n\\n// ...\n      MSTORE \t\t\t/ contract Callee_sub {\\n\\n// ...\n      CALLVALUE \t\t\t/ contract Callee_sub {\\n\\n// ...\n      DUP1 \t\t\t/ contract Callee_sub {\\n\\n// ...\n      ISZERO \t\t\t/ contract Callee_sub {\\n\\n// ...\n      PUSH [tag] 1\t\t\t/ contract Callee_sub {\\n\\n// ...\n      JUMPI \t\t\t/ contract Callee_sub {\\n\\n// ...\n      PUSH 0\t\t\t/ contract Callee_sub {\\n\\n// ...\n      DUP1 \t\t\t/ contract Callee_sub {\\n\\n// ...\n      REVERT \t\t\t/ contract Callee_sub {\\n\\n// ...\n    tag 1\t\t\t/ contract Callee_sub {\\n\\n// ...\n      JUMPDEST \t\t\t/ contract Callee_sub {\\n\\n// ...\n      POP \t\t\t/ contract Callee_sub {\\n\\n// ...\n      PUSH #[$] 0000000000000000000000000000000000000000000000000000000000000000\t\t\t/ contract Callee_sub {\\n\\n// ...\n      DUP1 \t\t\t/ contract Callee_sub {\\n\\n// ...\n      PUSH [$] 0000000000000000000000000000000000000000000000000000000000000000\t\t\t/ contract Callee_sub {\\n\\n// ...\n      PUSH 0\t\t\t/ contract Callee_sub {\\n\\n// ...\n      CODECOPY \t\t\t/ contract Callee_sub {\\n\\n// ...\n      PUSH 0\t\t\t/ contract Callee_sub {\\n\\n// ...\n      RETURN \t\t\t/ contract Callee_sub {\\n\\n// ...\n    .data\n      0:\n        .code\n          PUSH 80\t\t\t/ contract Callee_sub {\\n\\n// ...\n          PUSH 40\t\t\t/ contract Callee_sub {\\n\\n// ...\n          MSTORE \t\t\t/ contract Callee_sub {\\n\\n// ...\n          CALLVALUE \t\t\t/ contract Callee_sub {\\n\\n// ...\n          DUP1 \t\t\t/ contract Callee_sub {\\n\\n// ...\n          ISZERO \t\t\t/ contract Callee_sub {\\n\\n// ...\n          PUSH [tag] 1\t\t\t/ contract Callee_sub {\\n\\n// ...\n          JUMPI \t\t\t/ contract Callee_sub {\\n\\n// ...\n          PUSH 0\t\t\t/ contract Callee_sub {\\n\\n// ...\n          DUP1 \t\t\t/ contract Callee_sub {\\n\\n// ...\n          REVERT \t\t\t/ contract Callee_sub {\\n\\n// ...\n        tag 1\t\t\t/ contract Callee_sub {\\n\\n// ...\n          JUMPDEST \t\t\t/ contract Callee_sub {\\n\\n// ...\n          POP \t\t\t/ contract Callee_sub {\\n\\n// ...\n          PUSH 4\t\t\t/ contract Callee_sub {\\n\\n// ...\n          CALLDATASIZE \t\t\t/ contract Callee_sub {\\n\\n// ...\n          LT \t\t\t/ contract Callee_sub {\\n\\n// ...\n          PUSH [tag] 2\t\t\t/ contract Callee_sub {\\n\\n// ...\n          JUMPI \t\t\t/ contract Callee_sub {\\n\\n// ...\n          PUSH 0\t\t\t/ contract Callee_sub {\\n\\n// ...\n          CALLDATALOAD \t\t\t/ contract Callee_sub {\\n\\n// ...\n          PUSH E0\t\t\t/ contract Callee_sub {\\n\\n// ...\n          SHR \t\t\t/ contract Callee_sub {\\n\\n// ...\n          DUP1 \t\t\t/ contract Callee_sub {\\n\\n// ...\n          PUSH 2E64CEC1\t\t\t/ contract Callee_sub {\\n\\n// ...\n          EQ \t\t\t/ contract Callee_sub {\\n\\n// ...\n          PUSH [tag] 3\t\t\t/ contract Callee_sub {\\n\\n// ...\n          JUMPI \t\t\t/ contract Callee_sub {\\n\\n// ...\n          DUP1 \t\t\t/ contract Callee_sub {\\n\\n// ...\n          PUSH 6057361D\t\t\t/ contract Callee_sub {\\n\\n// ...\n          EQ \t\t\t/ contract Callee_sub {\\n\\n// ...\n          PUSH [tag] 4\t\t\t/ contract Callee_sub {\\n\\n// ...\n          JUMPI \t\t\t/ contract Callee_sub {\\n\\n// ...\n        tag 2\t\t\t/ contract Callee_sub {\\n\\n// ...\n          JUMPDEST \t\t\t/ contract Callee_sub {\\n\\n// ...\n          PUSH 0\t\t\t/ contract Callee_sub {\\n\\n// ...\n          DUP1 \t\t\t/ contract Callee_sub {\\n\\n// ...\n          REVERT \t\t\t/ contract Callee_sub {\\n\\n// ...\n        tag 3\t\t\tntracts/fix_multi_call/Callee_...\n          JUMPDEST \t\t\tntracts/fix_multi_call/Callee_...\n          PUSH [tag] 5\t\t\tntracts/fix_multi_call/Callee_...\n          PUSH [tag] 6\t\t\tntracts/fix_multi_call/Callee_...\n          JUMP [in]\t\t\tntracts/fix_multi_call/Callee_...\n        tag 5\t\t\tntracts/fix_multi_call/Callee_...\n          JUMPDEST \t\t\tntracts/fix_multi_call/Callee_...\n          PUSH 40\t\t\tntracts/fix_multi_call/Callee_...\n          MLOAD \t\t\tntracts/fix_multi_call/Callee_...\n          PUSH [tag] 7\t\t\tntracts/fix_multi_call/Callee_...\n          SWAP2 \t\t\tntracts/fix_multi_call/Callee_...\n          SWAP1 \t\t\tntracts/fix_multi_call/Callee_...\n          PUSH [tag] 8\t\t\tntracts/fix_multi_call/Callee_...\n          JUMP [in]\t\t\tntracts/fix_multi_call/Callee_...\n        tag 7\t\t\tntracts/fix_multi_call/Callee_...\n          JUMPDEST \t\t\tntracts/fix_multi_call/Callee_...\n          PUSH 40\t\t\tntracts/fix_multi_call/Callee_...\n          MLOAD \t\t\tntracts/fix_multi_call/Callee_...\n          DUP1 \t\t\tntracts/fix_multi_call/Callee_...\n          SWAP2 \t\t\tntracts/fix_multi_call/Callee_...\n          SUB \t\t\tntracts/fix_multi_call/Callee_...\n          SWAP1 \t\t\tntracts/fix_multi_call/Callee_...\n          RETURN \t\t\tntracts/fix_multi_call/Callee_...\n        tag 4\t\t\t    function store(uint256 num...\n          JUMPDEST \t\t\t    function store(uint256 num...\n          PUSH [tag] 9\t\t\t    function store(uint256 num...\n          PUSH 4\t\t\t    function store(uint256 num...\n          DUP1 \t\t\t    function store(uint256 num...\n          CALLDATASIZE \t\t\t    function store(uint256 num...\n          SUB \t\t\t    function store(uint256 num...\n          DUP2 \t\t\t    function store(uint256 num...\n          ADD \t\t\t    function store(uint256 num...\n          SWAP1 \t\t\t    function store(uint256 num...\n          PUSH [tag] 10\t\t\t    function store(uint256 num...\n          SWAP2 \t\t\t    function store(uint256 num...\n          SWAP1 \t\t\t    function store(uint256 num...\n          PUSH [tag] 11\t\t\t    function store(uint256 num...\n          JUMP [in]\t\t\t    function store(uint256 num...\n        tag 10\t\t\t    function store(uint256 num...\n          JUMPDEST \t\t\t    function store(uint256 num...\n          PUSH [tag] 12\t\t\t    function store(uint256 num...\n          JUMP [in]\t\t\t    function store(uint256 num...\n        tag 9\t\t\t    function store(uint256 num...\n          JUMPDEST \t\t\t    function store(uint256 num...\n          PUSH 40\t\t\t    function store(uint256 num...\n          MLOAD \t\t\t    function store(uint256 num...\n          PUSH [tag] 13\t\t\t    function store(uint256 num...\n          SWAP2 \t\t\t    function store(uint256 num...\n          SWAP1 \t\t\t    function store(uint256 num...\n          PUSH [tag] 8\t\t\t    function store(uint256 num...\n          JUMP [in]\t\t\t    function store(uint256 num...\n        tag 13\t\t\t    function store(uint256 num...\n          JUMPDEST \t\t\t    function store(uint256 num...\n          PUSH 40\t\t\t    function store(uint256 num...\n          MLOAD \t\t\t    function store(uint256 num...\n          DUP1 \t\t\t    function store(uint256 num...\n          SWAP2 \t\t\t    function store(uint256 num...\n          SUB \t\t\t    function store(uint256 num...\n          SWAP1 \t\t\t    function store(uint256 num...\n          RETURN \t\t\t    function store(uint256 num...\n        tag 6\t\t\tntracts/fix_multi_call/Callee_...\n          JUMPDEST \t\t\tntracts/fix_multi_call/Callee_...\n          PUSH 0\t\t\tl\";\\n\\nco\n          DUP1 \t\t\t {\\n\\n  \n          SLOAD \t\t\t {\\n\\n  \n          SWAP1 \t\t\ter_main {\\n\\n  \n          POP \t\t\ter_main {\\n\\n  \n          SWAP1 \t\t\tntracts/fix_multi_call/Callee_...\n          JUMP [out]\t\t\tntracts/fix_multi_call/Callee_...\n        tag 12\t\t\t    function store(uint256 num...\n          JUMPDEST \t\t\t    function store(uint256 num...\n          PUSH 0\t\t\t     fu\n          PUSH 1\t\t\t \n          DUP3 \t\t\tbli\n          PUSH [tag] 16\t\t\tblic \n          SWAP2 \t\t\tblic \n          SWAP1 \t\t\tblic \n          PUSH [tag] 17\t\t\tblic \n          JUMP [in]\t\t\tblic \n        tag 16\t\t\tblic \n          JUMPDEST \t\t\tblic \n          PUSH 0\t\t\tieve()\n          DUP2 \t\t\tieve() public \n          SWAP1 \t\t\tieve() public \n          SSTORE \t\t\tieve() public \n          POP \t\t\tieve() public \n          PUSH 0\t\t\t{}\\n// \n          SLOAD \t\t\t{}\\n// \n          SWAP1 \t\t\tint256){}\\n// \n          POP \t\t\tint256){}\\n// \n          SWAP2 \t\t\t    function store(uint256 num...\n          SWAP1 \t\t\t    function store(uint256 num...\n          POP \t\t\t    function store(uint256 num...\n          JUMP [out]\t\t\t    function store(uint256 num...\n        tag 19\t\t\t-License-Identifier: GPL-3.0\\n...\n          JUMPDEST \t\t\t-License-Identifier: GPL-3.0\\n...\n          PUSH 0\t\t\t>=0.8\n          DUP2 \t\t\tb {\\n\\n/\n          CALLDATALOAD \t\t\tact Callee_sub {\\n\\n//\n          SWAP1 \t\t\t\\n// contract Callee_sub {\\n\\n...\n          POP \t\t\t\\n// contract Callee_sub {\\n\\n...\n          PUSH [tag] 21\t\t\t256 number;\\n//     function s...\n          DUP2 \t\t\t stor\n          PUSH [tag] 22\t\t\t256 number;\\n//     function s...\n          JUMP [in]\t\t\t256 number;\\n//     function s...\n        tag 21\t\t\t256 number;\\n//     function s...\n          JUMPDEST \t\t\t256 number;\\n//     function s...\n          SWAP3 \t\t\t-License-Identifier: GPL-3.0\\n...\n          SWAP2 \t\t\t-License-Identifier: GPL-3.0\\n...\n          POP \t\t\t-License-Identifier: GPL-3.0\\n...\n          POP \t\t\t-License-Identifier: GPL-3.0\\n...\n          JUMP [out]\t\t\t-License-Identifier: GPL-3.0\\n...\n        tag 11\t\t\t) public {}\\n//     function r...\n          JUMPDEST \t\t\t) public {}\\n//     function r...\n          PUSH 0\t\t\t256){}\n          PUSH 20\t\t\tle\n          DUP3 \t\t\tlti_call/\n          DUP5 \t\t\tts/fix_\n          SUB \t\t\ttracts/fix_multi_call/C\n          SLT \t\t\t\"contracts/fix_multi_call/Call...\n          ISZERO \t\t\trt \"contracts/fix_multi_call/C...\n          PUSH [tag] 24\t\t\trt \"contracts/fix_multi_call/C...\n          JUMPI \t\t\trt \"contracts/fix_multi_call/C...\n          PUSH [tag] 25\t\t\tb.sol\";\\n\\ncontract Caller_mai...\n          PUSH [tag] 26\t\t\tb.sol\";\\n\\ncontract Caller_mai...\n          JUMP [in]\t\t\tb.sol\";\\n\\ncontract Caller_mai...\n        tag 25\t\t\tb.sol\";\\n\\ncontract Caller_mai...\n          JUMPDEST \t\t\tb.sol\";\\n\\ncontract Caller_mai...\n        tag 24\t\t\trt \"contracts/fix_multi_call/C...\n          JUMPDEST \t\t\trt \"contracts/fix_multi_call/C...\n          PUSH 0\t\t\ts\n          PUSH [tag] 27\t\t\t   }\\n    \\n    function fix_c...\n          DUP5 \t\t\t num) p\n          DUP3 \t\t\te(uint\n          DUP6 \t\t\tx_call_st\n          ADD \t\t\tn fix_call_store(uint2\n          PUSH [tag] 19\t\t\t   }\\n    \\n    function fix_c...\n          JUMP [in]\t\t\t   }\\n    \\n    function fix_c...\n        tag 27\t\t\t   }\\n    \\n    function fix_c...\n          JUMPDEST \t\t\t   }\\n    \\n    function fix_c...\n          SWAP2 \t\t\te_sub();\\n    }\\n    \\n    fun...\n          POP \t\t\te_sub();\\n    }\\n    \\n    fun...\n          POP \t\t\t\\n    constructor (){\\n       ...\n          SWAP3 \t\t\t) public {}\\n//     function r...\n          SWAP2 \t\t\t) public {}\\n//     function r...\n          POP \t\t\t) public {}\\n//     function r...\n          POP \t\t\t) public {}\\n//     function r...\n          JUMP [out]\t\t\t) public {}\\n//     function r...\n        tag 28\t\t\t\\n        return sub.store(num...\n          JUMPDEST \t\t\t\\n        return sub.store(num...\n          PUSH [tag] 30\t\t\t//     number = num;\\n   \n          DUP2 \t\t\tm;\\n  \n          PUSH [tag] 31\t\t\t//     number = num;\\n   \n          JUMP [in]\t\t\t//     number = num;\\n   \n        tag 30\t\t\t//     number = num;\\n   \n          JUMPDEST \t\t\t//     number = num;\\n   \n          DUP3 \t\t\t\\n  \n          MSTORE \t\t\tublic {\\n    //     number = n...\n          POP \t\t\t\\n        return sub.store(num...\n          POP \t\t\t\\n        return sub.store(num...\n          JUMP [out]\t\t\t\\n        return sub.store(num...\n        tag 8\t\t\t function retrieve() public re...\n          JUMPDEST \t\t\t function retrieve() public re...\n          PUSH 0\t\t\t个要留着\n          PUSH 20\t\t\tAB\n          DUP3 \t\t\tll_withou\n          ADD \t\t\tn call_without_ABI\n          SWAP1 \t\t\t function call_without_ABI\n          POP \t\t\t function call_without_ABI\n          PUSH [tag] 33\t\t\tsub, string memory func_name, ...\n          PUSH 0\t\t\tm\n          DUP4 \t\t\trns (byte\n          ADD \t\t\treturns (bytes me\n          DUP5 \t\t\t) publ\n          PUSH [tag] 28\t\t\tsub, string memory func_name, ...\n          JUMP [in]\t\t\tsub, string memory func_name, ...\n        tag 33\t\t\tsub, string memory func_name, ...\n          JUMPDEST \t\t\tsub, string memory func_name, ...\n          SWAP3 \t\t\t function retrieve() public re...\n          SWAP2 \t\t\t function retrieve() public re...\n          POP \t\t\t function retrieve() public re...\n          POP \t\t\t function retrieve() public re...\n          JUMP [out]\t\t\t function retrieve() public re...\n        tag 17\t\t\t = abi.encodeWithSignature(fun...\n          JUMPDEST \t\t\t = abi.encodeWithSignature(fun...\n          PUSH 0\t\t\tnc_\n          PUSH [tag] 37\t\t\t     addr.call(_call\n          DUP3 \t\t\tl\n          PUSH [tag] 31\t\t\t     addr.call(_call\n          JUMP [in]\t\t\t     addr.call(_call\n        tag 37\t\t\t     addr.call(_call\n          JUMPDEST \t\t\t     addr.call(_call\n          SWAP2 \t\t\t// //     addr.call(_call\n          POP \t\t\t// //     addr.call(_call\n          PUSH [tag] 38\t\t\t//     return _calld\n          DUP4 \t\t\tl\n          PUSH [tag] 31\t\t\t//     return _calld\n          JUMP [in]\t\t\t//     return _calld\n        tag 38\t\t\t//     return _calld\n          JUMPDEST \t\t\t//     return _calld\n          SWAP3 \t\t\t  // //     return _calld\n          POP \t\t\t  // //     return _calld\n          DUP3 \t\t\t \n          PUSH FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF\t\t\tng memory func_name, uint func...\n          SUB \t\t\tstring memory func_name, uint ...\n          DUP3 \t\t\tb\n          GT \t\t\t_sub, string memory func_name,...\n          ISZERO \t\t\tss _sub, string memory func_na...\n          PUSH [tag] 39\t\t\tss _sub, string memory func_na...\n          JUMPI \t\t\tss _sub, string memory func_na...\n          PUSH [tag] 40\t\t\t                 \\n\n          PUSH [tag] 41\t\t\t                 \\n\n          JUMP [in]\t\t\t                 \\n\n        tag 40\t\t\t                 \\n\n          JUMPDEST \t\t\t                 \\n\n        tag 39\t\t\tss _sub, string memory func_na...\n          JUMPDEST \t\t\tss _sub, string memory func_na...\n          DUP3 \t\t\tb\n          DUP3 \t\t\t_\n          ADD \t\t\tllee_sub(\n          SWAP1 \t\t\tub = Callee_sub(\n          POP \t\t\tub = Callee_sub(\n          SWAP3 \t\t\t = abi.encodeWithSignature(fun...\n          SWAP2 \t\t\t = abi.encodeWithSignature(fun...\n          POP \t\t\t = abi.encodeWithSignature(fun...\n          POP \t\t\t = abi.encodeWithSignature(fun...\n          JUMP [out]\t\t\t = abi.encodeWithSignature(fun...\n        tag 31\t\t\t/     if (sub.retrieve() == 3)...\n          JUMPDEST \t\t\t/     if (sub.retrieve() == 3)...\n          PUSH 0\t\t\t/      \n          DUP2 \t\t\t/    \n          SWAP1 \t\t\talse;\\n    //    \n          POP \t\t\talse;\\n    //    \n          SWAP2 \t\t\t/     if (sub.retrieve() == 3)...\n          SWAP1 \t\t\t/     if (sub.retrieve() == 3)...\n          POP \t\t\t/     if (sub.retrieve() == 3)...\n          JUMP [out]\t\t\t/     if (sub.retrieve() == 3)...\n        tag 41\t\t\t  return true;\\n    // }\\n    ...\n          JUMPDEST \t\t\t  return true;\\n    // }\\n    ...\n          PUSH 4E487B7100000000000000000000000000000000000000000000000000000000\t\t\t\n          PUSH 0\t\t\t\n          MSTORE \t\t\t\n          PUSH 11\t\t\t\n          PUSH 4\t\t\t\n          MSTORE \t\t\t\n          PUSH 24\t\t\t\n          PUSH 0\t\t\t\n          REVERT \t\t\t\n        tag 26\t\t\t\n          JUMPDEST \t\t\t\n          PUSH 0\t\t\t\n          DUP1 \t\t\t\n          REVERT \t\t\t\n        tag 22\t\t\t\n          JUMPDEST \t\t\t\n          PUSH [tag] 48\t\t\t\n          DUP2 \t\t\t\n          PUSH [tag] 31\t\t\t\n          JUMP [in]\t\t\t\n        tag 48\t\t\t\n          JUMPDEST \t\t\t\n          DUP2 \t\t\t\n          EQ \t\t\t\n          PUSH [tag] 49\t\t\t\n          JUMPI \t\t\t\n          PUSH 0\t\t\t\n          DUP1 \t\t\t\n          REVERT \t\t\t\n        tag 49\t\t\t\n          JUMPDEST \t\t\t\n          POP \t\t\t\n          JUMP [out]\t\t\t\n        .data\n"
+}
