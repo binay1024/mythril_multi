@@ -152,6 +152,48 @@ def execute_message_call(
         _setup_global_state_for_execution(laser_evm, transaction, constraints)
 
     laser_evm.exec()
+def execute_sub_contract_creation(
+        laser_evm, 
+        contract_name=None, 
+        world_state=None, 
+        origin=ACTORS["CREATOR"],
+        caller=ACTORS["CREATOR"],
+        sub_contracts: List[EVMContract] = None,
+) -> Account:
+    
+    world_state = world_state or WorldState()
+    open_states = [world_state]
+    del laser_evm.open_states[:]
+    
+    for open_world_state in open_states:
+        sub_transactions = []
+        sub_accounts = []
+        for i in range(len(sub_contracts)):
+            next_transaction_id = tx_id_manager.get_next_tx_id()
+            sub_transactions.append(
+                ContractCreationTransaction(
+                    world_state=open_world_state,
+                    identifier=next_transaction_id,
+                    gas_price=symbol_factory.BitVecSym(
+                        "gas_price{}".format(next_transaction_id), 256
+                    ),
+                    gas_limit=8000000,  # block gas limit
+                    origin=origin,
+                    code=Disassembly(sub_contracts[i].creation_code),
+                    caller=caller,
+                    contract_name=contract_name,
+                    call_data=None,
+                    call_value=symbol_factory.BitVecSym(
+                        "call_value{}".format(next_transaction_id), 256
+                    ),
+                )
+            )
+            _setup_global_state_for_execution(laser_evm, sub_transactions[i])
+            
+
+            laser_evm.exec(True)
+            sub_accounts.append(sub_transactions[i].callee_account)
+    return sub_accounts
 
 
 def execute_contract_creation(
@@ -161,7 +203,6 @@ def execute_contract_creation(
     world_state=None,
     origin=ACTORS["CREATOR"],
     caller=ACTORS["CREATOR"],
-    sub_contracts: Optional[List[EVMContract]]= None,
 ) -> Account:
     """Executes a contract creation transaction from all open states.
 
@@ -176,30 +217,6 @@ def execute_contract_creation(
     del laser_evm.open_states[:]
     new_account = None
     for open_world_state in open_states:
-        sub_transaction = []
-        sub_account = []
-        for i in range(len(sub_contracts)):
-            next_transaction_id = tx_id_manager.get_next_tx_id()
-            sub_transaction.append(
-                ContractCreationTransaction(
-                    world_state=open_world_state,
-                    identifier=next_transaction_id,
-                    gas_price=symbol_factory.BitVecSym(
-                        "gas_price{}".format(next_transaction_id), 256
-                    ),
-                    gas_limit=8000000,  # block gas limit
-                    origin=origin,
-                    code=Disassembly(sub_contracts[i].code),
-                    caller=caller,
-                    contract_name=contract_name,
-                    call_data=None,
-                    call_value=symbol_factory.BitVecSym(
-                        "call_value{}".format(next_transaction_id), 256
-                    ),
-                )
-            )
-            sub_account.append(sub_transaction[i].callee_account)
-
         next_transaction_id = tx_id_manager.get_next_tx_id()
         # call_data "should" be '[]', but it is easier to model the calldata symbolically
         # and add logic in codecopy/codesize/calldatacopy/calldatasize than to model code "correctly"
@@ -219,19 +236,18 @@ def execute_contract_creation(
                 "call_value{}".format(next_transaction_id), 256
             ),
         )
-        _setup_global_state_for_execution(laser_evm, transaction, sub_transaction = sub_transaction)
+        _setup_global_state_for_execution(laser_evm, transaction)
         new_account = new_account or transaction.callee_account
 
     laser_evm.exec(True)
 
-    return new_account, sub_account
+    return new_account
 
 
 def _setup_global_state_for_execution(
     laser_evm,
     transaction: BaseTransaction,
     initial_constraints: Optional[List[Bool]] = None,
-    sub_transaction: List[BaseTransaction] = [],
 ) -> None:
     """Sets up global state and cfg for a transactions execution.
 
@@ -239,54 +255,7 @@ def _setup_global_state_for_execution(
     :param transaction:
     """
     # TODO: Resolve circular import between .transaction and ..svm to import LaserEVM here
-    global_state = None
-    tx_len = len(sub_transaction)
-    
-    # sub contract TX
-    # tx_len이 0이면 for문을 돌지 않음
-    for i in range(tx_len):
-        if global_state is None:
-            global_state = sub_transaction[i].initial_global_state()
-            # global_state = deepcopy(new_global_state)
-        # else:
-        #     # new_global_state = sub_transaction[i].initial_global_state()
-            
-        global_state.transaction_stack.append((sub_transaction[i], None))
-        # initial_constraints는 추가할 필요없을 듯
-        global_state.world_state.constraints.append(
-            Or(*[sub_transaction[i].caller == actor for actor in ACTORS.addresses.values()])
-        )
-        new_node = Node(
-            global_state.environment.active_account.contract_name,
-            function_name=global_state.environment.active_function_name,
-        )
-        if laser_evm.requires_statespace:
-            laser_evm.nodes[new_node.uid] = new_node
-
-        if sub_transaction[i].world_state.node:
-            if laser_evm.requires_statespace:
-                laser_evm.edges.append(
-                    Edge(
-                        sub_transaction[i].world_state.node.uid,
-                        new_node.uid,
-                        edge_type=JumpType.Transaction,
-                        condition=None,
-                    )
-                )
-            new_node.constraints = global_state.world_state.constraints
-
-        global_state.world_state.transaction_sequence.append(sub_transaction[i])
-        global_state.node = new_node
-        new_node.states.append(global_state)
-        laser_evm.work_list.append(global_state)
-
-    print("sub contract TX")
-    print(laser_evm.work_list)
-    print(len(laser_evm.work_list))
-
-    # main contract TX
-    if global_state is None:
-        global_state = transaction.initial_global_state()
+    global_state = transaction.initial_global_state()
     global_state.transaction_stack.append((transaction, None))
     global_state.world_state.constraints += initial_constraints or []
 
@@ -318,9 +287,9 @@ def _setup_global_state_for_execution(
     new_node.states.append(global_state)
     laser_evm.work_list.append(global_state)
 
-    print("main contract TX")
-    print(laser_evm.work_list)
-    print(len(laser_evm.work_list))
+    # print("main contract TX")
+    # print(laser_evm.work_list)
+    # print(len(laser_evm.work_list))
 
 
 def execute_transaction(*args, **kwargs):

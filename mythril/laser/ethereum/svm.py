@@ -25,6 +25,7 @@ from mythril.laser.ethereum.transaction import (
     ContractCreationTransaction,
     TransactionEndSignal,
     TransactionStartSignal,
+    execute_sub_contract_creation,
     execute_contract_creation,
     execute_message_call,
 )
@@ -166,6 +167,7 @@ class LaserEVM:
         :param creation_code The creation code to create the target contract in the symbolic environment
         :param contract_name The name that the created account should be associated with
         """
+    # bytecode 여기까지 잘 받아옴
         pre_configuration_mode = target_address is not None
         scratch_mode = creation_code is not None and contract_name is not None
         if pre_configuration_mode == scratch_mode:
@@ -186,13 +188,18 @@ class LaserEVM:
         elif scratch_mode:
             log.info("Starting contract creation transaction")
 
-            created_account, sub_accounts = execute_contract_creation(
-                self, creation_code, contract_name, world_state=world_state, sub_contracts = sub_contracts
+            if sub_contracts is not None:
+                sub_accounts = execute_sub_contract_creation(
+                    self, contract_name="SUB", world_state=world_state, sub_contracts = sub_contracts
+                )
+
+            created_account = execute_contract_creation(
+                self, creation_code, contract_name, world_state=world_state
             )
-            print(created_account)
-            # print(sub_accounts)
-            print(sub_accounts[0].address)
+            print("main: ", created_account.code.bytecode)
+            print("sub: ", sub_accounts[0].code.bytecode)
             return
+
             log.info(
                 "Finished contract creation, found {} open states".format(
                     len(self.open_states)

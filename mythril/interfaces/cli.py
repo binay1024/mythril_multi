@@ -784,7 +784,7 @@ def execute_command(
     address: str,
     parser: ArgumentParser,
     args: Namespace,
-    sub: Optional[list[MythrilDisassembler]],
+    sub: Optional[list[MythrilDisassembler]] = None,
 ):
     """
     Execute command
@@ -834,7 +834,6 @@ def execute_command(
             exit_with_error("text", "Analysis error encountered: " + format(e))
 
     elif args.command in ANALYZE_LIST + FOUNDRY_LIST:
-        
         analyzer = MythrilAnalyzer(
             strategy=strategy, disassembler=disassembler, address=address, cmd_args=args, sub = sub
         )
@@ -887,7 +886,6 @@ def execute_command(
 
         else:
         #--------------------------------------여기까지 완료 ----------------------------------
-
             try:
                 report = analyzer.fire_lasers(
                     modules=[m.strip() for m in args.modules.strip().split(",")]
@@ -940,7 +938,6 @@ def parse_args_and_execute(parser: ArgumentParser, args: Namespace) -> None:
     #     print(f"field name: {key}")
     #     print(f"value type: {type(value)}")
     #     print(value)
-    # return
 
     if args.epic:
         path = os.path.dirname(os.path.realpath(__file__))
@@ -1017,7 +1014,7 @@ def parse_args_and_execute(parser: ArgumentParser, args: Namespace) -> None:
                     solc_args=solc_args,
             ))
             address.append(load_code(disassembler[0], args))
-
+        
         execute_command(
             disassembler=disassembler[0], address=address[0], parser=parser, args=args, sub = disassembler[1:]
         )

@@ -74,12 +74,12 @@ class MythrilAnalyzer:
         # -------------------------------------------------------------------
         # -------------------------------------------------------------------
         self.sub_contracts = []
+        # self.sub_contracts = sub.contracts[0]
         for sub_disassembler in sub:
             self.sub_contracts.append(sub_disassembler.contracts[0])
         # -------------------------------------------------------------------
         # -------------------------------------------------------------------
         # -------------------------------------------------------------------
-
 
     def dump_statespace(self, contract: EVMContract = None) -> str:
         """
@@ -150,6 +150,7 @@ class MythrilAnalyzer:
         for contract in self.contracts:
             StartTime()  # Reinitialize start time for new contracts
             try:
+                # bytecode 여기까지 잘 받아옴
                 sym = SymExecWrapper(
                     contract,
                     self.address,

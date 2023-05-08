@@ -82,6 +82,7 @@ class SymExecWrapper:
         :param enable_coverage_strategy: Boolean indicating whether the coverage strategy should be enabled
         :param custom_modules_directory: The directory to read custom analysis modules from
         """
+        # bytecode 여기까지 잘 받아옴
         if isinstance(address, str):
             address = symbol_factory.BitVecVal(int(address, 16), 256)
         if isinstance(address, int):
