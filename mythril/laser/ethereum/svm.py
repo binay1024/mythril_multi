@@ -187,7 +187,7 @@ class LaserEVM:
 
         elif scratch_mode:
             log.info("Starting contract creation transaction")
-
+            sub_accounts = None
             if sub_contracts is not None:
                 sub_accounts = execute_sub_contract_creation(
                     self, contract_name="SUB", world_state=world_state, sub_contracts = sub_contracts
@@ -197,7 +197,7 @@ class LaserEVM:
                 self, creation_code, contract_name, world_state=world_state
             )
             print("main: ", created_account.code.bytecode)
-            print("sub: ", sub_accounts[0].code.bytecode)
+            print("sub: ", sub_accounts[0].code.bytecode if sub_accounts is not None else "Empty Sub Contract" ) 
             return
 
             log.info(
