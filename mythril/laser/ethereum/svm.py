@@ -198,7 +198,6 @@ class LaserEVM:
             )
             print("main: ", created_account.code.bytecode)
             print("sub: ", sub_accounts[0].code.bytecode if sub_accounts is not None else "Empty Sub Contract" ) 
-            return
 
             log.info(
                 "Finished contract creation, found {} open states".format(
@@ -440,20 +439,22 @@ class LaserEVM:
             new_global_states = self.handle_vm_exception(global_state, op_code, str(e))
 
         except TransactionStartSignal as start_signal:
+            
+            new_global_states = []
+
             # Setup new global state
-            new_global_state = start_signal.transaction.initial_global_state()
-
-            new_global_state.transaction_stack = copy(
-                global_state.transaction_stack
-            ) + [(start_signal.transaction, global_state)]
-            new_global_state.node = global_state.node
-            new_global_state.world_state.constraints = (
-                start_signal.global_state.world_state.constraints
-            )
-
-            log.debug("Starting new transaction %s", start_signal.transaction)
-
-            return [new_global_state], op_code
+            for tx in start_signal.transaction:
+                new_global_state = tx.initial_global_state()
+                new_global_state.transaction_stack = copy(
+                    global_state.transaction_stack
+                ) + [(tx, global_state)]
+                new_global_state.node = global_state.node
+                new_global_state.world_state.constraints = (
+                    start_signal.global_state.world_state.constraints
+                )
+                log.debug("Setup new transaction %s", tx)
+                new_global_states.append(new_global_state)
+            return new_global_states, op_code
 
         except TransactionEndSignal as end_signal:
             (
@@ -490,7 +491,7 @@ class LaserEVM:
                 new_annotations = [
                     annotation
                     for annotation in global_state.annotations
-                    if annotation.persist_over_calls
+                    if annotation.persist_over_calls  # default false, need check
                 ]
                 return_global_state.add_annotations(new_annotations)
 

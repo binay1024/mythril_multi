@@ -65,6 +65,9 @@ from mythril.support.support_utils import get_code_hash
 
 from mythril.support.loader import DynLoader
 
+from mythril.laser.ethereum.state.account import Account
+from mythril.laser.ethereum.state.world_state import WorldState
+
 log = logging.getLogger(__name__)
 
 TT256 = symbol_factory.BitVecVal(0, 256)
@@ -1804,7 +1807,7 @@ class Instruction:
             call_value=call_value,
             contract_address=contract_address,
         )
-        raise TransactionStartSignal(transaction, self.op_code, global_state)
+        raise TransactionStartSignal([transaction], self.op_code, global_state)
 
     @StateTransition(is_state_mutation_instruction=True)
     def create_(self, global_state: GlobalState) -> List[GlobalState]:
@@ -2006,6 +2009,19 @@ class Instruction:
         environment = global_state.environment
 
         memory_out_size, memory_out_offset = global_state.mstate.stack[-7:-5]
+        
+        callable_sc = []
+        act = symbol_factory.BitVecVal(int("0xAFFEAFFEAFFEAFFEAFFEAFFEAFFEAFFEAFFEAFFE", 16), 256)
+        att = symbol_factory.BitVecVal(int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16), 256)
+        smg = symbol_factory.BitVecVal(int("0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 16), 256)
+        current_account_addr = global_state.environment.active_account.address
+        except_accounts_addr = [act,att,smg,current_account_addr]
+        worldstate = global_state.world_state
+        for addr,sc in worldstate.accounts.items():
+            if addr in except_accounts_addr:
+                continue
+            callable_sc.append(sc)
+
         try:
             (
                 callee_address,
@@ -2016,8 +2032,9 @@ class Instruction:
                 memory_out_offset,
                 memory_out_size,
             ) = get_call_parameters(global_state, self.dynamic_loader, True)
-
-            if callee_account is not None and callee_account.code.bytecode == "":
+            
+            # 情况一: callee account 以符号的形式存在 并且 不含有代码, 
+            if callee_account is not None and callee_account.code.bytecode == "" and callable_sc == []:
                 log.debug("The call is related to ether transfer between accounts")
                 sender = environment.active_account.address
                 receiver = callee_account.address
@@ -2031,7 +2048,31 @@ class Instruction:
                     global_state.new_bitvec("retval_" + str(instr["address"]), 256)
                 )
                 return [global_state]
-
+            
+            # Add by kevin
+            # 情况二: callee_account 地址 是符号型的, 所以账户目前是空, 
+            # 生成 可能 call 的 callsub 然后这个输入取决于用户输入
+            if callee_account is not None and callee_account.code.bytecode == "" and callable_sc is not []:
+                transactions = []
+                for sc in callable_sc:
+                    transaction = MessageCallTransaction(
+                    world_state=global_state.world_state,
+                    gas_price=environment.gasprice,
+                    gas_limit=gas,
+                    origin=environment.origin,
+                    caller=environment.active_account.address,
+                    callee_account=sc,
+                    call_data=call_data, # symbol
+                    call_value=value,
+                    static=environment.static,
+                    )
+                    transactions.append(transaction)
+                # 
+                print("[callable tx created] =============")
+                print(transaction.callee_account.address)
+                raise TransactionStartSignal(transactions, self.op_code, global_state)
+                
+        
         except ValueError as e:
             log.debug(
                 "Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
@@ -2061,12 +2102,18 @@ class Instruction:
                     raise WriteProtection(
                         "Cannot call with non zero value in a static call"
                     )
+        
 
+        
+        # 情况三 调用提前编译好的那九个合约
+        # 这个是 precompiled function 例如 sha3 这种                
         native_result = native_call(
             global_state, callee_address, call_data, memory_out_offset, memory_out_size
         )
         if native_result:
             return native_result
+        
+        # 情况四 callee_account 存在 并且包含代码
         transaction = MessageCallTransaction(
             world_state=global_state.world_state,
             gas_price=environment.gasprice,
@@ -2078,7 +2125,7 @@ class Instruction:
             call_value=value,
             static=environment.static,
         )
-        raise TransactionStartSignal(transaction, self.op_code, global_state)
+        raise TransactionStartSignal([transaction], self.op_code, global_state)
 
     @StateTransition()
     def call_post(self, global_state: GlobalState) -> List[GlobalState]:
@@ -2157,7 +2204,7 @@ class Instruction:
             call_value=value,
             static=environment.static,
         )
-        raise TransactionStartSignal(transaction, self.op_code, global_state)
+        raise TransactionStartSignal([transaction], self.op_code, global_state)
 
     @StateTransition()
     def callcode_post(self, global_state: GlobalState) -> List[GlobalState]:
@@ -2307,7 +2354,7 @@ class Instruction:
             call_value=environment.callvalue,
             static=environment.static,
         )
-        raise TransactionStartSignal(transaction, self.op_code, global_state)
+        raise TransactionStartSignal([transaction], self.op_code, global_state)
 
     @StateTransition()
     def delegatecall_post(self, global_state: GlobalState) -> List[GlobalState]:
@@ -2457,7 +2504,7 @@ class Instruction:
             call_value=value,
             static=True,
         )
-        raise TransactionStartSignal(transaction, self.op_code, global_state)
+        raise TransactionStartSignal([transaction], self.op_code, global_state)
 
     @StateTransition()
     def staticcall_post(self, global_state: GlobalState) -> List[GlobalState]:

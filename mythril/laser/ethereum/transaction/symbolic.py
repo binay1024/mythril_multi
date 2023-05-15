@@ -193,9 +193,8 @@ def execute_sub_contract_creation(
 
             laser_evm.exec(True)
             sub_accounts.append(sub_transactions[i].callee_account)
-    if sub_accounts == []:
-        return None
-    return sub_accounts
+            
+    return sub_accounts if sub_accounts is not [] else None
 
 
 def execute_contract_creation(

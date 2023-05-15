@@ -116,7 +116,9 @@ class StateChangeAfterCall(DetectionModule):
 
         annotation = get_potential_issues_annotation(state)
         annotation.potential_issues.extend(issues)
-
+    
+    # if we can set the callee address to attacker return true
+    # so when we call concrete external call here return false?
     @staticmethod
     def _add_external_call(global_state: GlobalState) -> None:
         gas = global_state.mstate.stack[-1]
@@ -134,7 +136,7 @@ class StateChangeAfterCall(DetectionModule):
                 ]
             )
 
-            # Check whether we can also set the callee address
+            # Check whether we can also set the callee address as attacker
             try:
                 constraints += [to == 0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF]
                 solver.get_model(constraints)
@@ -183,7 +185,8 @@ class StateChangeAfterCall(DetectionModule):
             if issue:
                 vulnerabilities.append(issue)
         return vulnerabilities
-
+    
+    # check whether the value > 0 ? true : false 
     @staticmethod
     def _balance_change(value: BitVec, global_state: GlobalState) -> bool:
         if not value.symbolic:

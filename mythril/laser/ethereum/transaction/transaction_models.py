@@ -14,6 +14,11 @@ from mythril.laser.ethereum.state.global_state import GlobalState
 from mythril.laser.ethereum.state.world_state import WorldState
 from mythril.laser.smt import symbol_factory, UGE, BitVec
 import logging
+from typing import (
+    List,
+    Optional,
+    Union,
+)
 
 log = logging.getLogger(__name__)
 
@@ -49,7 +54,7 @@ class TransactionStartSignal(Exception):
 
     def __init__(
         self,
-        transaction: Union["MessageCallTransaction", "ContractCreationTransaction"],
+        transaction: List[Union["MessageCallTransaction", "ContractCreationTransaction"]],
         op_code: str,
         global_state: GlobalState,
     ) -> None:
