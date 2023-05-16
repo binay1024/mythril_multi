@@ -180,6 +180,10 @@ class LaserEVM:
         time_handler.start_execution(self.execution_timeout)
         self.time = datetime.now()
 
+        if sub_contracts == []:
+            sub_accounts = None
+            sub_contracts = None
+
         if pre_configuration_mode:
             self.open_states = [world_state]
             log.info("Starting message call transaction to {}".format(target_address))
@@ -187,7 +191,6 @@ class LaserEVM:
 
         elif scratch_mode:
             log.info("Starting contract creation transaction")
-            sub_accounts = None
             if sub_contracts is not None:
                 sub_accounts = execute_sub_contract_creation(
                     self, contract_name="SUB", world_state=world_state, sub_contracts = sub_contracts
