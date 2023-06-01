@@ -35,6 +35,9 @@ from mythril.analysis.report import Report
 
 from mythril.__version__ import __version__ as VERSION
 
+from myth import print_time
+
+
 # Initialise core Mythril Component
 _ = MythrilPluginLoader()
 
@@ -92,6 +95,7 @@ def exit_with_error(format_, message):
             }
         ]
         print(json.dumps(result))
+    print_time()
     sys.exit()
 
 
@@ -241,7 +245,6 @@ def create_concolic_parser(parser: ArgumentParser) -> ArgumentParser:
     )
     return parser
 
-# test      test 
 
 def main() -> None:
     """The main CLI interface entry point."""
@@ -903,8 +906,10 @@ def execute_command(
                 }
                 print(outputs[args.outform])
                 if len(report.issues) > 0:
+                    print_time()
                     exit(1)
                 else:
+                    print_time()
                     exit(0)
             except DetectorNotFoundError as e:
                 exit_with_error(args.outform, format(e))
@@ -924,6 +929,7 @@ def contract_hash_to_address(args: Namespace):
     :return:
     """
     print(MythrilDisassembler.hash_for_function_signature(args.func_name))
+    print_time()
     sys.exit()
 
 
@@ -944,10 +950,12 @@ def parse_args_and_execute(parser: ArgumentParser, args: Namespace) -> None:
         path = os.path.dirname(os.path.realpath(__file__))
         sys.argv.remove("--epic")
         os.system(" ".join(sys.argv) + " | python3 " + path + "/epic.py")
+        print_time()
         sys.exit()
 
     if args.command not in COMMAND_LIST or args.command is None:
         parser.print_help()
+        print_time()
         sys.exit()
 
     if args.command == VERSION_COMMAND:
@@ -955,6 +963,7 @@ def parse_args_and_execute(parser: ArgumentParser, args: Namespace) -> None:
             print(json.dumps({"version_str": VERSION}))
         else:
             print("Mythril version {}".format(VERSION))
+        print_time()
         sys.exit()
 
     if args.command == LIST_DETECTORS_COMMAND:
@@ -966,10 +975,12 @@ def parse_args_and_execute(parser: ArgumentParser, args: Namespace) -> None:
         else:
             for module_data in modules:
                 print("{}: {}".format(module_data["classname"], module_data["title"]))
+        print_time()
         sys.exit()
 
     if args.command == HELP_COMMAND:
         parser.print_help()
+        print_time()
         sys.exit()
 
     if args.command in CONCOLIC_LIST:
@@ -980,6 +991,7 @@ def parse_args_and_execute(parser: ArgumentParser, args: Namespace) -> None:
             concrete_data, args.branches.split(","), args.solver_timeout
         )
         json.dump(output_list, sys.stdout, indent=4)
+        print_time()
         sys.exit()
 
     # Parse cmdline args
