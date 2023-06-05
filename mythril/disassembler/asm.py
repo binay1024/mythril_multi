@@ -133,13 +133,18 @@ def disassemble(bytecode) -> list:
         current_instruction = EvmInstruction(address, op_code)
 
         match = re.search(regex_PUSH, op_code)
+        # modified by kevin, handle push0 case
         if match:
-            argument_bytes = bytecode[address + 1 : address + 1 + int(match.group(1))]
-            if type(argument_bytes) == bytes:
-                current_instruction.argument = "0x" + argument_bytes.hex()
+            if int(match.group(1)) != 0:
+                argument_bytes = bytecode[address + 1 : address + 1 + int(match.group(1))]
+                if type(argument_bytes) == bytes:
+                    current_instruction.argument = "0x" + argument_bytes.hex()
+                else:
+                    current_instruction.argument = argument_bytes
+                address += int(match.group(1))
             else:
-                current_instruction.argument = argument_bytes
-            address += int(match.group(1))
+                current_instruction.argument = "0x0"
+                # push0 has no argument
 
         instruction_list.append(current_instruction)
         address += 1

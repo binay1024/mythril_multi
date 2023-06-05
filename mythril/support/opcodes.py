@@ -110,6 +110,9 @@ OPCODES: Dict = {
     # function. Virtually it could be as large as the block gas limit
     # allows, but let's stick to the reasonable standard here.
     # https://ethereum.stackexchange.com/a/1691
+    
+
+
     "LOG0": {GAS: (375, 375 + 8 * 32), STACK: (2, 0), ADDRESS: 0xA0},
     "LOG1": {GAS: (2 * 375, 2 * 375 + 8 * 32), STACK: (3, 0), ADDRESS: 0xA1},
     "LOG2": {GAS: (3 * 375, 3 * 375 + 8 * 32), STACK: (4, 0), ADDRESS: 0xA2},
@@ -129,10 +132,15 @@ OPCODES: Dict = {
     "REVERT": {GAS: (0, 0), STACK: (2, 0), ADDRESS: 0xFD},
     "SELFDESTRUCT": {GAS: (5000, 30000), STACK: (1, 0), ADDRESS: 0xFF},
     "INVALID": {GAS: (0, 0), STACK: (0, 0), ADDRESS: 0xFE},
+    
 }
-
-for i in range(1, 33):
-    OPCODES[f"PUSH{i}"] = {GAS: (3, 3), STACK: Z_OPERATOR_TUPLE, ADDRESS: 0x5F + i}
+# ADD from Shanghai version modified by kevin
+#"PUSH0": {GAS: (2, 2), STACK: (0, 1), ADDRESS: 0x5F}, 
+for i in range(0, 33):
+    if i == 0:
+        OPCODES[f"PUSH{i}"] = {GAS: (2, 2), STACK: Z_OPERATOR_TUPLE, ADDRESS: 0x5F + i}
+    else:    
+        OPCODES[f"PUSH{i}"] = {GAS: (3, 3), STACK: Z_OPERATOR_TUPLE, ADDRESS: 0x5F + i}
 
 for i in range(1, 17):
     OPCODES[f"DUP{i}"] = {GAS: (3, 3), STACK: (0, 0), ADDRESS: 0x7F + i}

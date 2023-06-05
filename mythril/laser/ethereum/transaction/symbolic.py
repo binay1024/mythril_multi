@@ -152,6 +152,7 @@ def execute_message_call(
         _setup_global_state_for_execution(laser_evm, transaction, constraints)
 
     laser_evm.exec()
+
 def execute_sub_contract_creation(
         laser_evm, 
         contract_name=None, 
@@ -216,6 +217,7 @@ def execute_contract_creation(
     world_state = world_state or WorldState()
     open_states = [world_state]
     del laser_evm.open_states[:]
+
     new_account = None
     for open_world_state in open_states:
         next_transaction_id = tx_id_manager.get_next_tx_id()
@@ -237,11 +239,13 @@ def execute_contract_creation(
                 "call_value{}".format(next_transaction_id), 256
             ),
         )
+        # 这时候global_state 装有新的 worldstate 和 environment
         _setup_global_state_for_execution(laser_evm, transaction)
         new_account = new_account or transaction.callee_account
 
+    # 这里执行的就是这个 新生成的 部署合约用的 TX
     laser_evm.exec(True)
-
+    # 在这个时候 open_states 不是空 但是 laserEVM 的 openstate 是空.
     return new_account
 
 
@@ -256,10 +260,12 @@ def _setup_global_state_for_execution(
     :param transaction:
     """
     # TODO: Resolve circular import between .transaction and ..svm to import LaserEVM here
+    # 得到装有 worldstate, environment 的 全球变量
     global_state = transaction.initial_global_state()
     global_state.transaction_stack.append((transaction, None))
     global_state.world_state.constraints += initial_constraints or []
 
+    # 可能需要改变? 或者考虑? 修改 因为任何人都可能给他发.
     global_state.world_state.constraints.append(
         Or(*[transaction.caller == actor for actor in ACTORS.addresses.values()])
     )

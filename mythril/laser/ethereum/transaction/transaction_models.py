@@ -230,6 +230,7 @@ class ContractCreationTransaction(BaseTransaction):
         contract_address = (
             contract_address if isinstance(contract_address, int) else None
         )
+        # 新 account 就被装入 world_state里面了
         callee_account = world_state.create_account(
             0, concrete_storage=True, creator=caller.value, address=contract_address
         )

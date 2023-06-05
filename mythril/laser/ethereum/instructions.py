@@ -288,7 +288,10 @@ class Instruction:
         push_instruction = global_state.get_current_instruction()
         push_value = push_instruction["argument"]
         try:
-            length_of_value = 2 * int(push_instruction["opcode"][4:])
+            if int(push_instruction["opcode"][4:]) == 0:
+                length_of_value = 2 * 1
+            else:
+                length_of_value = 2 * int(push_instruction["opcode"][4:])
         except ValueError:
             raise VmException("Invalid Push instruction")
 
@@ -312,14 +315,25 @@ class Instruction:
                 new_value = Concat(
                     symbol_factory.BitVecVal(0, 256 - new_value.size()), new_value
                 )
-
+            # ok after test, not this case for push0
+            # if int(push_value) == 0:
+            #     print("output push_value_case1")
+            #     print(new_value)
+            #     return
             global_state.mstate.stack.append(new_value)
 
         else:
             push_value += "0" * max(length_of_value - (len(push_value) - 2), 0)
+            
             global_state.mstate.stack.append(
                 symbol_factory.BitVecVal(int(push_value, 16), 256)
             )
+            # if int(push_value[0]) == 0:
+            #     print("output push_value_case2")
+            #     print(push_value)
+            #     print("output symbol")
+            #     print(symbol_factory.BitVecVal(int(push_value, 16), 256))
+            #     return
         return [global_state]
 
     @StateTransition()

@@ -254,6 +254,8 @@ class LaserEVM:
         self.time = datetime.now()
 
         for i in range(self.transaction_count):
+            print("Excute %d TX Loop!!!"%i)
+            # 这句话决定了 如果你的 open_states 为空 那么不执行剩下的语句
             if len(self.open_states) == 0:
                 break
             old_states_count = len(self.open_states)
@@ -272,6 +274,7 @@ class LaserEVM:
                     i, len(self.open_states)
                 )
             )
+            # 这一步是根据 用户输入的 TX 数据 初始化 func_hashes 如果用户没有输入则是 None
             func_hashes = (
                 args.transaction_sequences[i] if args.transaction_sequences else None
             )
@@ -306,7 +309,7 @@ class LaserEVM:
             self.execution_timeout > 0
             and self.time + timedelta(seconds=self.execution_timeout) <= datetime.now()
         )
-
+    # 执行 虚拟机 bytecode
     def exec(self, create=False, track_gas=False) -> Optional[List[GlobalState]]:
         """
 
@@ -331,6 +334,7 @@ class LaserEVM:
                 new_states, op_code = self.execute_state(global_state)
             except NotImplementedError:
                 log.debug("Encountered unimplemented instruction")
+                print("Encountered unimplemented instruction")
                 continue
 
             if self.strategy.run_check() and (
@@ -344,6 +348,7 @@ class LaserEVM:
             self.manage_cfg(op_code, new_states)  # TODO: What about op_code is None?
             if new_states:
                 self.work_list += new_states
+                print("worklist added! now the worklist num is %d"%len(self.work_list))
             elif track_gas:
                 final_states.append(global_state)
             self.total_states += len(new_states)
@@ -360,10 +365,11 @@ class LaserEVM:
             try:
                 hook(global_state)
             except PluginSkipWorldState:
+                print("catch PluginSkipWorldState exception!")
                 return
 
         self.open_states.append(global_state.world_state)
-
+    # 当 opcode 是 "INVALID"的时候处理
     def handle_vm_exception(
         self, global_state: GlobalState, op_code: str, error_msg: str
     ) -> List[GlobalState]:
@@ -466,7 +472,7 @@ class LaserEVM:
             ) = end_signal.global_state.transaction_stack[-1]
 
             log.debug("Ending transaction %s.", transaction)
-
+            print("End Transaction %s"%transaction)
             for hook in self._transaction_end_hooks:
                 hook(
                     end_signal.global_state,
@@ -474,7 +480,7 @@ class LaserEVM:
                     return_global_state,
                     end_signal.revert,
                 )
-
+            # 当没有 return_global_state 应该是正常结束了的时候
             if return_global_state is None:
                 if (
                     not isinstance(transaction, ContractCreationTransaction)
