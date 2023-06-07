@@ -49,8 +49,10 @@ class Disassembly(object):
                 index, self.instruction_list, signatures
             )
             self.func_hashes.append(function_hash)
+            
             if jump_target is not None and function_name is not None:
                 self.function_name_to_address[function_name] = jump_target
+                print("Function : {} with hash {} , address {} found".format(function_name, function_hash, jump_target))
                 self.address_to_function_name[jump_target] = function_name
 
     def get_easm(self):

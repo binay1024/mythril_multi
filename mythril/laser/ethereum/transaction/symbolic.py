@@ -117,7 +117,8 @@ def execute_message_call(
     # TODO: Resolve circular import between .transaction and ..svm to import LaserEVM here
     open_states = laser_evm.open_states[:]
     del laser_evm.open_states[:]
-
+    # 第一次执行有 N 条路径 从而导致 N 种 worldstates 装入 open_states
+    # 针对每种 路径下的 worldstates 我都会生成一个 对应的 global_states 和 messageCallTX 来去执行
     for open_world_state in open_states:
         if open_world_state[callee_address].deleted:
             log.debug("Can not execute dead contract, skipping.")

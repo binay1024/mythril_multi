@@ -1610,7 +1610,7 @@ class Instruction:
         positive_cond = (type(condi) == bool and condi) or (
             isinstance(condi, Bool) and not is_false(condi)
         )
-
+        # 这个是不满足的路, 一般下面都有一个 invalid 命令, 需要手动加 pc
         if negated_cond:
             # States have to be deep copied during a fork as summaries assume independence across states.
             new_state = deepcopy(global_state)
@@ -1648,6 +1648,8 @@ class Instruction:
                 new_state.mstate.depth += 1
                 new_state.world_state.constraints.append(condi)
                 states.append(new_state)
+                function_name = global_state.environment.active_account.code.address_to_function_name[jump_addr]
+                print("current path reach function {} in addr {}".format(function_name, jump_addr))
             else:
                 log.debug("Pruned unreachable states.")
         return states

@@ -259,6 +259,7 @@ class LaserEVM:
             if len(self.open_states) == 0:
                 break
             old_states_count = len(self.open_states)
+            print("Now we have %d open states!!!"%old_states_count)
 
             if self.use_reachability_check:
                 self.open_states = [
@@ -274,6 +275,7 @@ class LaserEVM:
                     i, len(self.open_states)
                 )
             )
+            print("Starting message call transaction, iteration: %d, %d initial states"%(i,len(self.open_states)))
             # 这一步是根据 用户输入的 TX 数据 初始化 func_hashes 如果用户没有输入则是 None
             func_hashes = (
                 args.transaction_sequences[i] if args.transaction_sequences else None
@@ -288,7 +290,7 @@ class LaserEVM:
 
             for hook in self._start_sym_trans_hooks:
                 hook()
-
+            print("Starting message call transaction to: {}".format(address.value))
             execute_message_call(self, address, func_hashes=func_hashes)
 
             for hook in self._stop_sym_trans_hooks:
@@ -320,9 +322,11 @@ class LaserEVM:
         final_states = []  # type: List[GlobalState]
         for hook in self._start_exec_hooks:
             hook()
-
+        temp = 0
         for global_state in self.strategy:
-
+            if len(self.work_list)!= temp:
+                print("now we have {} global state (path)!".format(len(self.work_list)))
+                temp = len(self.work_list)
             if create and self._check_create_termination():
                 log.debug("Hit create timeout, returning.")
                 return final_states + [global_state] if track_gas else None
@@ -345,10 +349,12 @@ class LaserEVM:
                     for state in new_states
                     if state.world_state.constraints.is_possible()
                 ]
+                if len(new_states) >1:
+                    print("{} worklist added! now the worklist num is {}".format(len(new_states)-1, len(self.work_list)))
             self.manage_cfg(op_code, new_states)  # TODO: What about op_code is None?
             if new_states:
                 self.work_list += new_states
-                print("worklist added! now the worklist num is %d"%len(self.work_list))
+                
             elif track_gas:
                 final_states.append(global_state)
             self.total_states += len(new_states)
