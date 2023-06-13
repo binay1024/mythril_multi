@@ -1,0 +1,145 @@
+Function : rewardAccount() with hash 0x0e708203 , address 90 found
+Function : totalSupply() with hash 0x18160ddd , address 133 found
+Function : balanceOf(address) with hash 0x70a08231 , address 176 found
+Function : _function_0x81f03fcb with hash 0x81f03fcb , address 237 found
+Function : _function_0xbb29998e with hash 0xbb29998e , address 298 found
+Function : getMyReward() with hash 0xcc9ae3f6 , address 348 found
+Function : payOut(address,uint256) with hash 0x0221038a , address 94 found
+Function : payOwnerOnly() with hash 0x18bdc79a , address 142 found
+Function : owner() or ideal_warn_timed(uint256,uint128) with hash 0x8da5cb5b , address 185 found
+Function : accumulatedInput() with hash 0xd2cc718f , address 228 found
+Function : rewardAccount() with hash 0x0e708203 , address 90 found
+Function : totalSupply() with hash 0x18160ddd , address 133 found
+Function : balanceOf(address) with hash 0x70a08231 , address 176 found
+Function : _function_0x81f03fcb with hash 0x81f03fcb , address 237 found
+Function : _function_0xbb29998e with hash 0xbb29998e , address 298 found
+Function : getMyReward() with hash 0xcc9ae3f6 , address 348 found
+Function : payOut(address,uint256) with hash 0x0221038a , address 94 found
+Function : payOwnerOnly() with hash 0x18bdc79a , address 142 found
+Function : owner() or ideal_warn_timed(uint256,uint128) with hash 0x8da5cb5b , address 185 found
+Function : accumulatedInput() with hash 0xd2cc718f , address 228 found
+Function : payOut(address,uint256) with hash 0x0221038a , address 94 found
+Function : payOwnerOnly() with hash 0x18bdc79a , address 142 found
+Function : owner() or ideal_warn_timed(uint256,uint128) with hash 0x8da5cb5b , address 185 found
+Function : accumulatedInput() with hash 0xd2cc718f , address 228 found
+Function : payOut(address,uint256) with hash 0x0221038a , address 94 found
+Function : payOwnerOnly() with hash 0x18bdc79a , address 142 found
+Function : owner() or ideal_warn_timed(uint256,uint128) with hash 0x8da5cb5b , address 185 found
+Function : accumulatedInput() with hash 0xd2cc718f , address 228 found
+End Transaction ContractCreationTransaction 3 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+1 worklist added! now the worklist num is 0
+now we have 1 global state (path)!
+End Transaction ContractCreationTransaction 1 from 1004753105490295263244812946565948198177742958590 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+
+now we have 0 global state (path)!
+Function : rewardAccount() with hash 0x0e708203 , address 90 found
+Function : totalSupply() with hash 0x18160ddd , address 133 found
+Function : balanceOf(address) with hash 0x70a08231 , address 176 found
+Function : _function_0x81f03fcb with hash 0x81f03fcb , address 237 found
+Function : _function_0xbb29998e with hash 0xbb29998e , address 298 found
+Function : getMyReward() with hash 0xcc9ae3f6 , address 348 found
+End Transaction ContractCreationTransaction 1 from 1004753105490295263244812946565948198177742958590 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+
+------ 到这里为止 个 creation TX 过程 结束 --------------------------------------------------------------------------------------------------
+
+main:  (96, 128, 96, 64, 82, 96, 4, 54, 16, 97, 0, 85, 87, 96, 0, 53, 96, 224, 28, 128, 99, 14, 112, 130, 3, 20, 97, 0, 90, 87, 128, 99, 24, 22, 13, 221, 20, 97, 0, 133, 87, 128, 99, 112, 160, 130, 49, 20, 97, 0, 176, 87, 128, 99, 129, 240, 63, 203, 20, 97, 0, 237, 87, 128, 99, 187, 41, 153, 142, 20, 97, 1, 42, 87, 128, 99, 204, 154, 227, 246, 20, 97, 1, 92, 87, 91, 96, 0, 128, 253, 91, 52, 128, 21, 97, 0, 102, 87, 96, 0, 128, 253, 91, 80, 97, 0, 111, 97, 1, 122, 86, 91, 96, 64, 81, 97, 0, 124, 145, 144, 97, 6, 205, 86, 91, 96, 64, 81, 128, 145, 3, 144, 243, 91, 52, 128, 21, 97, 0, 145, 87, 96, 0, 128, 253, 91, 80, 97, 0, 154, 97, 1, 160, 86, 91, 96, 64, 81, 97, 0, 167, 145, 144, 97, 7, 1, 86, 91, 96, 64, 81, 128, 145, 3, 144, 243, 91, 52, 128, 21, 97, 0, 188, 87, 96, 0, 128, 253, 91, 80, 97, 0, 215, 96, 4, 128, 54, 3, 129, 1, 144, 97, 0, 210, 145, 144, 97, 7, 95, 86, 91, 97, 1, 166, 86, 91, 96, 64, 81, 97, 0, 228, 145, 144, 97, 7, 1, 86, 91, 96, 64, 81, 128, 145, 3, 144, 243, 91, 52, 128, 21, 97, 0, 249, 87, 96, 0, 128, 253, 91, 80, 97, 1, 20, 96, 4, 128, 54, 3, 129, 1, 144, 97, 1, 15, 145, 144, 97, 7, 95, 86, 91, 97, 1, 238, 86, 91, 96, 64, 81, 97, 1, 33, 145, 144, 97, 7, 1, 86, 91, 96, 64, 81, 128, 145, 3, 144, 243, 91, 97, 1, 68, 96, 4, 128, 54, 3, 129, 1, 144, 97, 1, 63, 145, 144, 97, 7, 95, 86, 91, 97, 2, 6, 86, 91, 96, 64, 81, 97, 1, 83, 147, 146, 145, 144, 97, 7, 167, 86, 91, 96, 64, 81, 128, 145, 3, 144, 243, 91, 97, 1, 100, 97, 3, 30, 86, 91, 96, 64, 81, 97, 1, 113, 145, 144, 97, 7, 222, 86, 91, 96, 64, 81, 128, 145, 3, 144, 243, 91, 96, 3, 96, 0, 144, 84, 144, 97, 1, 0, 10, 144, 4, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 22, 129, 86, 91, 96, 2, 84, 129, 86, 91, 96, 0, 128, 96, 0, 131, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 22, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 22, 129, 82, 96, 32, 1, 144, 129, 82, 96, 32, 1, 96, 0, 32, 84, 144, 80, 145, 144, 80, 86, 91, 96, 4, 96, 32, 82, 128, 96, 0, 82, 96, 64, 96, 0, 32, 96, 0, 145, 80, 144, 80, 84, 129, 86, 91, 96, 0, 128, 96, 0, 128, 52, 17, 21, 97, 2, 24, 87, 96, 0, 128, 253, 91, 96, 0, 96, 3, 96, 0, 144, 84, 144, 97, 1, 0, 10, 144, 4, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 22, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 22, 99, 210, 204, 113, 143, 96, 64, 81, 129, 99, 255, 255, 255, 255, 22, 96, 224, 27, 129, 82, 96, 4, 1, 96, 32, 96, 64, 81, 128, 131, 3, 129, 134, 90, 250, 21, 128, 21, 97, 2, 135, 87, 61, 96, 0, 128, 62, 61, 96, 0, 253, 91, 80, 80, 80, 80, 96, 64, 81, 61, 96, 31, 25, 96, 31, 130, 1, 22, 130, 1, 128, 96, 64, 82, 80, 129, 1, 144, 97, 2, 171, 145, 144, 97, 8, 37, 86, 91, 97, 2, 180, 134, 97, 1, 166, 86, 91, 97, 2, 190, 145, 144, 97, 8, 129, 86, 91, 144, 80, 96, 0, 96, 4, 96, 0, 135, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 22, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 22, 129, 82, 96, 32, 1, 144, 129, 82, 96, 32, 1, 96, 0, 32, 84, 144, 80, 96, 0, 129, 131, 16, 144, 80, 130, 130, 130, 149, 80, 149, 80, 149, 80, 80, 80, 80, 145, 147, 144, 146, 80, 86, 91, 96, 0, 128, 52, 17, 21, 97, 3, 45, 87, 96, 0, 128, 253, 91, 97, 3, 54, 51, 97, 3, 59, 86, 91, 144, 80, 144, 86, 91, 96, 0, 128, 52, 17, 21, 97, 3, 74, 87, 96, 0, 128, 253, 91, 96, 4, 96, 0, 131, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 22, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 22, 129, 82, 96, 32, 1, 144, 129, 82, 96, 32, 1, 96, 0, 32, 84, 96, 2, 84, 96, 3, 96, 0, 144, 84, 144, 97, 1, 0, 10, 144, 4, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 22, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 22, 99, 210, 204, 113, 143, 96, 64, 81, 129, 99, 255, 255, 255, 255, 22, 96, 224, 27, 129, 82, 96, 4, 1, 96, 32, 96, 64, 81, 128, 131, 3, 129, 134, 90, 250, 21, 128, 21, 97, 3, 250, 87, 61, 96, 0, 128, 62, 61, 96, 0, 253, 91, 80, 80, 80, 80, 96, 64, 81, 61, 96, 31, 25, 96, 31, 130, 1, 22, 130, 1, 128, 96, 64, 82, 80, 129, 1, 144, 97, 4, 30, 145, 144, 97, 8, 37, 86, 91, 97, 4, 39, 133, 97, 1, 166, 86, 91, 97, 4, 49, 145, 144, 97, 8, 129, 86, 91, 97, 4, 59, 145, 144, 97, 8, 242, 86, 91, 16, 21, 97, 4, 70, 87, 96, 0, 128, 253, 91, 96, 0, 96, 4, 96, 0, 132, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 22, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 22, 129, 82, 96, 32, 1, 144, 129, 82, 96, 32, 1, 96, 0, 32, 84, 96, 2, 84, 96, 3, 96, 0, 144, 84, 144, 97, 1, 0, 10, 144, 4, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 22, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 22, 99, 210, 204, 113, 143, 96, 64, 81, 129, 99, 255, 255, 255, 255, 22, 96, 224, 27, 129, 82, 96, 4, 1, 96, 32, 96, 64, 81, 128, 131, 3, 129, 134, 90, 250, 21, 128, 21, 97, 4, 248, 87, 61, 96, 0, 128, 62, 61, 96, 0, 253, 91, 80, 80, 80, 80, 96, 64, 81, 61, 96, 31, 25, 96, 31, 130, 1, 22, 130, 1, 128, 96, 64, 82, 80, 129, 1, 144, 97, 5, 28, 145, 144, 97, 8, 37, 86, 91, 97, 5, 37, 134, 97, 1, 166, 86, 91, 97, 5, 47, 145, 144, 97, 8, 129, 86, 91, 97, 5, 57, 145, 144, 97, 8, 242, 86, 91, 97, 5, 67, 145, 144, 97, 9, 35, 86, 91, 144, 80, 96, 3, 96, 0, 144, 84, 144, 97, 1, 0, 10, 144, 4, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 22, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 22, 99, 2, 33, 3, 138, 132, 131, 96, 64, 81, 131, 99, 255, 255, 255, 255, 22, 96, 224, 27, 129, 82, 96, 4, 1, 97, 5, 162, 146, 145, 144, 97, 9, 102, 86, 91, 96, 32, 96, 64, 81, 128, 131, 3, 129, 96, 0, 135, 90, 241, 21, 128, 21, 97, 5, 193, 87, 61, 96, 0, 128, 62, 61, 96, 0, 253, 91, 80, 80, 80, 80, 96, 64, 81, 61, 96, 31, 25, 96, 31, 130, 1, 22, 130, 1, 128, 96, 64, 82, 80, 129, 1, 144, 97, 5, 229, 145, 144, 97, 9, 187, 86, 91, 97, 5, 238, 87, 96, 0, 128, 253, 91, 128, 96, 4, 96, 0, 133, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 22, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 22, 129, 82, 96, 32, 1, 144, 129, 82, 96, 32, 1, 96, 0, 32, 96, 0, 130, 130, 84, 97, 6, 61, 145, 144, 97, 9, 232, 86, 91, 146, 80, 80, 129, 144, 85, 80, 96, 1, 145, 80, 80, 145, 144, 80, 86, 91, 96, 0, 115, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 130, 22, 144, 80, 145, 144, 80, 86, 91, 96, 0, 129, 144, 80, 145, 144, 80, 86, 91, 96, 0, 97, 6, 147, 97, 6, 142, 97, 6, 137, 132, 97, 6, 78, 86, 91, 97, 6, 110, 86, 91, 97, 6, 78, 86, 91, 144, 80, 145, 144, 80, 86, 91, 96, 0, 97, 6, 165, 130, 97, 6, 120, 86, 91, 144, 80, 145, 144, 80, 86, 91, 96, 0, 97, 6, 183, 130, 97, 6, 154, 86, 91, 144, 80, 145, 144, 80, 86, 91, 97, 6, 199, 129, 97, 6, 172, 86, 91, 130, 82, 80, 80, 86, 91, 96, 0, 96, 32, 130, 1, 144, 80, 97, 6, 226, 96, 0, 131, 1, 132, 97, 6, 190, 86, 91, 146, 145, 80, 80, 86, 91, 96, 0, 129, 144, 80, 145, 144, 80, 86, 91, 97, 6, 251, 129, 97, 6, 232, 86, 91, 130, 82, 80, 80, 86, 91, 96, 0, 96, 32, 130, 1, 144, 80, 97, 7, 22, 96, 0, 131, 1, 132, 97, 6, 242, 86, 91, 146, 145, 80, 80, 86, 91, 96, 0, 128, 253, 91, 96, 0, 97, 7, 44, 130, 97, 6, 78, 86, 91, 144, 80, 145, 144, 80, 86, 91, 97, 7, 60, 129, 97, 7, 33, 86, 91, 129, 20, 97, 7, 71, 87, 96, 0, 128, 253, 91, 80, 86, 91, 96, 0, 129, 53, 144, 80, 97, 7, 89, 129, 97, 7, 51, 86, 91, 146, 145, 80, 80, 86, 91, 96, 0, 96, 32, 130, 132, 3, 18, 21, 97, 7, 117, 87, 97, 7, 116, 97, 7, 28, 86, 91, 91, 96, 0, 97, 7, 131, 132, 130, 133, 1, 97, 7, 74, 86, 91, 145, 80, 80, 146, 145, 80, 80, 86, 91, 96, 0, 129, 21, 21, 144, 80, 145, 144, 80, 86, 91, 97, 7, 161, 129, 97, 7, 140, 86, 91, 130, 82, 80, 80, 86, 91, 96, 0, 96, 96, 130, 1, 144, 80, 97, 7, 188, 96, 0, 131, 1, 134, 97, 6, 242, 86, 91, 97, 7, 201, 96, 32, 131, 1, 133, 97, 6, 242, 86, 91, 97, 7, 214, 96, 64, 131, 1, 132, 97, 7, 152, 86, 91, 148, 147, 80, 80, 80, 80, 86, 91, 96, 0, 96, 32, 130, 1, 144, 80, 97, 7, 243, 96, 0, 131, 1, 132, 97, 7, 152, 86, 91, 146, 145, 80, 80, 86, 91, 97, 8, 2, 129, 97, 6, 232, 86, 91, 129, 20, 97, 8, 13, 87, 96, 0, 128, 253, 91, 80, 86, 91, 96, 0, 129, 81, 144, 80, 97, 8, 31, 129, 97, 7, 249, 86, 91, 146, 145, 80, 80, 86, 91, 96, 0, 96, 32, 130, 132, 3, 18, 21, 97, 8, 59, 87, 97, 8, 58, 97, 7, 28, 86, 91, 91, 96, 0, 97, 8, 73, 132, 130, 133, 1, 97, 8, 16, 86, 91, 145, 80, 80, 146, 145, 80, 80, 86, 91, 127, 78, 72, 123, 113, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 96, 0, 82, 96, 17, 96, 4, 82, 96, 36, 96, 0, 253, 91, 96, 0, 97, 8, 140, 130, 97, 6, 232, 86, 91, 145, 80, 97, 8, 151, 131, 97, 6, 232, 86, 91, 146, 80, 130, 130, 2, 97, 8, 165, 129, 97, 6, 232, 86, 91, 145, 80, 130, 130, 4, 132, 20, 131, 21, 23, 97, 8, 188, 87, 97, 8, 187, 97, 8, 82, 86, 91, 91, 80, 146, 145, 80, 80, 86, 91, 127, 78, 72, 123, 113, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 96, 0, 82, 96, 18, 96, 4, 82, 96, 36, 96, 0, 253, 91, 96, 0, 97, 8, 253, 130, 97, 6, 232, 86, 91, 145, 80, 97, 9, 8, 131, 97, 6, 232, 86, 91, 146, 80, 130, 97, 9, 24, 87, 97, 9, 23, 97, 8, 195, 86, 91, 91, 130, 130, 4, 144, 80, 146, 145, 80, 80, 86, 91, 96, 0, 97, 9, 46, 130, 97, 6, 232, 86, 91, 145, 80, 97, 9, 57, 131, 97, 6, 232, 86, 91, 146, 80, 130, 130, 3, 144, 80, 129, 129, 17, 21, 97, 9, 81, 87, 97, 9, 80, 97, 8, 82, 86, 91, 91, 146, 145, 80, 80, 86, 91, 97, 9, 96, 129, 97, 7, 33, 86, 91, 130, 82, 80, 80, 86, 91, 96, 0, 96, 64, 130, 1, 144, 80, 97, 9, 123, 96, 0, 131, 1, 133, 97, 9, 87, 86, 91, 97, 9, 136, 96, 32, 131, 1, 132, 97, 6, 242, 86, 91, 147, 146, 80, 80, 80, 86, 91, 97, 9, 152, 129, 97, 7, 140, 86, 91, 129, 20, 97, 9, 163, 87, 96, 0, 128, 253, 91, 80, 86, 91, 96, 0, 129, 81, 144, 80, 97, 9, 181, 129, 97, 9, 143, 86, 91, 146, 145, 80, 80, 86, 91, 96, 0, 96, 32, 130, 132, 3, 18, 21, 97, 9, 209, 87, 97, 9, 208, 97, 7, 28, 86, 91, 91, 96, 0, 97, 9, 223, 132, 130, 133, 1, 97, 9, 166, 86, 91, 145, 80, 80, 146, 145, 80, 80, 86, 91, 96, 0, 97, 9, 243, 130, 97, 6, 232, 86, 91, 145, 80, 97, 9, 254, 131, 97, 6, 232, 86, 91, 146, 80, 130, 130, 1, 144, 80, 128, 130, 17, 21, 97, 10, 22, 87, 97, 10, 21, 97, 8, 82, 86, 91, 91, 146, 145, 80, 80, 86, 254, 162, 100, 105, 112, 102, 115, 88, 34, 18, 32, 135, 227, 221, 48, 113, 156, 142, 101, 205, 167, 196, 61, 199, 238, 173, 50, 134, 5, 95, 25, 159, 237, 161, 85, 231, 30, 27, 209, 22, 180, 127, 163, 100, 115, 111, 108, 99, 67, 0, 8, 18, 0, 51)
+sub:  Empty Sub Contract
+Excute 0 TX Loop!!!
+Now we have 1 open states!!!
+
+Starting message call transaction, iteration: 0, 1 initial states
+Starting message call transaction to: 51421440056055728346017419001665401074216449311
+1 worklist added! now the worklist num is 0
+now we have 1 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+now we have 0 global state (path)!
+current path reached function in addr rewardAccount()
+1 worklist added! now the worklist num is 0
+now we have 1 global state (path)!
+current path reached function in addr totalSupply()
+1 worklist added! now the worklist num is 1
+now we have 2 global state (path)!
+1 worklist added! now the worklist num is 2
+now we have 3 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+now we have 2 global state (path)!
+current path reached function in addr balanceOf(address)
+1 worklist added! now the worklist num is 2
+now we have 3 global state (path)!
+1 worklist added! now the worklist num is 3
+now we have 4 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+now we have 3 global state (path)!
+current path reached function in addr _function_0x81f03fcb
+1 worklist added! now the worklist num is 3
+now we have 4 global state (path)!
+1 worklist added! now the worklist num is 4
+now we have 5 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+now we have 4 global state (path)!
+current path reached function in addr _function_0xbb29998e
+1 worklist added! now the worklist num is 4
+now we have 5 global state (path)!
+1 worklist added! now the worklist num is 5
+now we have 6 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+now we have 5 global state (path)!
+
+current path reached function in addr getMyReward()
+1 worklist added! now the worklist num is 5
+now we have 6 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+now we have 5 global state (path)!
+1 worklist added! now the worklist num is 5
+now we have 6 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+now we have 5 global state (path)!
+1 worklist added! now the worklist num is 5
+now we have 6 global state (path)!
+1 worklist added! now the worklist num is 6
+now we have 7 global state (path)!
+1 worklist added! now the worklist num is 7
+now we have 8 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+now we have 7 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+now we have 6 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+now we have 5 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+
+catch PluginSkipWorldState exception!
+
+now we have 4 global state (path)!
+1 worklist added! now the worklist num is 4
+now we have 5 global state (path)!
+1 worklist added! now the worklist num is 5
+now we have 6 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+now we have 5 global state (path)!
+1 worklist added! now the worklist num is 5
+now we have 6 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+now we have 5 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+now we have 4 global state (path)!
+1 worklist added! now the worklist num is 4
+now we have 5 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+now we have 4 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+catch PluginSkipWorldState exception!
+now we have 3 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+now we have 2 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+catch PluginSkipWorldState exception!
+now we have 1 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+catch PluginSkipWorldState exception!
+now we have 0 global state (path)!
+End Transaction MessageCallTransaction 4 from sender_4 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+Excute 1 TX Loop!!!
+The analysis was completed successfully. No issues were detected.
+
+time cost [60s]

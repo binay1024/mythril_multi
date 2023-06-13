@@ -1648,8 +1648,10 @@ class Instruction:
                 new_state.mstate.depth += 1
                 new_state.world_state.constraints.append(condi)
                 states.append(new_state)
-                function_name = global_state.environment.active_account.code.address_to_function_name[jump_addr]
-                print("current path reach function {} in addr {}".format(function_name, jump_addr))
+                # function_name = global_state.environment.active_account.code.address_to_function_name[jump_addr]
+                # print("current path reached function in addr {}".format(jump_addr))
+                if jump_addr in disassembly.address_to_function_name:
+                    print("current path reached function in addr {}".format(disassembly.address_to_function_name[jump_addr]))
             else:
                 log.debug("Pruned unreachable states.")
         return states

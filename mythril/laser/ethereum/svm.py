@@ -200,7 +200,7 @@ class LaserEVM:
                 self, creation_code, contract_name, world_state=world_state
             )
             print("main: ", created_account.code.bytecode)
-            print("sub: ", sub_accounts[0].code.bytecode if sub_accounts is not None else "Empty Sub Contract" ) 
+            # print("sub: ", sub_accounts[0].code.bytecode if (sub_accounts is not None and sub_accounts!= []) else "Empty Sub Contract" ) 
 
             log.info(
                 "Finished contract creation, found {} open states".format(
@@ -372,7 +372,10 @@ class LaserEVM:
                 hook(global_state)
             except PluginSkipWorldState:
                 print("catch PluginSkipWorldState exception!")
-                return
+                # 原来这里设置的 return 是希望 如果发现 一路执行过来木有 call, staticcall, sstore 这种命令的话我们不管当前这个命令 让他直接返回
+                # 否则 就会将这条 执行路径的 world_state 加入到 open_states里面 然后 tx 循环执行的时候就会执行这条路径.
+                # return
+                continue
 
         self.open_states.append(global_state.world_state)
     # 当 opcode 是 "INVALID"的时候处理
@@ -415,6 +418,7 @@ class LaserEVM:
             op_code = instructions[global_state.mstate.pc]["opcode"]
         except IndexError:
             self._add_world_state(global_state)
+            print("IndexError")
             return [], None
 
         if len(global_state.mstate.stack) < get_required_stack_elements(op_code):
@@ -495,7 +499,7 @@ class LaserEVM:
                     check_potential_issues(global_state)
                     end_signal.global_state.world_state.node = global_state.node
                     self._add_world_state(end_signal.global_state)
-
+                # 当 return_global_state 是空, 正常结束的时候 他会看是否还要继续 不需要的话那么就不返回了...
                 new_global_states = []
             else:
 

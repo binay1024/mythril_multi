@@ -25,7 +25,8 @@ class MutationPruner(LaserPlugin):
     Let S be a world state from which T is a symbolic transaction, and S' is the resulting world state.
     In a situation where T does not execute any mutating instructions we can safely abandon further analysis on top of
     state S'. This is for the reason that we already performed analysis on S, which is equivalent.
-
+    原本的世界状态 S 经过 交易 T 之后变成了 新的世界状态 S`, 这种情况下 在 T 不进行任何变异的情况下 我们由于已经对 S 分析完了生成了 S` 
+    我们就不继续对 S` 上 继续进行分析了. 这样可以减轻 路径爆炸问题. 
     This optimization inhibits path explosion caused by "clean" behaviour
 
     The basic operation of this plugin is as follows:
@@ -65,7 +66,7 @@ class MutationPruner(LaserPlugin):
                 global_state.current_transaction, ContractCreationTransaction
             ):
                 return
-
+            # 如果 callvalue 是 int 类型 那么换成
             if isinstance(global_state.environment.callvalue, int):
                 callvalue = symbol_factory.BitVecVal(
                     global_state.environment.callvalue, 256

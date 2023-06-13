@@ -75,6 +75,13 @@ contract Test{
         totalSupply -= msg.value-5;
     }
 
+    fallback () external payable {
+        if (msg.sender != address(this) && msg.value > 0){
+            balances[msg.sender] += msg.value;
+            totalSupply += msg.value;
+        }
+    }
+
     function balanceOf(address _owner) public view returns (uint256 balance) {
         return balances[_owner];
     }
@@ -89,7 +96,6 @@ contract Test{
         if ((balanceOf(_account) * rewardAccount.accumulatedInput()) / totalSupply < paidOut[_account])
             // throw;
             revert();
-
         uint reward =
             (balanceOf(_account) * rewardAccount.accumulatedInput()) / totalSupply - paidOut[_account];
         if (!rewardAccount.payOut(_account, reward))
