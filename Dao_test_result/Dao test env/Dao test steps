@@ -1,0 +1,19 @@
+Dao creation steps: 
+
+1. deploy Dao creator, or just use your addr
+
+2. deploy Dao with following parameters:
+   	- address _curator：user addr
+	- DAO_Creator _daoCreator：DAOcreator addr or just user addr, doesn`t metter
+	- uint _proposalDeposit：2000000000000000000
+	- uint _minTokensToCreate：2000000000000000000
+	- uint _closingTime：1864426000
+	- address _privateCreation：0x0000000000000000000000000000000000000000
+
+3. send some ether to Dao and rewardAccount(for getmyreward attack case)
+
+4. deploy attacker contract with Dao addr
+
+5. execute attacker.save function, let attacker send dao ether and get some Dao token
+
+6. execute attacker.attack function to attack
