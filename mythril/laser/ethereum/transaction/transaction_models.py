@@ -203,6 +203,7 @@ class MessageCallTransaction(BaseTransaction):
         :param return_data:
         :param revert:
         """
+        # memory return value 
         self.return_data = return_data
 
         raise TransactionEndSignal(global_state, revert)

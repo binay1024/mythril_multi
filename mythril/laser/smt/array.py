@@ -56,7 +56,8 @@ class Array(BaseArray):
         self.range = z3.BitVecSort(value_range)
         super(Array, self).__init__(z3.Array(name, self.domain, self.range))
 
-
+# k 和 array 的区别, 就是如果是 Array 类型的变量的话, 那么这个符号就会被初始化成某一个带范围的符号
+# 而如果是 k 的话 那么这个值就会 有一个初始值. 
 class K(BaseArray):
     """A basic symbolic array, which can be initialized with a default
     value."""

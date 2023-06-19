@@ -274,7 +274,7 @@ class LaserEVM:
                 "Starting message call transaction, iteration: {}, {} initial states".format(
                     i, len(self.open_states)
                 )
-            )
+            ) 
             print("Starting message call transaction, iteration: %d, %d initial states"%(i,len(self.open_states)))
             # 这一步是根据 用户输入的 TX 数据 初始化 func_hashes 如果用户没有输入则是 None
             func_hashes = (
@@ -476,6 +476,7 @@ class LaserEVM:
             return new_global_states, op_code
 
         except TransactionEndSignal as end_signal:
+            # get caller state and tx from callee.global_state 
             (
                 transaction,
                 return_global_state,
@@ -490,7 +491,8 @@ class LaserEVM:
                     return_global_state,
                     end_signal.revert,
                 )
-            # 当没有 return_global_state 应该是正常结束了的时候
+            
+            # from an EOA send a TX to a smartcontract case
             if return_global_state is None:
                 if (
                     not isinstance(transaction, ContractCreationTransaction)
@@ -501,8 +503,10 @@ class LaserEVM:
                     self._add_world_state(end_signal.global_state)
                 # 当 return_global_state 是空, 正常结束的时候 他会看是否还要继续 不需要的话那么就不返回了...
                 new_global_states = []
+            
+            # from an smartcontract send a TX to a smartcontract case
             else:
-
+                print("in else case **************************")
                 # First execute the post hook for the transaction ending instruction
                 self._execute_post_hook(op_code, [end_signal.global_state])
 
@@ -510,7 +514,7 @@ class LaserEVM:
                 new_annotations = [
                     annotation
                     for annotation in global_state.annotations
-                    if annotation.persist_over_calls  # default false, need check
+                    if annotation.persist_over_calls  # IssueAnnotation True, StateAnotation False, TraceAnotation True, MutationAnotation Ture. 
                 ]
                 return_global_state.add_annotations(new_annotations)
 

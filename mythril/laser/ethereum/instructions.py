@@ -1890,6 +1890,7 @@ class Instruction:
             state.mem_extend(offset, length)
             StateTransition.check_gas_usage_limit(global_state)
             return_data = state.memory[offset : offset + length]
+            
         global_state.current_transaction.end(
             global_state, ReturnData(return_data, length)
         )

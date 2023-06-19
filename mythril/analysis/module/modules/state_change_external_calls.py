@@ -151,7 +151,7 @@ class StateChangeAfterCall(DetectionModule):
 
         if global_state.environment.active_function_name == "constructor":
             return []
-
+        
         annotations = cast(
             List[StateChangeCallsAnnotation],
             list(global_state.get_annotations(StateChangeCallsAnnotation)),
