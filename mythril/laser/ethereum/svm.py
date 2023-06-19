@@ -491,7 +491,7 @@ class LaserEVM:
                     return_global_state,
                     end_signal.revert,
                 )
-            
+             
             # from an EOA send a TX to a smartcontract case
             if return_global_state is None:
                 if (
