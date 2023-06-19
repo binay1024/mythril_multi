@@ -503,7 +503,7 @@ class LaserEVM:
                     self._add_world_state(end_signal.global_state)
                 # 当 return_global_state 是空, 正常结束的时候 他会看是否还要继续 不需要的话那么就不返回了...
                 new_global_states = []
-             
+               
             # from an smartcontract send a TX to a smartcontract case
             else:
                 print("in else case **************************")
