@@ -61,7 +61,7 @@ class PredictableVariables(DetectionModule):
         :param state:
         :return:
         """
- 
+  
         issues = []
 
         if is_prehook():
