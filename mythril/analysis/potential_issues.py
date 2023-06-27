@@ -70,10 +70,19 @@ def get_potential_issues_annotation(state: GlobalState) -> PotentialIssuesAnnota
     :param state: The global state
     :return:
     """
+    annotations = None
     for annotation in state.annotations:
         if isinstance(annotation, PotentialIssuesAnnotation):
-            return annotation
-
+            if annotations is None:
+                annotations = annotation
+            else:
+                annotations.potential_issues += annotation.potential_issues
+    if annotations is not None:
+        return annotations
+    # for annotation in state.annotations:
+    #     if isinstance(annotation, PotentialIssuesAnnotation):
+    #         return annotation
+    
     annotation = PotentialIssuesAnnotation()
     state.annotate(annotation)
     return annotation

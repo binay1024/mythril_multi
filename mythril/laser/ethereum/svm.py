@@ -10,7 +10,7 @@ from mythril.support.opcodes import OPCODES
 from mythril.analysis.potential_issues import check_potential_issues
 from mythril.laser.execution_info import ExecutionInfo
 from mythril.laser.ethereum.cfg import NodeFlags, Node, Edge, JumpType
-from mythril.laser.ethereum.evm_exceptions import StackUnderflowException, VmException
+from mythril.laser.ethereum.evm_exceptions import InvalidInstruction, StackUnderflowException, VmException
 from mythril.laser.ethereum.instructions import Instruction
 from mythril.laser.ethereum.instruction_data import get_required_stack_elements
 from mythril.laser.plugin.signals import PluginSkipWorldState, PluginSkipState
@@ -494,6 +494,7 @@ class LaserEVM:
                 
             # from an EOA send a TX to a smartcontract case
             if return_global_state is None:
+                # 如果 不是 revert 那么 返回 漏洞相关的 potentialIssues
                 if (
                     not isinstance(transaction, ContractCreationTransaction)
                     or transaction.return_data
@@ -501,9 +502,13 @@ class LaserEVM:
                     check_potential_issues(global_state)
                     end_signal.global_state.world_state.node = global_state.node
                     self._add_world_state(end_signal.global_state)
-                # 当 return_global_state 是空, 正常结束的时候 他会看是否还要继续 不需要的话那么就不返回了...
+                # 如果是 revert 结束的情况 那么 因为状态回滚 返回的新世界状态为 0
                 new_global_states = []
-               
+            
+            
+
+            
+            # 确保了 这里肯定不是 revert, 那就是 return 或者 stop
             # from an smartcontract send a TX to a smartcontract case
             else:
                 print("in else case **************************")
@@ -511,12 +516,16 @@ class LaserEVM:
                 self._execute_post_hook(op_code, [end_signal.global_state])
 
                 # Propagate annotations
-                new_annotations = [
-                    annotation
-                    for annotation in global_state.annotations
-                    if annotation.persist_over_calls  # IssueAnnotation True, StateAnotation False, TraceAnotation True, MutationAnotation Ture. 
-                ]
-                return_global_state.add_annotations(new_annotations)
+                # new_annotations = [
+                #     annotation
+                #     for annotation in global_state.annotations
+                #     if annotation.persist_over_calls  # IssueAnnotation True, StateAnotation False, TraceAnotation True, MutationAnotation Ture. 
+                # ]
+                # modified 06.20 kevin
+                # 如果不是 revert 情况
+                if not end_signal.revert:
+                    new_annotations = global_state.annotations
+                    return_global_state.add_annotations(new_annotations)
 
                 new_global_states = self._end_message_call(
                     copy(return_global_state),

@@ -148,6 +148,8 @@ class BaseTransaction:
         global_state.world_state.constraints.append(
             UGE(global_state.world_state.balances[sender], value)
         )
+        
+
         global_state.world_state.balances[receiver] += value
         global_state.world_state.balances[sender] -= value
 
@@ -192,6 +194,7 @@ class MessageCallTransaction(BaseTransaction):
             code=self.code or self.callee_account.code,
             static=self.static,
         )
+        # 加上 如果是 调用一个 可识别的 合约 我们加上 constraint
         return super().initial_global_state_from_environment(
             environment, active_function="fallback"
         )

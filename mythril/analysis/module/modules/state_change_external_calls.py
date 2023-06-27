@@ -12,7 +12,7 @@ from mythril.analysis import solver
 from mythril.exceptions import UnsatError
 from typing import List, cast, Optional
 from copy import copy
-
+from mythril.support.my_utils import *
 import logging
 
 log = logging.getLogger(__name__)
@@ -38,7 +38,7 @@ class StateChangeCallsAnnotation(StateAnnotation):
         )
         new_annotation.state_change_states = self.state_change_states[:]
         return new_annotation
-
+    # 原先 因为 没有多合约间 调用  所以 这里就是执行 当下合约环境的 to gas 等, 但是 如果是 从 sub 传回 main 我们要分析的 call 则是 sub 的, 
     def get_issue(
         self, global_state: GlobalState, detector: DetectionModule
     ) -> Optional[PotentialIssue]:
@@ -55,6 +55,7 @@ class StateChangeCallsAnnotation(StateAnnotation):
                 to == symbol_factory.BitVecVal(0, 256),
             ),
         ]
+        # 对于 main 来说 他的 to 已经指定了 sub 所以不可能是 攻击者
         if self.user_defined_address:
             constraints += [to == 0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF]
 
@@ -140,7 +141,6 @@ class StateChangeAfterCall(DetectionModule):
             try:
                 constraints += [to == 0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF]
                 solver.get_model(constraints)
-
                 global_state.annotate(StateChangeCallsAnnotation(global_state, True))
             except UnsatError:
                 global_state.annotate(StateChangeCallsAnnotation(global_state, False))
@@ -151,29 +151,35 @@ class StateChangeAfterCall(DetectionModule):
 
         if global_state.environment.active_function_name == "constructor":
             return []
+        # 首先从 global 里面读出 StateChangeCallsAnnotation 类型的 annotation
         
+        # 要检查 跨合约间 检测是否存在这种情况.
         annotations = cast(
             List[StateChangeCallsAnnotation],
             list(global_state.get_annotations(StateChangeCallsAnnotation)),
         )
         op_code = global_state.get_current_instruction()["opcode"]
-
+        # 其次 如果 前面的 anotation 是 0 并且 当前命令属于 读写 那么返回
+        # 先读写的情况 还没检测到 call 那种 适用于这种情况
         if len(annotations) == 0 and op_code in STATE_READ_WRITE_LIST:
             return []
-
+        # 如果
         if op_code in STATE_READ_WRITE_LIST:
             for annotation in annotations:
                 annotation.state_change_states.append(global_state)
 
         # Record state changes following from a transfer of ether
-        if op_code in CALL_LIST:
+        
+        callable_sc = get_callable_sc_list(global_state)
+
+        if op_code in CALL_LIST :
             value = global_state.mstate.stack[-3]  # type: BitVec
             if StateChangeAfterCall._balance_change(value, global_state):
                 for annotation in annotations:
                     annotation.state_change_states.append(global_state)
 
         # Record external calls
-        if op_code in CALL_LIST:
+        if op_code in CALL_LIST and callable_sc == []:
             StateChangeAfterCall._add_external_call(global_state)
 
         # Check for vulnerabilities

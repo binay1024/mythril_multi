@@ -68,6 +68,8 @@ from mythril.support.loader import DynLoader
 from mythril.laser.ethereum.state.account import Account
 from mythril.laser.ethereum.state.world_state import WorldState
 
+from mythril.support.my_utils import *
+
 log = logging.getLogger(__name__)
 
 TT256 = symbol_factory.BitVecVal(0, 256)
@@ -1890,7 +1892,7 @@ class Instruction:
             state.mem_extend(offset, length)
             StateTransition.check_gas_usage_limit(global_state)
             return_data = state.memory[offset : offset + length]
-            
+
         global_state.current_transaction.end(
             global_state, ReturnData(return_data, length)
         )
@@ -1962,6 +1964,7 @@ class Instruction:
         :param global_state:
         """
         # 0xfe: designated invalid opcode
+        print("Error, designated Invalid opcode ***************************")
         raise InvalidInstruction
 
     @StateTransition()
@@ -1970,6 +1973,7 @@ class Instruction:
 
         :param global_state:
         """
+        print("Error, Invalid opcode ***************************")
         raise InvalidInstruction
 
     @StateTransition()
@@ -2028,18 +2032,70 @@ class Instruction:
         environment = global_state.environment
 
         memory_out_size, memory_out_offset = global_state.mstate.stack[-7:-5]
+        recursive_call = False
+
+        callable_sc = get_callable_sc_list(global_state)
+        # act = symbol_factory.BitVecVal(int("0xAFFEAFFEAFFEAFFEAFFEAFFEAFFEAFFEAFFEAFFE", 16), 256)
+        # att = symbol_factory.BitVecVal(int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16), 256)
+        # smg = symbol_factory.BitVecVal(int("0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 16), 256)
+        # current_account_addr = global_state.environment.active_account.address
+        # except_accounts_addr = [act,att,smg,current_account_addr]
+        # worldstate = global_state.world_state
+        # for addr,sc in worldstate.accounts.items():
+        #     if addr in except_accounts_addr:
+        #         continue
+        #     callable_sc.append(sc)
         
-        callable_sc = []
-        act = symbol_factory.BitVecVal(int("0xAFFEAFFEAFFEAFFEAFFEAFFEAFFEAFFEAFFEAFFE", 16), 256)
-        att = symbol_factory.BitVecVal(int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16), 256)
-        smg = symbol_factory.BitVecVal(int("0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 16), 256)
-        current_account_addr = global_state.environment.active_account.address
-        except_accounts_addr = [act,att,smg,current_account_addr]
-        worldstate = global_state.world_state
-        for addr,sc in worldstate.accounts.items():
-            if addr in except_accounts_addr:
-                continue
-            callable_sc.append(sc)
+        # # 06.20 check recursive call kevin
+        # # transac_stack [e], e is a list -> [tx, global_state], tx -> tx.callee_account, tx.callee_account 可以是一个 符号类型整数, 也可以是一个 Account 类型. 
+        # # caller 可能是一个 符号类型的变量 sender3 或者 符号类型的 account 变量, caller.value是一个整数值. 和 calleraccount.address.value 同样
+        # txlist = global_state.transaction_stack
+        # len_txlist = len(txlist)
+        # tx_, oldgs_ = txlist[-1]
+        # # print("print origin and type")
+        # # print(tx_.origin.__str__())
+        # # print(type(tx_.origin))
+        # # print("print caller")
+        # # print(tx_.caller.__str__())
+        # # print(type(tx_.caller))
+        # # 验证了 tx_.caller 和 tx_.origin 都是 <mythril.laser.smt.bitvec.BitVec>类型的
+        # # 区别在于一个是 sender_N 和 一个是 具体的数值地址
+        # last_sender_tx_seq = []
+        # for i in range(len(txlist)):
+        #     tx, old_global_state = txlist[len_txlist-1-i]
+        #     origin = tx.origin.__str__()
+        #     caller = tx.caller.__str__()
+        #     callee = tx.callee_account.address.__str__()
+        #     last_sender_tx_seq.append((tx.origin, tx.caller, tx.callee_account))
+        #     pre_tx, pre_old_global_state = txlist[len_txlist-1-i-1]
+        #     if pre_tx.origin.__str__() != origin:
+        #         break
+        # # 上面代码提取出了最后一个 sender 的 相关 tx 序列 如果 callable_sc 存在于曾经的 callee 序列 那么可以停止了
+        # for origin, caller, callee in last_sender_tx_seq:
+        #     # print("print origin: " + origin.__str__())
+        #     # print("print caller: " + caller.__str__())
+        #     # print("print calee: " + callee.address.__str__())
+        #     flag = False
+        #     for sc in callable_sc:
+        #         # print("print callable sc")
+        #         # print(sc.address.__str__())
+        #         if callee.address.__str__() == sc.address.__str__():
+        #             # print("************** recursive call found! remove ! ****************** ")
+        #             # print(sc.address.__str__())
+        #             callable_sc.remove(sc)
+        #             flag = True
+        #             break
+        #     if flag:
+        #         break
+        # # print("final callable sc is ")
+        # # for sc in callable_sc:
+        #     # print(sc.address.__str__())
+            
+        # # 如果不允许 反复回调 那么 检查 callable_sc 然后 删掉
+        # # if not recursive_call:
+            
+
+
 
         try:
             (
@@ -2054,6 +2110,22 @@ class Instruction:
             
             # 情况一: callee account 以符号的形式存在 并且 不含有代码, 
             if callee_account is not None and callee_account.code.bytecode == "" and callable_sc == []:
+                log.debug("The call is related to ether transfer between accounts")
+                sender = environment.active_account.address
+                receiver = callee_account.address
+
+                transfer_ether(global_state, sender, receiver, value)
+                self._write_symbolic_returndata(
+                    global_state, memory_out_offset, memory_out_size
+                )
+
+                global_state.mstate.stack.append(
+                    global_state.new_bitvec("retval_" + str(instr["address"]), 256)
+                )
+                return [global_state]
+            
+            # 情况三  callee account 以符号的形式存在 并且 含有代码 但是 callable 为空 证明已经呼叫过了.
+            if callee_account is not None and callee_account.code.bytecode != "" and callable_sc == []:
                 log.debug("The call is related to ether transfer between accounts")
                 sender = environment.active_account.address
                 receiver = callee_account.address
@@ -2086,7 +2158,16 @@ class Instruction:
                     static=environment.static,
                     )
                     transactions.append(transaction)
-                # 
+                
+                # 添加 call 的 to 为一个指定地址 by kevin
+                to = global_state.mstate.stack[-2]
+                # global_state.world_state.constraints += [to == sc.address]
+                print(type(to))
+                print(type(sc.address))
+                print(sc.address)
+                print(hex(int(sc.address.__str__(),10)))
+                # 或者 删除 原有的 issue 
+
                 print("[callable tx created] =============")
                 print(transaction.callee_account.address)
                 raise TransactionStartSignal(transactions, self.op_code, global_state)
