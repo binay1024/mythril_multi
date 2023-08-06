@@ -1,0 +1,26 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/myth.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            // "args": ["a", "./solidity_examples/killbilly.sol"]
+            // "args": ["analyze", "-f", "./solidity_examples/multi_call_case1/Caller_main.bin"]
+            // "args": ["analyze","-f", "./solidity_examples/fix_external_call/Caller_main.bin", "-t", "3"],
+            // "args": ["analyze","-f", "./solidity_examples/fix_external_call/Caller_main_access_storage.bin", "-t", "3"],
+            // "args": ["analyze","-f", "./solidity_examples/fix_external_call/Caller_main_access_storage_plus.bin", "-t", "3"],
+            // "args": ["analyze","-mc", "./solidity_examples/fix_external_call/Caller_main_exter.bin"],
+            "args": ["analyze", "-mc", "./solidity_examples/A_call_TX_related_B/ContractA.bin", "./solidity_examples/A_call_TX_related_B/ContractB.bin" ],
+            // "args": ["analyze", "-mc", "./solidity_examples/C_call_new_B/ContractC.bin", "./solidity_examples/C_call_new_B/ContractB.bin" ],
+            // "args": ["analyze", "-mc", "./solidity_examples/C_call_new_B/ContractD.bin", "./solidity_examples/C_call_new_B/ContractDB.bin" ],
+            // "args": ["analyze", "-mc", "./solidity_examples/MiniDAO/Test.bin", "-t", "5" ],
+        }
+    ]
+}
