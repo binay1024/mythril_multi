@@ -68,7 +68,7 @@ from mythril.support.loader import DynLoader
 from mythril.laser.ethereum.state.account import Account
 from mythril.laser.ethereum.state.world_state import WorldState
 
-from mythril.support.my_utils import *
+from mythril.support.my_utils import get_callable_sc_list
 
 log = logging.getLogger(__name__)
 
@@ -123,7 +123,7 @@ class StateTransition(object):
         self.is_state_mutation_instruction = is_state_mutation_instruction
 
     @staticmethod
-    def call_on_state_copy(func: Callable, func_obj: "Instruction", state: GlobalState):
+    def call_on_state_copy(func: Callable, func_obj: "Instruction", state: GlobalState, end_type = None):
         """
 
         :param func:
@@ -131,8 +131,12 @@ class StateTransition(object):
         :param state:
         :return:
         """
-        global_state_copy = copy(state)
-        return func(func_obj, global_state_copy)
+        # global_state_copy = copy(state)
+        global_state_copy = state
+        if end_type is None:
+            return func(func_obj, global_state_copy)
+        else:
+            return func(func_obj, global_state_copy, end_type = end_type)
 
     def increment_states_pc(self, states: List[GlobalState]) -> List[GlobalState]:
         """
@@ -182,7 +186,7 @@ class StateTransition(object):
 
     def __call__(self, func: Callable) -> Callable:
         def wrapper(
-            func_obj: "Instruction", global_state: GlobalState
+            func_obj: "Instruction", global_state: GlobalState, end_type = None
         ) -> List[GlobalState]:
             """
 
@@ -196,8 +200,10 @@ class StateTransition(object):
                         func.__name__[:-1]
                     )
                 )
-
-            new_global_states = self.call_on_state_copy(func, func_obj, global_state)
+            if end_type is not None:
+                new_global_states = self.call_on_state_copy(func, func_obj, global_state, end_type = end_type)
+            else:
+                new_global_states = self.call_on_state_copy(func, func_obj, global_state)
             new_global_states = [
                 self.accumulate_gas(state) for state in new_global_states
             ]
@@ -237,7 +243,7 @@ class Instruction:
         for hook in self.post_hook:
             hook(global_state)
 
-    def evaluate(self, global_state: GlobalState, post=False) -> List[GlobalState]:
+    def evaluate(self, global_state: GlobalState, post=False, end_type = None) -> List[GlobalState]:
         """Performs the mutation for this instruction.
 
         :param global_state:
@@ -266,15 +272,18 @@ class Instruction:
             raise NotImplementedError
 
         self._execute_pre_hooks(global_state)
-        result = instruction_mutator(global_state)
+        if post and end_type:
+            result = instruction_mutator(global_state, end_type)
+        else:
+            result = instruction_mutator(global_state)
         self._execute_post_hooks(global_state)
 
         return result
-
+    # 由于 increment pc 默认是 True 所以这里什么都不做 装饰器会让 pc+1
     @StateTransition()
     def jumpdest_(self, global_state: GlobalState) -> List[GlobalState]:
         """
-
+    
         :param global_state:
         :return:
         """
@@ -295,6 +304,7 @@ class Instruction:
             else:
                 length_of_value = 2 * int(push_instruction["opcode"][4:])
         except ValueError:
+            print("Error: Invalid Push instruction")
             raise VmException("Invalid Push instruction")
 
         if type(push_value) == tuple:
@@ -938,6 +948,7 @@ class Instruction:
                     address.value, self.dynamic_loader
                 ).balance()
             except ValueError:
+                print("Warning: on chain access balance false for account {}".format(address.value))
                 onchain_access = False
         else:
             onchain_access = False
@@ -1342,28 +1353,34 @@ class Instruction:
             state.stack.pop(),
             state.stack.pop(),
         )
+        
 
         try:
             concrete_memory_offset = helper.get_concrete_int(memory_offset)
         except TypeError:
             log.debug("Unsupported symbolic memory offset in RETURNDATACOPY")
+            print("Warning! Unsupported symbolic memory offset in RETURNDATACOPY " )
             return [global_state]
 
         try:
             concrete_return_offset = helper.get_concrete_int(return_offset)
         except TypeError:
             log.debug("Unsupported symbolic return offset in RETURNDATACOPY")
+            print(" Warning! Unsupported symbolic return offset in RETURNDATACOPY")
             return [global_state]
 
         try:
             concrete_size = helper.get_concrete_int(size)
         except TypeError:
             log.debug("Unsupported symbolic max_length offset in RETURNDATACOPY")
+            print("Warning! Unsupported symbolic max_length offset in RETURNDATACOPY")
             return [global_state]
 
-        if global_state.last_return_data is None:
+        if global_state.last_return_data is None or global_state.last_return_data.return_data is None:
+            print("Warning!! global_state.last_return_data is None, but value exits, just return...")
             return [global_state]
-
+        
+        
         global_state.mstate.mem_extend(concrete_memory_offset, concrete_size)
         for i in range(concrete_size):
             global_state.mstate.memory[concrete_memory_offset + i] = (
@@ -1381,7 +1398,7 @@ class Instruction:
         :param global_state:
         :return:
         """
-        if global_state.last_return_data:
+        if global_state.last_return_data.return_data_size:
             global_state.mstate.stack.append(global_state.last_return_data.size)
         else:
             global_state.mstate.stack.append(0)
@@ -1563,7 +1580,7 @@ class Instruction:
                 "Skipping JUMP to invalid destination (not JUMPDEST): " + str(jump_addr)
             )
 
-        new_state = copy(global_state)
+        new_state = global_state
         # add JUMP gas cost
         min_gas, max_gas = get_opcode_gas("JUMP")
         new_state.mstate.min_gas_used += min_gas
@@ -1573,7 +1590,7 @@ class Instruction:
         new_state.mstate.pc = index
 
         return [new_state]
-
+    # increment_pc 决定了执行完命令后是否 自动 pc+1, 所以 如果是在 这里 需要手动设置 pc+1
     @StateTransition(increment_pc=False, enable_gas=False)
     def jumpi_(self, global_state: GlobalState) -> List[GlobalState]:
         """
@@ -1592,68 +1609,120 @@ class Instruction:
             jump_addr = util.get_concrete_int(op0)
         except TypeError:
             log.debug("Skipping JUMPI to invalid destination.")
+            print("Error: Skipping JUMPI to invalid destination.")
             global_state.mstate.pc += 1
             global_state.mstate.min_gas_used += min_gas
             global_state.mstate.max_gas_used += max_gas
             return [global_state]
-        # False case
-
+        
+        # False condition value
         negated = (
             simplify(Not(condition)) if isinstance(condition, Bool) else condition == 0
         )
         negated.simplify()
-        # True case
+        
+        # True condition value 
+        # 格式固定: And(3_calldata[3] == 183, Not(3_calldatasize <= 3), 3_calldata[2] == 205,  Not(3_calldatasize <= 2), 
+        #          3_calldata[1] == 46, Not(3_calldatasize <= 1), 3_calldata[0] == 79, Not(3_calldatasize <= 0))
         condi = simplify(condition) if isinstance(condition, Bool) else condition != 0
         condi.simplify()
-
+        
+        
+        
+        # print(condi.raw.decl().name())
         negated_cond = (type(negated) == bool and negated) or (
             isinstance(negated, Bool) and not is_false(negated)
         )
+
         positive_cond = (type(condi) == bool and condi) or (
             isinstance(condi, Bool) and not is_false(condi)
         )
+        # print("=============Jumpi Instruction!! print stack states=============")
+        # print(global_state.mstate.stack)
         # 这个是不满足的路, 一般下面都有一个 invalid 命令, 需要手动加 pc
         if negated_cond:
             # States have to be deep copied during a fork as summaries assume independence across states.
-            new_state = deepcopy(global_state)
+            # 分叉的时候会 深度拷贝 但是 TX_stack 却又 浅拷贝 ! 为什么呢? 
+            new_state = deepcopy(global_state, memo=None)
+            # 
+            if new_state.world_state != new_state.world_state.transaction_sequence[-1].world_state:
+                print("Error +++++++++++++++++++ world_sate not match in jumpi")
+            # temp = [global_state]
+            # new_state = temp[:][0]
             # add JUMPI gas cost
             new_state.mstate.min_gas_used += min_gas
             new_state.mstate.max_gas_used += max_gas
 
             # manually increment PC
-
             new_state.mstate.depth += 1
             new_state.mstate.pc += 1
             new_state.world_state.constraints.append(negated)
             states.append(new_state)
         else:
             log.debug("Pruned unreachable states.")
+            print("unreached path")
 
-        # Get jump destination
+        # 根据跳转地址(从栈里面读出来的) 得到 要跳转的pc 地址
         index = util.get_instruction_index(disassembly.instruction_list, jump_addr)
 
         if index is None:
             log.debug("Invalid jump destination: " + str(jump_addr))
+            print("Error: Invalid jump destination: " + str(jump_addr))
             return states
-
+        # 得到对应地址的opcode
         instr = disassembly.instruction_list[index]
 
-        if instr["opcode"] == "JUMPDEST":
+        if instr["opcode"] == "JUMPDEST": # 说明 这个 index 是有效跳转地址
             if positive_cond:
-                new_state = deepcopy(global_state)
+                print("Now in function: %s in contract: %s"%(global_state.environment.active_function_name, global_state.environment.active_account.contract_name))
+                # 一个分叉深拷贝, 一个 接着走
+                new_state2 = deepcopy(global_state, memo=None)
+                
                 # add JUMPI gas cost
-                new_state.mstate.min_gas_used += min_gas
-                new_state.mstate.max_gas_used += max_gas
+                new_state2.mstate.min_gas_used += min_gas
+                new_state2.mstate.max_gas_used += max_gas
 
                 # manually set PC to destination
-                new_state.mstate.pc = index
-                new_state.mstate.depth += 1
-                new_state.world_state.constraints.append(condi)
-                states.append(new_state)
+                new_state2.mstate.pc = index
+                new_state2.mstate.depth += 1 
+                new_state2.world_state.constraints.append(condi)
+                states.append(new_state2)
+
+                # if condi.raw.decl().name() == "and" and condi.raw.num_args() == 8 and \
+                #     condi.raw.arg(0).num_args() == 2 and "calldata" in condi.raw.arg(0).arg(0).__str__():
+                #     # print(condi.raw.arg(0).arg(0).__str__())
+                #     # print(condi.raw.arg(0).arg(1).as_long())
+                #     calldata =  (condi.raw.arg(6).arg(1).as_long() << 24) + \
+                #                 (condi.raw.arg(4).arg(1).as_long() << 16) + \
+                #                 (condi.raw.arg(2).arg(1).as_long() << 8) + \
+                #                 (condi.raw.arg(0).arg(1).as_long())
+                #     function_name = disassembly.hash_to_function_name[hex(calldata)]
+                #     new_state.current_transaction.call_function = function_name
+                #     record = "TX_"+global_state.current_transaction.id.__str__()+"_"+global_state.environment.active_account.contract_name+"."+function_name
+                #     # 因为这个是 每次执行 jumpi 的时候 他已经存储在 transaction_sequence 里面了 所以康康 是否反应上了
+                #     print("current_tx call_chain appended")
+                #     new_state.current_transaction.call_chain.append(record)
+                #     # 这里面的 添加 会导致 global_state.transaction_stack里面的 tx 添加 call_chain, 间接导致 
+                #     # world_state.transaction_sequence[-1]的 call_chain 也会发生改动
+                #     print("print transaction_stack call chain")
+                #     print(global_state.transaction_stack[-1][0].call_chain)
+                    # global_state.call_chain.append(record)
+                    
+                    # print(calldata)
+                    # print(hex(calldata))
+                    # print(disassembly.hash_to_function_name[hex(calldata)])
+                    # print("decl check ok !!!!!!!!!!")
                 # function_name = global_state.environment.active_account.code.address_to_function_name[jump_addr]
                 # print("current path reached function in addr {}".format(jump_addr))
-                if jump_addr in disassembly.address_to_function_name:
-                    print("current path reached function in addr {}".format(disassembly.address_to_function_name[jump_addr]))
+                # if jump_addr in disassembly.address_to_function_name:
+                    # function_name = disassembly.address_to_function_name[jump_addr]
+                    # print("current path reached function in addr {}".format(function_name))
+                    # record = "TX_"+global_state.current_transaction.id.__str__()+"_"+global_state.environment.active_account.contract_name+"."+function_name
+                    # global_state.world_state.transaction_sequence[-1].call_chain.append(record)
+                    # print("print transaction sequence: {}".format(global_state.world_state.transaction_sequence[-1].call_chain))
+                    # print("print transaction stack: {}".format(global_state.transaction_stack[-1][0].call_chain))
+                    # print(condi.__str__())
+
             else:
                 log.debug("Pruned unreachable states.")
         return states
@@ -1679,6 +1748,7 @@ class Instruction:
         instr = disassembly.instruction_list[index]
 
         if instr["opcode"] != "BEGINSUB":
+            print("Error: Encountered invalid JUMPSUB location :{}".format(instr["address"]))
             raise VmException(
                 "Encountered invalid JUMPSUB location :{}".format(instr["address"])
             )
@@ -1820,6 +1890,7 @@ class Instruction:
             world_state=world_state,
             caller=caller,
             code=code,
+            identifier=next_transaction_id,
             call_data=constructor_arguments,
             gas_price=gas_price,
             gas_limit=mstate.gas_limit,
@@ -1842,7 +1913,7 @@ class Instruction:
         )
 
     @StateTransition()
-    def create_post(self, global_state: GlobalState) -> List[GlobalState]:
+    def create_post(self, global_state: GlobalState, end_type = None) -> List[GlobalState]:
         return self._handle_create_type_post(global_state)
 
     @StateTransition(is_state_mutation_instruction=True)
@@ -1859,7 +1930,7 @@ class Instruction:
         )
 
     @StateTransition()
-    def create2_post(self, global_state: GlobalState) -> List[GlobalState]:
+    def create2_post(self, global_state: GlobalState, end_type = None) -> List[GlobalState]:
         return self._handle_create_type_post(global_state, opcode="create2")
 
     @staticmethod
@@ -1868,7 +1939,7 @@ class Instruction:
             global_state.mstate.pop(4)
         else:
             global_state.mstate.pop(3)
-        if global_state.last_return_data:
+        if global_state.last_return_data and global_state.last_return_data.return_data:
             return_val = symbol_factory.BitVecVal(
                 int(global_state.last_return_data.return_data, 16), 256
             )
@@ -1888,13 +1959,14 @@ class Instruction:
         if length.symbolic:
             return_data = [global_state.new_bitvec("return_data", 8)]
             log.debug("Return with symbolic length or offset. Not supported")
+            print("[Warning!!!] Return with symbolic length or offset. Not supported")
         else:
             state.mem_extend(offset, length)
             StateTransition.check_gas_usage_limit(global_state)
             return_data = state.memory[offset : offset + length]
-
+        
         global_state.current_transaction.end(
-            global_state, ReturnData(return_data, length)
+            global_state, return_data=ReturnData(return_data, length, ), end_type = "RETURN",
         )
 
     @StateTransition(is_state_mutation_instruction=True)
@@ -1918,7 +1990,7 @@ class Instruction:
 
         global_state.environment.active_account.set_balance(0)
         global_state.environment.active_account.deleted = True
-        global_state.current_transaction.end(global_state)
+        global_state.current_transaction.end(global_state, end_type = "STOP")
 
     @StateTransition()
     def revert_(self, global_state: GlobalState) -> None:
@@ -1953,8 +2025,10 @@ class Instruction:
             ]
         except TypeError:
             log.debug("Return with symbolic length or offset. Not supported")
+            print("Error: Return with symbolic length or offset. Not supported")
+
         global_state.current_transaction.end(
-            global_state, return_data=ReturnData(return_data, length), revert=True
+            global_state, return_data=ReturnData(return_data, length, ), end_type = "REVERT",
         )
 
     @StateTransition()
@@ -1982,7 +2056,7 @@ class Instruction:
 
         :param global_state:
         """
-        global_state.current_transaction.end(global_state)
+        global_state.current_transaction.end(global_state, end_type = "STOP",)
 
     @staticmethod
     def _write_symbolic_returndata(
@@ -1995,11 +2069,14 @@ class Instruction:
         :param memory_out_size:
         :return:
         """
+        # 写 returndata 到内存啥的
         if memory_out_offset.symbolic is True or memory_out_size.symbolic is True:
             return
         return_data = []
+        # 将 return_data_size 写成符号变量
         return_data_size = global_state.new_bitvec("returndatasize", 256)
 
+        # 将 return_data 写成符号变量
         for i in range(memory_out_size.value):
             data = global_state.new_bitvec(
                 "call_output_var({})_{}".format(
@@ -2016,10 +2093,15 @@ class Instruction:
                 return_data[i],
                 global_state.mstate.memory[memory_out_offset + i],
             )
-
-        global_state.last_return_data = ReturnData(
-            return_data=return_data, return_data_size=return_data_size
-        )
+        # 其实这个在 Transaction_End的时候会做， 然后 有些 返回的情况不会raise Transaction_end的时候 在这里处理。
+        if global_state.last_return_data is None:
+            print("add return Data to global_state")
+            global_state.last_return_data = ReturnData(
+                return_data=return_data, return_data_size=return_data_size
+            )
+        else:
+            global_state.last_return_data.return_data = return_data
+            global_state.last_return_data.return_data_size = return_data_size
 
     @StateTransition()
     def call_(self, global_state: GlobalState) -> List[GlobalState]:
@@ -2028,75 +2110,21 @@ class Instruction:
         :param global_state:
         :return:
         """
+        print("=============Call Instruction!! print stack states=============")
+        print(global_state.mstate.stack)
         instr = global_state.get_current_instruction()
         environment = global_state.environment
 
         memory_out_size, memory_out_offset = global_state.mstate.stack[-7:-5]
+        
+        # function_name = global_state.environment.active_function_name
+        # global_state.call_chain.append(global_state.environment.active_account.contract_name+"."+function_name)
+        
         recursive_call = False
 
         callable_sc = get_callable_sc_list(global_state)
-        # act = symbol_factory.BitVecVal(int("0xAFFEAFFEAFFEAFFEAFFEAFFEAFFEAFFEAFFEAFFE", 16), 256)
-        # att = symbol_factory.BitVecVal(int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16), 256)
-        # smg = symbol_factory.BitVecVal(int("0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 16), 256)
-        # current_account_addr = global_state.environment.active_account.address
-        # except_accounts_addr = [act,att,smg,current_account_addr]
-        # worldstate = global_state.world_state
-        # for addr,sc in worldstate.accounts.items():
-        #     if addr in except_accounts_addr:
-        #         continue
-        #     callable_sc.append(sc)
-        
-        # # 06.20 check recursive call kevin
-        # # transac_stack [e], e is a list -> [tx, global_state], tx -> tx.callee_account, tx.callee_account 可以是一个 符号类型整数, 也可以是一个 Account 类型. 
-        # # caller 可能是一个 符号类型的变量 sender3 或者 符号类型的 account 变量, caller.value是一个整数值. 和 calleraccount.address.value 同样
-        # txlist = global_state.transaction_stack
-        # len_txlist = len(txlist)
-        # tx_, oldgs_ = txlist[-1]
-        # # print("print origin and type")
-        # # print(tx_.origin.__str__())
-        # # print(type(tx_.origin))
-        # # print("print caller")
-        # # print(tx_.caller.__str__())
-        # # print(type(tx_.caller))
-        # # 验证了 tx_.caller 和 tx_.origin 都是 <mythril.laser.smt.bitvec.BitVec>类型的
-        # # 区别在于一个是 sender_N 和 一个是 具体的数值地址
-        # last_sender_tx_seq = []
-        # for i in range(len(txlist)):
-        #     tx, old_global_state = txlist[len_txlist-1-i]
-        #     origin = tx.origin.__str__()
-        #     caller = tx.caller.__str__()
-        #     callee = tx.callee_account.address.__str__()
-        #     last_sender_tx_seq.append((tx.origin, tx.caller, tx.callee_account))
-        #     pre_tx, pre_old_global_state = txlist[len_txlist-1-i-1]
-        #     if pre_tx.origin.__str__() != origin:
-        #         break
-        # # 上面代码提取出了最后一个 sender 的 相关 tx 序列 如果 callable_sc 存在于曾经的 callee 序列 那么可以停止了
-        # for origin, caller, callee in last_sender_tx_seq:
-        #     # print("print origin: " + origin.__str__())
-        #     # print("print caller: " + caller.__str__())
-        #     # print("print calee: " + callee.address.__str__())
-        #     flag = False
-        #     for sc in callable_sc:
-        #         # print("print callable sc")
-        #         # print(sc.address.__str__())
-        #         if callee.address.__str__() == sc.address.__str__():
-        #             # print("************** recursive call found! remove ! ****************** ")
-        #             # print(sc.address.__str__())
-        #             callable_sc.remove(sc)
-        #             flag = True
-        #             break
-        #     if flag:
-        #         break
-        # # print("final callable sc is ")
-        # # for sc in callable_sc:
-        #     # print(sc.address.__str__())
-            
-        # # 如果不允许 反复回调 那么 检查 callable_sc 然后 删掉
-        # # if not recursive_call:
-            
-
-
-
+        if callable_sc == []:
+            print("Empty callable list, so this is a external call, we will just return.")
         try:
             (
                 callee_address,
@@ -2106,10 +2134,17 @@ class Instruction:
                 gas,
                 memory_out_offset,
                 memory_out_size,
-            ) = get_call_parameters(global_state, self.dynamic_loader, True)
+            ) = get_call_parameters(global_state, self.dynamic_loader, with_value=True, )
+            # 除了 弹栈 读数据以外在里面也会 给 global_state.last_return_data 赋值
+            # 所以此时 global_state 已经具有了 last_return_data了
+
+
+            tx_id_manager.set_counter(int(global_state.world_state.transaction_sequence[-1].id))
+            next_id = tx_id_manager.get_next_tx_id()
             
             # 情况一: callee account 以符号的形式存在 并且 不含有代码, 
             if callee_account is not None and callee_account.code.bytecode == "" and callable_sc == []:
+                print("------------------call to EOA-------------------------------")
                 log.debug("The call is related to ether transfer between accounts")
                 sender = environment.active_account.address
                 receiver = callee_account.address
@@ -2126,6 +2161,7 @@ class Instruction:
             
             # 情况三  callee account 以符号的形式存在 并且 含有代码 但是 callable 为空 证明已经呼叫过了.
             if callee_account is not None and callee_account.code.bytecode != "" and callable_sc == []:
+                print("------------------no callable target, return -------------------------------")
                 log.debug("The call is related to ether transfer between accounts")
                 sender = environment.active_account.address
                 receiver = callee_account.address
@@ -2144,41 +2180,80 @@ class Instruction:
             # 情况二: callee_account 地址 是符号型的, 所以账户目前是空, 
             # 生成 可能 call 的 callsub 然后这个输入取决于用户输入
             if callee_account is not None and callee_account.code.bytecode == "" and callable_sc is not []:
+                print("------------------ get callable target call -------------------------------")
                 transactions = []
+                """
+                callee_account,
+                call_data,
+                value,
+                gas,
+                memory_out_offset,
+                memory_out_size,
+                """
+                # print("print calldata: {}".format(call_data))
+                # print("print value: {}".format(value))
+                # print("print original callee_account: {}".format(callee_account.address))
+                
+                # print("print calldata: {}".format(call_data))
+                
+                newconstraints = []
                 for sc in callable_sc:
+                    # to = global_state.mstate.stack[-2]
+                    # print(to)
+                    # print(sc.address)
+                    # print(global_state.world_state.constraints.is_possible())
+                    # step1 为了 后面 N 个 fork 生成 N 个 新的 TX
+                    # 这里是否需要 fork???????????????????????????????????????? 我们可以扔个后面 fork
                     transaction = MessageCallTransaction(
-                    world_state=global_state.world_state,
+                    world_state= global_state.world_state,
                     gas_price=environment.gasprice,
                     gas_limit=gas,
+                    identifier=next_id,
                     origin=environment.origin,
                     caller=environment.active_account.address,
                     callee_account=sc,
+                    code=sc.code,
                     call_data=call_data, # symbol
                     call_value=value,
                     static=environment.static,
+                    txtype = "Internal_MessageCall",
                     )
+                    # if index > 0:
+                        # 为了让每个分支 互不干扰. 不需要! 需要深度拷贝的是 global_state 不是你.
+                        # transaction = deepcopy(transaction)
+                    newconstraints.append(callee_address == sc.address)
                     transactions.append(transaction)
+                    
                 
                 # 添加 call 的 to 为一个指定地址 by kevin
-                to = global_state.mstate.stack[-2]
-                # global_state.world_state.constraints += [to == sc.address]
-                print(type(to))
-                print(type(sc.address))
-                print(sc.address)
-                print(hex(int(sc.address.__str__(),10)))
+                # to = global_state.mstate.stack[-2]
+                # addr = str(hex(int(sc.address.__str__(),10)))
+                
+                # print(type(to))
+                # print(type(sc.address))
+                # print(to)
+                # print(sc.address)
+                # print(hex(int(sc.address.__str__(),10)))
+                # print(type(sc))
+                # print(sc.address.value)
+                # global_state.world_state.constraints.append( to.__eq__(sc.address))
                 # 或者 删除 原有的 issue 
 
                 print("[callable tx created] =============")
-                print(transaction.callee_account.address)
-                raise TransactionStartSignal(transactions, self.op_code, global_state)
-                
+                print(transaction.callee_account.contract_name.__str__())
+                # print()
+                raise TransactionStartSignal(transactions, self.op_code, global_state, newconstraints)             
         
         except ValueError as e:
+            print("Weak Warning in [call]: Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
+                    e
+                ))
             log.debug(
                 "Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
                     e
                 )
             )
+            print("*************** valueError case in call instruction")
             self._write_symbolic_returndata(
                 global_state, memory_out_offset, memory_out_size
             )
@@ -2203,39 +2278,42 @@ class Instruction:
                         "Cannot call with non zero value in a static call"
                     )
         
-
-        
         # 情况三 调用提前编译好的那九个合约
         # 这个是 precompiled function 例如 sha3 这种                
         native_result = native_call(
             global_state, callee_address, call_data, memory_out_offset, memory_out_size
         )
         if native_result:
+            print("------------------ native call  -------------------------------")
             return native_result
         
         # 情况四 callee_account 存在 并且包含代码
+        print("------------------ call to a fixed or created target  -------------------------------")
         transaction = MessageCallTransaction(
             world_state=global_state.world_state,
             gas_price=environment.gasprice,
             gas_limit=gas,
+            identifier=next_id,
             origin=environment.origin,
             caller=environment.active_account.address,
             callee_account=callee_account,
+            code=callee_account.code,
             call_data=call_data,
             call_value=value,
             static=environment.static,
+            txtype = "Internal_MessageCall",
         )
         raise TransactionStartSignal([transaction], self.op_code, global_state)
 
     @StateTransition()
-    def call_post(self, global_state: GlobalState) -> List[GlobalState]:
+    def call_post(self, global_state: GlobalState, end_type = None) -> List[GlobalState]:
         """
 
         :param global_state:
         :return:
         """
 
-        return self.post_handler(global_state, function_name="call")
+        return self.post_handler(global_state, function_name="call", end_type=end_type)
 
     @StateTransition()
     def callcode_(self, global_state: GlobalState) -> List[GlobalState]:
@@ -2256,7 +2334,7 @@ class Instruction:
                 gas,
                 _,
                 _,
-            ) = get_call_parameters(global_state, self.dynamic_loader, True)
+            ) = get_call_parameters(global_state, self.dynamic_loader, with_value=False)
 
             if callee_account is not None and callee_account.code.bytecode == "":
                 log.debug("The call is related to ether transfer between accounts")
@@ -2273,6 +2351,9 @@ class Instruction:
                 return [global_state]
 
         except ValueError as e:
+            print("Weak Warning in [callcode]: Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
+                    e
+                ))
             log.debug(
                 "Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
                     e
@@ -2291,7 +2372,7 @@ class Instruction:
         )
         if native_result:
             return native_result
-
+        # identifier = id 记得弄
         transaction = MessageCallTransaction(
             world_state=global_state.world_state,
             gas_price=environment.gasprice,
@@ -2307,14 +2388,15 @@ class Instruction:
         raise TransactionStartSignal([transaction], self.op_code, global_state)
 
     @StateTransition()
-    def callcode_post(self, global_state: GlobalState) -> List[GlobalState]:
+    def callcode_post(self, global_state: GlobalState, end_type = None) -> List[GlobalState]:
         """
 
         :param global_state:
         :return:
         """
         instr = global_state.get_current_instruction()
-        memory_out_size, memory_out_offset = global_state.mstate.stack[-7:-5]
+        memory_out_offset = global_state.last_return_data.mem_out_off
+        memory_out_size = global_state.last_return_data.mem_out_size
         try:
             (
                 _,
@@ -2324,8 +2406,11 @@ class Instruction:
                 _,
                 memory_out_offset,
                 memory_out_size,
-            ) = get_call_parameters(global_state, self.dynamic_loader, True)
+            ) = get_call_parameters(global_state, self.dynamic_loader, with_value=False, post_handler = True)
         except ValueError as e:
+            print("Weak Warning in [callcode_post]: Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
+                    e
+                ))
             log.debug(
                 "Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
                     e
@@ -2339,7 +2424,7 @@ class Instruction:
             )
             return [global_state]
 
-        if global_state.last_return_data is None:
+        if global_state.last_return_data is None or global_state.last_return_data.return_data is None:
             # Put return value on stack
             return_value = global_state.new_bitvec(
                 "retval_" + str(instr["address"]), 256
@@ -2423,6 +2508,9 @@ class Instruction:
                 )
                 return [global_state]
         except ValueError as e:
+            print("Weak Warning in [delegatecall]: Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
+                    e
+                ))
             log.debug(
                 "Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
                     e
@@ -2457,14 +2545,15 @@ class Instruction:
         raise TransactionStartSignal([transaction], self.op_code, global_state)
 
     @StateTransition()
-    def delegatecall_post(self, global_state: GlobalState) -> List[GlobalState]:
+    def delegatecall_post(self, global_state: GlobalState, end_type = None) -> List[GlobalState]:
         """
 
         :param global_state:
         :return:
         """
         instr = global_state.get_current_instruction()
-        memory_out_size, memory_out_offset = global_state.mstate.stack[-6:-4]
+        memory_out_offset = global_state.last_return_data.mem_out_off
+        memory_out_size = global_state.last_return_data.mem_out_size
 
         try:
             (
@@ -2475,8 +2564,11 @@ class Instruction:
                 _,
                 memory_out_offset,
                 memory_out_size,
-            ) = get_call_parameters(global_state, self.dynamic_loader)
+            ) = get_call_parameters(global_state, self.dynamic_loader, with_value=False, post_handler = True)
         except ValueError as e:
+            print("Weak Warning in [delegatecall_post]: Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
+                    e
+                ))
             log.debug(
                 "Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
                     e
@@ -2490,7 +2582,7 @@ class Instruction:
             )
             return [global_state]
 
-        if global_state.last_return_data is None:
+        if global_state.last_return_data is None or global_state.last_return_data.return_data is None:
             # Put return value on stack
             return_value = global_state.new_bitvec(
                 "retval_" + str(instr["address"]), 256
@@ -2571,6 +2663,9 @@ class Instruction:
                 return [global_state]
 
         except ValueError as e:
+            print("Weak Warning in [staticcall]: Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
+                    e
+                ))
             log.debug(
                 "Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
                     e
@@ -2607,15 +2702,20 @@ class Instruction:
         raise TransactionStartSignal([transaction], self.op_code, global_state)
 
     @StateTransition()
-    def staticcall_post(self, global_state: GlobalState) -> List[GlobalState]:
-        return self.post_handler(global_state, function_name="staticcall")
+    def staticcall_post(self, global_state: GlobalState, end_type = None) -> List[GlobalState]:
+        return self.post_handler(global_state, function_name="staticcall", end_type = end_type)
+    
+    # 执行 call 之后的操作
+    def post_handler(self, global_state, function_name: str, end_type = None):
 
-    def post_handler(self, global_state, function_name: str):
         instr = global_state.get_current_instruction()
-        if function_name in ("staticcall", "delegatecall"):
-            memory_out_size, memory_out_offset = global_state.mstate.stack[-6:-4]
-        else:
-            memory_out_size, memory_out_offset = global_state.mstate.stack[-7:-5]
+
+        # if function_name in ("staticcall", "delegatecall"):
+        #     memory_out_size, memory_out_offset = global_state.mstate.stack[-6:-4]
+        # else:
+        #     memory_out_size, memory_out_offset = global_state.mstate.stack[-7:-5]
+        memory_out_offset = global_state.last_return_data.mem_out_off
+        memory_out_size = global_state.last_return_data.mem_out_size
 
         try:
             with_value = function_name != "staticcall"
@@ -2627,13 +2727,18 @@ class Instruction:
                 _,
                 memory_out_offset,
                 memory_out_size,
-            ) = get_call_parameters(global_state, self.dynamic_loader, with_value)
+            ) = get_call_parameters(global_state, self.dynamic_loader, with_value, post_handler = True)
+            
         except ValueError as e:
+            print("Weak Warning in [call/staticcall_post_handler]: Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
+                    e
+                ))
             log.debug(
                 "Could not determine required parameters for {}, putting fresh symbol on the stack. \n{}".format(
                     function_name, e
                 )
             )
+            print("Could not determine required parameters for {}, putting fresh symbol on the stack".format(function_name, e))
             self._write_symbolic_returndata(
                 global_state, memory_out_offset, memory_out_size
             )
@@ -2641,13 +2746,21 @@ class Instruction:
                 global_state.new_bitvec("retval_" + str(instr["address"]), 256)
             )
             return [global_state]
-
-        if global_state.last_return_data is None:
+        
+        #################
+        # STOP 命令就会这样，没有返回值， 但是返回值希望是1 ，下面 return 有 return_data 我们也让他返回值1 
+        if global_state.last_return_data is None or global_state.last_return_data.return_data is None:
             # Put return value on stack
             return_value = global_state.new_bitvec(
                 "retval_" + str(instr["address"]), 256
             )
             global_state.mstate.stack.append(return_value)
+            # 如果是 stop 则
+            if end_type == "STOP":
+                global_state.world_state.constraints.append(return_value == 1)
+            # 如果是 revert 则 
+            if end_type == "REVERT":
+                global_state.world_state.constraints.append(return_value == 0)
             return [global_state]
 
         try:

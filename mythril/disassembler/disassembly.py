@@ -30,6 +30,7 @@ class Disassembly(object):
         self.func_hashes = []  # type: List[str]
         self.function_name_to_address = {}  # type: Dict[str, int]
         self.address_to_function_name = {}  # type: Dict[int, str]
+        self.hash_to_function_name = {}     # type: Dict[int, str]
         self.enable_online_lookup = enable_online_lookup
         self.assign_bytecode(bytecode=code)
 
@@ -54,6 +55,7 @@ class Disassembly(object):
                 self.function_name_to_address[function_name] = jump_target
                 print("Function : {} with hash {} , address {} found".format(function_name, function_hash, jump_target))
                 self.address_to_function_name[jump_target] = function_name
+                self.hash_to_function_name[function_hash] = function_name
 
     def get_easm(self):
         """

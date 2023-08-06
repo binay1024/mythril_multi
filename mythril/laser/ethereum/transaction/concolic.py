@@ -101,8 +101,12 @@ def execute_message_call(
 
     open_states: List[WorldState] = laser_evm.open_states[:]
     del laser_evm.open_states[:]
+    prev_transaction_id = tx_id_manager._next_transaction_id
     for open_world_state in open_states:
         next_transaction_id = tx_id_manager.get_next_tx_id()
+        assert prev_transaction_id == int(next_transaction_id) +1, "id error"
+        prev_transaction_id = next_transaction_id
+        
         code = code or open_world_state[callee_address].code.bytecode
         transaction = MessageCallTransaction(
             world_state=open_world_state,

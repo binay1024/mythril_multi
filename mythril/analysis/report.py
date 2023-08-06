@@ -213,6 +213,7 @@ class Issue:
                 else:
                     step["name"] = "unknown"
             except ValueError:
+                print("warning: function name unknown")
                 step["name"] = "unknown"
 
     @staticmethod

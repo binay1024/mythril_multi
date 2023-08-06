@@ -1,5 +1,8 @@
 """This module contains a representation of the EVM's world state."""
-from copy import copy, deepcopy
+# from copy import copy as cp
+# from copy import deepcopy as dp
+# from copy import *
+import copy
 from random import randint
 from typing import Dict, List, Iterator, Optional, TYPE_CHECKING
 from eth._utils.address import generate_contract_address
@@ -31,7 +34,7 @@ class WorldState:
         """
         self._accounts = {}  # type: Dict[int, Account]
         self.balances = Array("balance", 256, 256)
-        self.starting_balances = deepcopy(self.balances)
+        self.starting_balances = copy.deepcopy(self.balances)
         self.constraints = constraints or Constraints()
 
         self.node = None  # type: Optional['Node']
@@ -53,44 +56,131 @@ class WorldState:
         except KeyError:
             new_account = Account(address=item, code=None, balances=self.balances)
             self._accounts[item.value] = new_account
+            print("ERROR get account ERROR +++++++++++++++++++++++++++++++++++++++++++++++++++=")
+            assert("asdfasdasf")
             return new_account
+        
+    def update_account_from_world_state(self, world_state: "WorldState" ):
+        # self._accounts[account.address.value] = account
+        # account._balances = self.balances
+        
+        for acc_addr, acc in world_state._accounts.items():
+            if acc_addr not in self._accounts:
+                self.put_account(acc)
+            else:
+                # 替换 account 的 balance 值
+                account = self._accounts[acc_addr]
+                
+                account.set_balance(acc.get_balance(acc_addr))
+                # 替换 storage
+                # account.set_storage(acc.storage.printable_storage)
+                account.storage = copy.deepcopy(acc.storage)
+
+
+    
+    # def update_world_statw_from_another(self, world_state: "WorldState" ) -> "WorldState":
+    #     # del self._annotations[:]
+    #     # for annotation in world_state._annotations:
+    #         # print(annotation)
+    #         # self._annotations.append(annotation)
+    #     # print(self._annotations)
+    #     print("print before balance {}".format(self.balances))
+    #     self._annotations = world_state._annotations[:]
+    #     self.constraints = copy.copy(world_state.constraints)
+    #     self.update_account_from_world_state(world_state)
+    #     # self.balances = copy(world_state.balances)
+    #     self.node = copy.copy(world_state.node)
+    #     print("print after balance {}".format(self.balances))
+
 
     def __copy__(self) -> "WorldState":
         """
 
         :return:
         """
-        new_annotations = [copy(a) for a in self._annotations]
+        transaction_sequence = []
+        new_annotations = [copy.copy(a) for a in self._annotations]
+        # transaction_sequence = copy.deepcopy(self.transaction_sequence)
         new_world_state = WorldState(
-            transaction_sequence=self.transaction_sequence[:],
+            transaction_sequence=self.transaction_sequence[:], # 浅拷贝
             annotations=new_annotations,
         )
-        new_world_state.balances = copy(self.balances)
-        new_world_state.starting_balances = copy(self.starting_balances)
+        new_world_state.balances = copy.copy(self.balances)
+        new_world_state.starting_balances = copy.copy(self.starting_balances)
         for account in self._accounts.values():
-            new_world_state.put_account(copy(account))
+            new_world_state.put_account(copy.copy(account))
         new_world_state.node = self.node
-        new_world_state.constraints = copy(self.constraints)
+        new_world_state.constraints = copy.copy(self.constraints)
+        
         return new_world_state
-
-    def __deepcopy__(self, _) -> "WorldState":
+    # 这个 deepcopy 只会拷贝 worldstate - tx - tx_seq 这一块, 至于 global_state 这一块的 tx 不会拷贝.
+    def __deepcopy__(self, memo=None) -> "WorldState":
         """
-
         :return:
         """
-        new_annotations = [copy(a) for a in self._annotations]
-        new_world_state = WorldState(
-            transaction_sequence=self.transaction_sequence[:],
-            annotations=new_annotations,
-        )
-        new_world_state.balances = copy(self.balances)
-        new_world_state.starting_balances = copy(self.starting_balances)
+        # 如果他已经存在于 拷贝的 TX 中了, 那么读出来就好
+        if id(self) in memo:
+            return memo[id(self)]
+        
+        # 如果不是的话 初始化对象, 然后 记得放到 memo中 
+        new_world_state = WorldState()
+        memo[id(self)] = new_world_state
+        # init 过程
+        new_world_state.constraints = copy.deepcopy(self.constraints) # 一个列表里面都是表达式
+        new_world_state.starting_balances = copy.deepcopy(self.starting_balances)
+        # 我现在希望从 account 拷贝到 new_world_state.account 里面
         for account in self._accounts.values():
-            new_world_state.put_account(copy(account))
-        new_world_state.node = self.node
-        new_world_state.constraints = deepcopy(self.constraints)
+            new_account = copy.deepcopy(account)
+            new_account._balances = new_world_state.balances
+            # print("print addr")
+            # print(account.address)
+            addr = (
+                account.address
+                if isinstance(account.address, BitVec)
+                else symbol_factory.BitVecVal(int(account.address, 16), 256)
+                )
+            new_account._balances[addr] = account._balances[addr]
+            new_world_state.put_account(new_account)
+        for annotation in self._annotations:
+            # annotation 不需要 deepcopy
+            # new_world_state._annotations.append(copy.deepcopy(annotation))
+            new_world_state._annotations.append(copy.deepcopy(annotation))
+        
+        ################## 处理 相互 参照的情况 ##############
+        
+        # 这个时候复制 TX 就好 不需要 复制 world_State 反正他们的 world_state 都得是 new_world_state
+        if self.transaction_sequence != []:
+            # new_tx = copy.deepcopy(self.transaction_sequence[-1],memo)
+            for tx in self.transaction_sequence:
+                new_tx = copy.deepcopy(tx,memo)
+                new_tx.world_state = new_world_state
+                new_world_state.transaction_sequence.append(new_tx)
+            # print(self.transaction_sequence)
+            # new_tx = copy.deepcopy(self.transaction_sequence[-1],memo)
+            # 这个就是咱 本体
+            # tx_world = new_tx.world_state
+            # 将心生成的 包含心 new_world_state new_tx 链接到原来的 TX里
+            # 其他的 tx 都是正常深度拷贝就可以了, 除了 最后一个, 最后一个处理完之后要 将当前的 world_state 赋值给它.
+            # new_world_state.transaction_sequence[-1].world_state = new_world_state
+            # new_world_state.transaction_sequence[-1] = new_tx
+            # new_tx.world_state = new_world_state  
+            # if new_world_state != new_world_state.transaction_sequence[-1].world_state:
+            #     print("Error +++++++++++++++++++ world_sate not match")
+        ###################################################
+        new_world_state.node = copy.copy(self.node)
+        
         return new_world_state
+    
+    def deepcopy_from_old(self, old_TX, memo) -> "WorldState":
+        if id(self) in memo:
+            return memo[id(self)]
+        
+        new_creation_tx = copy.deepcopy(old_TX)
+        
+        memo[id(self)] = new_creation_tx
+        return new_creation_tx
 
+    # 读一个单独 account 的时候用得到
     def accounts_exist_or_load(self, addr, dynamic_loader: DynLoader) -> Account:
         """
         returns account if it exists, else it loads from the dynamic loader
@@ -111,6 +201,7 @@ class WorldState:
 
         if addr_bitvec.value in self.accounts:
             return self.accounts[addr_bitvec.value]
+        
         if dynamic_loader is None:
             raise ValueError("dynamic_loader is None")
 
@@ -129,10 +220,12 @@ class WorldState:
                 )
             except ValueError:
                 # Initial balance will be a symbolic variable
+                print("Error: world_state_load_account addr Error, create new account!!")
                 pass
         try:
             code = dynamic_loader.dynld(addr)
         except ValueError:
+            print("Warning: world_state_load_account code Error, create new account!!")
             code = None
 
         return self.create_account(

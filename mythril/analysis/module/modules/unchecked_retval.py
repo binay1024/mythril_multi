@@ -1,6 +1,6 @@
 """This module contains detection code to find occurrences of calls whose
 return value remains unchecked."""
-from copy import copy
+from copy import copy, deepcopy
 from typing import cast, List
 
 from mythril.analysis import solver
@@ -32,6 +32,14 @@ class UncheckedRetvalAnnotation(StateAnnotation):
     def __copy__(self):
         result = UncheckedRetvalAnnotation()
         result.retvals = copy(self.retvals)
+        return result
+    
+    def __deepcopy__(self, memo):
+        if id(self) in memo:
+            return memo[id(self)]
+        result = UncheckedRetvalAnnotation()
+        memo[id(self)] = result
+        result.retvals = deepcopy(self.retvals)
         return result
 
 

@@ -32,3 +32,9 @@ class IssueAnnotation(StateAnnotation):
             issue=self.issue,
             detector=self.detector,
         )
+    def __deepcopy__(self, memo):
+        return IssueAnnotation(
+            conditions=deepcopy(self.conditions),
+            issue=deepcopy(self.issue), # 里面基本都是 str 类型成员
+            detector=self.detector,
+        )

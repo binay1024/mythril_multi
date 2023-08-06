@@ -114,18 +114,21 @@ def disassemble(bytecode) -> list:
         try:
             part_code = bytes(bytecode[-43:])
         except TypeError:
+            print("TypeError in disasm")
             part_code = ""
     try:
         if "bzzr" in str(part_code):
             # ignore swarm hash
             length -= 43
     except ValueError:
+        print("TypeError in disasm")
         pass
 
     while address < length:
         try:
             op_code = ADDRESS_OPCODE_MAPPING[bytecode[address]]
         except KeyError:
+            # print("Warning: Disassemble Key error, INVALID opcode generated")
             instruction_list.append(EvmInstruction(address, "INVALID"))
             address += 1
             continue

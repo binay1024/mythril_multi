@@ -1,6 +1,6 @@
 """This module contains the detection code to find multiple sends occurring in
 a single transaction."""
-from copy import copy
+from copy import copy, deepcopy
 from typing import cast, List
 from mythril.analysis.issue_annotation import IssueAnnotation
 from mythril.analysis.report import Issue
@@ -22,6 +22,17 @@ class MultipleSendsAnnotation(StateAnnotation):
     def __copy__(self):
         result = MultipleSendsAnnotation()
         result.call_offsets = copy(self.call_offsets)
+        return result
+    
+    def __deepcopy__(self, memo):
+        if id(self) in memo:
+            return memo[id(self)]
+        
+        result = MultipleSendsAnnotation()
+        memo[id(self)] = result
+
+        for ele in self.call_offsets:
+            result.call_offsets.append(deepcopy(ele))
         return result
 
 

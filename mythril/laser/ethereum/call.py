@@ -23,7 +23,7 @@ from mythril.laser.ethereum.state.global_state import GlobalState
 from mythril.laser.smt import BitVec, If
 from mythril.laser.smt import simplify, Expression, symbol_factory
 from mythril.support.loader import DynLoader
-
+from mythril.laser.ethereum.state.return_data import ReturnData
 """
 This module contains the business logic used by Instruction in instructions.py
 to get the necessary elements from the stack and determine the parameters for the new global state.
@@ -32,9 +32,9 @@ to get the necessary elements from the stack and determine the parameters for th
 log = logging.getLogger(__name__)
 SYMBOLIC_CALLDATA_SIZE = 320  # Used when copying symbolic calldata
 
-
+# stack 弹出操作
 def get_call_parameters(
-    global_state: GlobalState, dynamic_loader: DynLoader, with_value=False
+    global_state: GlobalState, dynamic_loader: DynLoader, with_value=False, post_handler = False,
 ):
     """Gets call parameters from global state Pops the values from the stack
     and determines output parameters.
@@ -45,6 +45,19 @@ def get_call_parameters(
     :param with_value: whether to pop the value argument from the stack
     :return: callee_account, call_data, value, call_data_type, gas
     """
+    # call post case
+    if post_handler:
+        return (
+            None,
+            None,
+            None,
+            None,
+            None,
+            global_state.last_return_data.mem_out_off,
+            global_state.last_return_data.mem_out_size,
+        )
+    
+    ## call case 
     gas, to = global_state.mstate.pop(2)
     value = global_state.mstate.pop() if with_value else 0
     (
@@ -53,7 +66,12 @@ def get_call_parameters(
         memory_out_offset,
         memory_out_size,
     ) = global_state.mstate.pop(4)
-
+    
+    # add return mem_out_off and size 
+    global_state.last_return_data = ReturnData(
+            mem_out_off = memory_out_offset, mem_out_size = memory_out_size
+        )
+    
     callee_address = get_callee_address(global_state, dynamic_loader, to)
 
     callee_account = None
@@ -102,7 +120,7 @@ def get_callee_address(
         )
     except TypeError:
         log.debug("Symbolic call encountered")
-
+        print("Symbolic call encountered")
         match = re.search(r"Storage\[(\d+)\]", str(simplify(symbolic_to_address)))
 
         if match is None or dynamic_loader is None:

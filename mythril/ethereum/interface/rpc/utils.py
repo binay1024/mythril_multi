@@ -30,6 +30,7 @@ def validate_block(block):
     """
     if isinstance(block, str):
         if block not in BLOCK_TAGS:
+            print("invalid block tag")
             raise ValueError("invalid block tag")
     if isinstance(block, int):
         block = hex(block)

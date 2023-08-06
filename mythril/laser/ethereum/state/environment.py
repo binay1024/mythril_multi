@@ -7,7 +7,7 @@ from z3 import ExprRef
 from mythril.laser.ethereum.state.account import Account
 from mythril.laser.ethereum.state.calldata import BaseCalldata
 from mythril.laser.smt import symbol_factory
-
+# from copy import copy, deepcopy
 
 class Environment:
     """The environment class represents the current execution environment for
@@ -64,6 +64,8 @@ class Environment:
         :return:
         """
         return str(self.as_dict)
+    
+    # def __copy__(self) -> "Environment"
 
     @property
     def as_dict(self) -> Dict:

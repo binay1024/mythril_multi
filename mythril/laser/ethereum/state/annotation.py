@@ -52,10 +52,12 @@ class MergeableStateAnnotation(StateAnnotation):
 
     @abstractmethod
     def check_merge_annotation(self, annotation) -> bool:
+        print("Error !! not implement ")
         pass
 
     @abstractmethod
     def merge_annotation(self, annotation):
+        print("Error !! not implement ")
         pass
 
 

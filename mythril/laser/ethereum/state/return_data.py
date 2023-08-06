@@ -9,13 +9,15 @@ from mythril.laser.smt import (
 class ReturnData:
     """Base returndata class."""
 
-    def __init__(self, return_data: List[BitVec], return_data_size: BitVec) -> None:
+    def __init__(self, return_data: List[BitVec] = None, return_data_size: BitVec = None, mem_out_off=None, mem_out_size=None) -> None:
         """
 
         :param tx_id:
         """
         self.return_data = return_data
         self.return_data_size = return_data_size
+        self.mem_out_off = mem_out_off
+        self.mem_out_size = mem_out_size
 
     @property
     def size(self) -> BitVec:

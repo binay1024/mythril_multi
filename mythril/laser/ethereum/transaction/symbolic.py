@@ -119,17 +119,33 @@ def execute_message_call(
     del laser_evm.open_states[:]
     # 第一次执行有 N 条路径 从而导致 N 种 worldstates 装入 open_states
     # 针对每种 路径下的 worldstates 我都会生成一个 对应的 global_states 和 messageCallTX 来去执行
+    
+
     for open_world_state in open_states:
-        if open_world_state[callee_address].deleted:
+        if open_world_state._accounts[callee_address.value].deleted:
             log.debug("Can not execute dead contract, skipping.")
             continue
-
+        tx_id_manager.set_counter(int(open_world_state.transaction_sequence[-1].id))
         next_transaction_id = tx_id_manager.get_next_tx_id()
 
         external_sender = symbol_factory.BitVecSym(
             "sender_{}".format(next_transaction_id), 256
         )
         calldata = SymbolicCalldata(next_transaction_id)
+        # 因为 在分支执行的时候我不希望两个 world_state 会互相影响 以及和 tx_sequence 里面存好的 world_state 互相影响
+        # 如果说 world_state1, world_state2 -> execute_message_call 
+        # 那么 在 执行 world_state1的路径上执行完毕之后 会在 open_state 里面放入 world_state1 下一次会接着执行, 而我们需要在 TX 里面放下的也是他 那么会最后影响 求值
+        # 所以 我们在这里 每次开始之前 fork 以下 隔离开 tx 中的 tx 以及 tx 中的 worldstate 和 现在继续执行路径上的 world和 tx
+        # 放屁!! 这就就是用于 继续执行的 , 不需要 fork
+        # new_open_world_state = deepcopy(open_world_state)
+        # 下面是 world_state deepcopy 纯 deep 的情况的代码
+        # del new_open_world_state.transaction_sequence[:]
+        # for tx in open_world_state.transaction_sequence:
+        #     new_open_world_state.transaction_sequence.append(tx)
+        # 这个是 world_state deepcopy chain 的情况, 也做到了隔绝
+        # new_open_world_state.transaction_sequence[-1] = open_world_state.transaction_sequence[-1]
+        # 这样就形成了 new_world_state.tx : [oldtx1, oldtx2, oldtx3] 一会儿加入 self 然后 他们的都是 old_world_state, 而最新的是 new_world_state
+        acc_code = open_world_state._accounts[callee_address.value].code
         transaction = MessageCallTransaction(
             world_state=open_world_state,
             identifier=next_transaction_id,
@@ -139,17 +155,20 @@ def execute_message_call(
             gas_limit=8000000,  # block gas limit
             origin=external_sender,
             caller=external_sender,
-            callee_account=open_world_state[callee_address],
+            callee_account=open_world_state._accounts[callee_address.value],
             call_data=calldata,
+            code=acc_code,
             call_value=symbol_factory.BitVecSym(
                 "call_value{}".format(next_transaction_id), 256
             ),
+            txtype = "EOA_MessageCall",
         )
         constraints = (
             generate_function_constraints(calldata, func_hashes)
             if func_hashes
             else None
         )
+
         _setup_global_state_for_execution(laser_evm, transaction, constraints)
 
     laser_evm.exec()
@@ -164,13 +183,17 @@ def execute_sub_contract_creation(
 ) -> Account:
     
     world_state = world_state or WorldState()
-    open_states = [world_state]
-    del laser_evm.open_states[:]
+    # open_states = [world_state]
+    # 删除 整个列表的对象引用, 只留着列表自己本身
     
-    for open_world_state in open_states:
-        sub_transactions = []
-        sub_accounts = []
-        for i in range(len(sub_contracts)):
+    
+    
+    sub_transactions = []
+    sub_accounts = []
+    for i in range(len(sub_contracts)):
+        open_states = [world_state]
+        for open_world_state in open_states:
+            del laser_evm.open_states[:]
             next_transaction_id = tx_id_manager.get_next_tx_id()
             sub_transactions.append(
                 ContractCreationTransaction(
@@ -192,9 +215,11 @@ def execute_sub_contract_creation(
             )
             _setup_global_state_for_execution(laser_evm, sub_transactions[i])
             
-
             laser_evm.exec(True)
             sub_accounts.append(sub_transactions[i].callee_account)
+            # 为了可以让下一个合约续上
+            if len(sub_contracts) >1:
+                open_states = laser_evm.open_states
             
     return sub_accounts if sub_accounts is not [] else None
 
@@ -263,6 +288,7 @@ def _setup_global_state_for_execution(
     # TODO: Resolve circular import between .transaction and ..svm to import LaserEVM here
     # 得到装有 worldstate, environment 的 全球变量
     global_state = transaction.initial_global_state()
+    # append transaction_stack
     global_state.transaction_stack.append((transaction, None))
     global_state.world_state.constraints += initial_constraints or []
 
@@ -289,8 +315,10 @@ def _setup_global_state_for_execution(
                 )
             )
         new_node.constraints = global_state.world_state.constraints
-
+    # append transaction_sequence
+    # 不 fork 的原因是因为 这个 global_state 需要 执行啊 .... 
     global_state.world_state.transaction_sequence.append(transaction)
+    
     global_state.node = new_node
     new_node.states.append(global_state)
     laser_evm.work_list.append(global_state)

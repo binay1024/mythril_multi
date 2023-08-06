@@ -11,7 +11,7 @@ from mythril.exceptions import UnsatError
 from mythril.laser.ethereum.state.global_state import GlobalState
 from mythril.laser.ethereum.state.annotation import StateAnnotation
 from mythril.analysis.module.base import DetectionModule, EntryPoint
-from copy import copy
+from copy import copy, deepcopy
 
 from mythril.laser.smt import (
     BVAddNoOverflow,
@@ -58,6 +58,17 @@ class OverUnderflowStateAnnotation(StateAnnotation):
         new_annotation.overflowing_state_annotations = copy(
             self.overflowing_state_annotations
         )
+
+        return new_annotation
+    
+    def __deepcopy__(self,memo):
+        if id(self) in memo:
+            return memo[id(self)]
+        
+        new_annotation = OverUnderflowStateAnnotation()
+        memo[id(self)] = new_annotation
+        for ele in self.overflowing_state_annotations:
+            new_annotation.overflowing_state_annotations.add(deepcopy(ele))
 
         return new_annotation
 

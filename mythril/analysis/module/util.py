@@ -34,6 +34,8 @@ def get_detection_module_hooks(
                 for actual_hook in to_register:
                     hook_dict[actual_hook].append(module.execute)
             else:
+                print("Encountered invalid hook opcode %s in module %s"%(op_code,
+                    module.name))
                 log.error(
                     "Encountered invalid hook opcode %s in module %s",
                     op_code,

@@ -69,6 +69,7 @@ class ModuleLoader(object, metaclass=Singleton):
 
             for name in white_list:
                 if name not in available_names:
+                    print("Error: Invalid detection module: {}".format(name))
                     raise DetectorNotFoundError(
                         "Invalid detection module: {}".format(name)
                     )

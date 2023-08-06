@@ -35,11 +35,20 @@ def fire_lasers(statespace, white_list: Optional[List[str]] = None) -> List[Issu
     log.info("Starting analysis")
 
     issues = []  # type: List[Issue]
-    for module in ModuleLoader().get_detection_modules(
-        entry_point=EntryPoint.POST, white_list=white_list
-    ):
-        log.info("Executing " + module.name)
-        issues += module.execute(statespace)
+    # for module in ModuleLoader().get_detection_modules(
+    #     entry_point=EntryPoint.POST, white_list=white_list
+    # ):
+    #     log.info("Executing " + module.name)
+    #     issues += module.execute(statespace)
 
-    issues += retrieve_callback_issues(white_list)
+    # issues += retrieve_callback_issues(white_list)
+    # need to upgrade 
+
+    for world_state_ in statespace.laser.open_states:
+        issue = []
+        for annotation_ in world_state_.annotations:
+            if annotation_.__class__.__name__ == "IssueAnnotation":
+                issue.append(annotation_.issue)
+        if issue is not []:
+            issues.append(issue)
     return issues

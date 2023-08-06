@@ -5,7 +5,7 @@ from mythril.laser.smt import symbol_factory, simplify, Bool
 from mythril.support.model import get_model
 from mythril.laser.ethereum.function_managers import keccak_function_manager
 
-from copy import copy
+from copy import copy, deepcopy
 from typing import Iterable, List, Optional, Union
 
 
@@ -92,8 +92,10 @@ class Constraints(list):
         """
         new_constraints = Constraints()
         for constraint in self:
-            new_constraints.append(copy(constraint))
+            # new_constraints.append(copy(constraint))
+            new_constraints.append(deepcopy(constraint))
         return new_constraints
+
 
     def __add__(self, constraints: List[Union[bool, Bool]]) -> "Constraints":
         """

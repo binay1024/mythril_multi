@@ -50,7 +50,10 @@ def pretty_print_model(model):
 
     return ret
 
-
+# 这里 globa_state 中 提取了 tx_sequence
+# global_state 中的 world_state 用于了 set_min
+# set_min 中用到了 world_state 的 starting balances 以及 account 的 地址
+# 所以还是需要 deepcopy 的
 def get_transaction_sequence(
     global_state: GlobalState, constraints: Constraints
 ) -> Dict[str, Any]:
@@ -215,7 +218,7 @@ def _get_concrete_transaction(model: z3.Model, transaction: BaseTransaction):
 
     return concrete_transaction
 
-
+# 用到了 world_state 的 starting balances 以及 account 的 地址 
 def _set_minimisation_constraints(
     transaction_sequence, constraints, minimize, max_size, world_state
 ) -> Tuple[Constraints, tuple]:

@@ -77,6 +77,7 @@ class EthJsonRpc(BaseClient):
             response = r.json()
             log.debug("rpc response: %s" % response)
         except ValueError:
+            print("BadJsonError " + str(r.text))
             raise BadJsonError(r.text)
         try:
             return response["result"]

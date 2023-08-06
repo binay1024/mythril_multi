@@ -21,13 +21,13 @@ class StackOverflowException(VmException):
 
 class InvalidJumpDestination(VmException):
     """A VM exception regarding JUMPs to invalid destinations."""
-
+    # print("Error: A VM exception regarding JUMPs to invalid destinations.")
     pass
 
 
 class InvalidInstruction(VmException):
     """A VM exception denoting an invalid op code has been encountered."""
-
+    # print("Error: A VM exception denoting an invalid op code has been encountered.")
     pass
 
 

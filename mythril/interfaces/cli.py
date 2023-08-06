@@ -4,7 +4,7 @@
 
    http://www.github.com/ConsenSys/mythril
 """
-
+ 
 import argparse
 import json
 import logging
@@ -891,21 +891,24 @@ def execute_command(
         else:
         #--------------------------------------여기까지 완료 ----------------------------------
             try:
-                report = analyzer.fire_lasers(
+                reports = analyzer.fire_lasers(
                     modules=[m.strip() for m in args.modules.strip().split(",")]
                     if args.modules
                     else None,
                     transaction_count=args.transaction_count,
                 )
+                for i in range(len(reports)):
+                    report = reports[i]
+                    print("print report in [%d]th open_state"%i)
 
-                outputs = {
-                    "json": report.as_json(),
-                    "jsonv2": report.as_swc_standard_format(),
-                    "text": report.as_text(),
-                    "markdown": report.as_markdown(),
-                }
-                print(outputs[args.outform])
-                if len(report.issues) > 0:
+                    outputs = {
+                        "json": report.as_json(),
+                        "jsonv2": report.as_swc_standard_format(),
+                        "text": report.as_text(),
+                        "markdown": report.as_markdown(),
+                    }
+                    print(outputs[args.outform])
+                if len(reports) > 0:
                     print_time()
                     exit(1)
                 else:

@@ -137,7 +137,7 @@ class MythrilAnalyzer:
         self,
         modules: Optional[List[str]] = None,
         transaction_count: Optional[int] = None,
-    ) -> Report:
+    ) -> List[Report]:
         """
         :param modules: The analysis modules which should be executed
         :param transaction_count: The amount of transactions to be executed
@@ -155,7 +155,8 @@ class MythrilAnalyzer:
                     contract,
                     self.address,
                     self.strategy,
-                    dynloader=DynLoader(self.eth, active=self.use_onchain_data),
+                    # dynloader=DynLoader(self.eth, active=self.use_onchain_data),
+                    dynloader=None,
                     max_depth=self.max_depth,
                     execution_timeout=self.execution_timeout,
                     loop_bound=self.loop_bound,
@@ -167,6 +168,7 @@ class MythrilAnalyzer:
                     custom_modules_directory=self.custom_modules_directory,
                     sub_contracts = self.sub_contracts
                 )
+                # 在这边分析漏洞吗?
                 issues = fire_lasers(sym, modules)
                 execution_info = sym.execution_info
             except DetectorNotFoundError as e:
@@ -183,8 +185,9 @@ class MythrilAnalyzer:
                 issues = retrieve_callback_issues(modules)
                 exceptions.append(traceback.format_exc())
             for issue in issues:
-                issue.add_code_info(contract)
-
+                for single_issue in issue:
+                    single_issue.add_code_info(contract)
+        
             all_issues += issues
             log.info("Solver statistics: \n{}".format(str(SolverStatistics())))
 
@@ -192,12 +195,15 @@ class MythrilAnalyzer:
         source_data.get_source_from_contracts_list(self.contracts)
 
         # Finally, output the results
-        report = Report(
+        
+        reports = []
+        for issue in all_issues:
+            report = Report(
             contracts=self.contracts,
             exceptions=exceptions,
             execution_info=execution_info,
-        )
-        for issue in all_issues:
-            report.append_issue(issue)
-
-        return report
+            )
+            for single_ in issue:
+                report.append_issue(single_)
+            reports.append(report)
+        return reports

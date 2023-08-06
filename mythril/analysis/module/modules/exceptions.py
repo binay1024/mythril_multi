@@ -13,6 +13,7 @@ from mythril.laser.ethereum.state.global_state import GlobalState
 from mythril.laser.ethereum.state.annotation import StateAnnotation
 from mythril.laser.ethereum import util
 from mythril.laser.smt import And
+from copy import copy, deepcopy
 
 from mythril.support.support_utils import get_code_hash
 
@@ -31,6 +32,10 @@ class LastJumpAnnotation(StateAnnotation):
     def __copy__(self):
         new_annotation = LastJumpAnnotation(self.last_jump)
         return new_annotation
+    def __deepcopy__(self, memo):
+        new_annotation = LastJumpAnnotation(deepcopy(self.last_jump))
+        return new_annotation
+    
 
 
 class Exceptions(DetectionModule):

@@ -1,6 +1,6 @@
 """This module contains a representation of the EVM's machine state and its
 stack."""
-from copy import copy
+from copy import copy, deepcopy
 from typing import cast, Sized, Union, Any, List, Dict, Optional
 
 from mythril.laser.smt import BitVec, Bool, If, Expression, symbol_factory
@@ -219,16 +219,24 @@ class MachineState:
         :return:
         """
         memodict = {} if memodict is None else memodict
-        return MachineState(
+        new_statck = deepcopy(self.stack)
+        new_memory = deepcopy(self.memory)
+        new_subroutine_stack = deepcopy(self.subroutine_stack)
+        new_machine_state = MachineState(
             gas_limit=self.gas_limit,
             max_gas_used=self.max_gas_used,
             min_gas_used=self.min_gas_used,
             pc=self.pc,
-            stack=copy(self.stack),
-            memory=copy(self.memory),
+            # stack=copy(self.stack),
+            stack=new_statck,
+            # memory=copy(self.memory),
+            memory=new_memory,
             depth=self.depth,
-            subroutine_stack=copy(self.subroutine_stack),
+            # subroutine_stack=copy(self.subroutine_stack),
+            subroutine_stack = new_subroutine_stack,
         )
+        # 赋值等.
+        return new_machine_state
 
     def __str__(self):
         """

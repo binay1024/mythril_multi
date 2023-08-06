@@ -1,0 +1,692 @@
+Concat(0,
+       Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(255,
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                   255),
+                            255),
+                     255),
+              255)) &
+Concat(0,
+       Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(Concat(255,
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                        255),
+                                   255),
+                            255),
+                     255),
+              255)) &
+UDiv(Concat(0,
+            If(3_calldatasize <= 16, 0, 3_calldata[16]),
+            If(3_calldatasize <= 17, 0, 3_calldata[17]),
+            If(3_calldatasize <= 18, 0, 3_calldata[18]),
+            If(3_calldatasize <= 19, 0, 3_calldata[19]),
+            If(3_calldatasize <= 20, 0, 3_calldata[20]),
+            If(3_calldatasize <= 21, 0, 3_calldata[21]),
+            If(3_calldatasize <= 22, 0, 3_calldata[22]),
+            If(3_calldatasize <= 23, 0, 3_calldata[23]),
+            If(3_calldatasize <= 24, 0, 3_calldata[24]),
+            If(3_calldatasize <= 25, 0, 3_calldata[25]),
+            If(3_calldatasize <= 26, 0, 3_calldata[26]),
+            If(3_calldatasize <= 27, 0, 3_calldata[27]),
+            If(3_calldatasize <= 28, 0, 3_calldata[28]),
+            If(3_calldatasize <= 29, 0, 3_calldata[29]),
+            If(3_calldatasize <= 30, 0, 3_calldata[30]),
+            If(3_calldatasize <= 31, 0, 3_calldata[31]),
+            If(3_calldatasize <= 32, 0, 3_calldata[32]),
+            If(3_calldatasize <= 33, 0, 3_calldata[33]),
+            If(3_calldatasize <= 34, 0, 3_calldata[34]),
+            If(3_calldatasize <= 35, 0, 3_calldata[35])),
+     1) ==
+1271270613000041655817448348132275889066893754095
+
+
+=====================================================================
+
+
+[Or(Not(ULE(balance[1004753105490295263244812946565948198177742958590],
+           call_value1)),
+   balance[1004753105490295263244812946565948198177742958590] ==
+   call_value1), 
+
+True, 
+call_value1 == 0, Or(Not(ULE(balance[1004753105490295263244812946565948198177742958590] +
+           115792089237316195423570985008687907853269984665640564039457584007913129639935*
+           call_value1,
+           call_value2)),
+   balance[1004753105490295263244812946565948198177742958590] +
+   115792089237316195423570985008687907853269984665640564039457584007913129639935*
+   call_value1 ==
+   call_value2), 
+
+True, 
+call_value2 == 0, 
+2_calldatasize == 1764, 
+True, 
+And(Or(2_calldatasize <= 11, 2_calldata[11] == 0),
+    Or(2_calldata[10] == 0, 2_calldatasize <= 10),
+    Or(2_calldata[9] == 0, 2_calldatasize <= 9),
+    Or(2_calldata[8] == 0, 2_calldatasize <= 8),
+    Or(2_calldata[7] == 0, 2_calldatasize <= 7),
+    Or(2_calldata[6] == 0, 2_calldatasize <= 6),
+    Or(2_calldata[5] == 0, 2_calldatasize <= 5),
+    Or(2_calldata[4] == 0, 2_calldatasize <= 4),
+    Or(2_calldatasize <= 3, 2_calldata[3] == 0),
+    Or(2_calldatasize <= 2, 2_calldata[2] == 0),
+    Or(2_calldatasize <= 1, 2_calldata[1] == 0),
+    Or(2_calldatasize <= 0, 2_calldata[0] == 0)), 
+
+Power(256, 0) == 1, 
+Or(Not(ULE(Store(Store(Store(Store(balance,
+                                   1004753105490295263244812946565948198177742958590,
+                                   balance[1004753105490295263244812946565948198177742958590] +
+                                   115792089237316195423570985008687907853269984665640564039457584007913129639935*
+                                   call_value1 +
+                                   115792089237316195423570985008687907853269984665640564039457584007913129639935*
+                                   call_value2),
+                             1271270613000041655817448348132275889066893754095,
+                             balance[1271270613000041655817448348132275889066893754095]),
+                       51421440056055728346017419001665401074216449311,
+                       call_value1),
+                 321474317806661133005631537738372018995223047802,
+                 call_value2)[sender_3],
+           call_value3)),
+   Store(Store(Store(Store(balance,
+                           1004753105490295263244812946565948198177742958590,
+                           balance[1004753105490295263244812946565948198177742958590] +
+                           115792089237316195423570985008687907853269984665640564039457584007913129639935*
+                           call_value1 +
+                           115792089237316195423570985008687907853269984665640564039457584007913129639935*
+                           call_value2),
+                     1271270613000041655817448348132275889066893754095,
+                     balance[1271270613000041655817448348132275889066893754095]),
+               51421440056055728346017419001665401074216449311,
+               call_value1),
+         321474317806661133005631537738372018995223047802,
+         call_value2)[sender_3] ==
+   call_value3), 
+
+Or(sender_3 ==
+   1004753105490295263244812946565948198177742958590,
+   sender_3 ==
+   974334424887268612135789888477522013103955028650,
+   sender_3 ==
+   1271270613000041655817448348132275889066893754095)
+
+call_value3 == 0
+
+ULE(4, 3_calldatasize)
+
+And(3_calldata[3] == 183,
+    Not(3_calldatasize <= 3),
+    3_calldata[2] == 205,
+    Not(3_calldatasize <= 2),
+    3_calldata[1] == 46,
+    Not(3_calldatasize <= 1),
+    3_calldata[0] == 79,
+    Not(3_calldatasize <= 0))
+
+64 <=
+115792089237316195423570985008687907853269984665640564039457584007913129639932 +
+3_calldatasize
+
+Power(256, 0) == 1
+
+Not(3_extcodesize_Concat(0,
+       If(2_calldatasize <= 12, 0, 2_calldata[12]),
+       If(2_calldatasize <= 13, 0, 2_calldata[13]),
+       If(2_calldatasize <= 14, 0, 2_calldata[14]),
+       If(2_calldatasize <= 15, 0, 2_calldata[15]),
+       If(2_calldatasize <= 16, 0, 2_calldata[16]),
+       If(2_calldatasize <= 17, 0, 2_calldata[17]),
+       If(2_calldatasize <= 18, 0, 2_calldata[18]),
+       If(2_calldatasize <= 19, 0, 2_calldata[19]),
+       If(2_calldatasize <= 20, 0, 2_calldata[20]),
+       If(2_calldatasize <= 21, 0, 2_calldata[21]),
+       If(2_calldatasize <= 22, 0, 2_calldata[22]),
+       If(2_calldatasize <= 23, 0, 2_calldata[23]),
+       If(2_calldatasize <= 24, 0, 2_calldata[24]),
+       If(2_calldatasize <= 25, 0, 2_calldata[25]),
+       If(2_calldatasize <= 26, 0, 2_calldata[26]),
+       If(2_calldatasize <= 27, 0, 2_calldata[27]),
+       If(2_calldatasize <= 28, 0, 2_calldata[28]),
+       If(2_calldatasize <= 29, 0, 2_calldata[29]),
+       If(2_calldatasize <= 30, 0, 2_calldata[30]),
+       If(2_calldatasize <= 31, 0, 2_calldata[31])) ==
+    0)
+
+And(2_calldata[31] == 31,
+    Not(2_calldatasize <= 31),
+    2_calldata[30] == 181,
+    Not(2_calldatasize <= 30),
+    2_calldata[29] == 25,
+    Not(2_calldatasize <= 29),
+    2_calldata[28] == 174,
+    Not(2_calldatasize <= 28),
+    2_calldata[27] == 52,
+    Not(2_calldatasize <= 27),
+    2_calldata[26] == 119,
+    Not(2_calldatasize <= 26),
+    2_calldata[25] == 189,
+    Not(2_calldatasize <= 25),
+    2_calldata[24] == 98,
+    Not(2_calldatasize <= 24),
+    2_calldata[23] == 142,
+    Not(2_calldatasize <= 23),
+    2_calldata[22] == 116,
+    Not(2_calldatasize <= 22),
+    2_calldata[21] == 168,
+    Not(2_calldatasize <= 21),
+    2_calldata[20] == 90,
+    Not(2_calldatasize <= 20),
+    2_calldata[19] == 94,
+    Not(2_calldatasize <= 19),
+    2_calldata[18] == 25,
+    Not(2_calldatasize <= 18),
+    2_calldata[17] == 27,
+    Not(2_calldatasize <= 17),
+    2_calldata[16] == 190,
+    Not(2_calldatasize <= 16),
+    2_calldata[15] == 46,
+    Not(2_calldatasize <= 15),
+    2_calldata[14] == 209,
+    Not(2_calldatasize <= 14),
+    2_calldata[13] == 1,
+    Not(2_calldatasize <= 13),
+    2_calldata[12] == 9,
+    Not(2_calldatasize <= 12))
+
+Or(Not(ULE(
+              Store(Store(Store(Store(Store(balance,
+                                        1004753105490295263244812946565948198177742958590,
+                                        balance[1004753105490295263244812946565948198177742958590] +
+                                        115792089237316195423570985008687907853269984665640564039457584007913129639935*
+                                        call_value1 +
+                                        115792089237316195423570985008687907853269984665640564039457584007913129639935*
+                                        call_value2),
+                                   1271270613000041655817448348132275889066893754095,
+                                   balance[1271270613000041655817448348132275889066893754095]),
+                             51421440056055728346017419001665401074216449311,
+                             call_value1),
+                       321474317806661133005631537738372018995223047802,
+                       call_value2 + call_value3),
+                 sender_3,
+                 Store(Store(Store(Store(balance,
+                                        1004753105490295263244812946565948198177742958590,
+                                        balance[1004753105490295263244812946565948198177742958590] +
+                                        115792089237316195423570985008687907853269984665640564039457584007913129639935*
+                                        call_value1 +
+                                        115792089237316195423570985008687907853269984665640564039457584007913129639935*
+                                        call_value2),
+                                   1271270613000041655817448348132275889066893754095,
+                                   balance[1271270613000041655817448348132275889066893754095]),
+                             51421440056055728346017419001665401074216449311,
+                             call_value1),
+                       321474317806661133005631537738372018995223047802,
+                       call_value2 + call_value3)[sender_3] +
+                 115792089237316195423570985008687907853269984665640564039457584007913129639935*
+                 call_value3)[51421440056055728346017419001665401074216449311],
+
+           Concat(If(3_calldatasize <= 36,
+                     0,
+                     3_calldata[36]),
+                  If(3_calldatasize <= 37,
+                     0,
+                     3_calldata[37]),
+                  If(3_calldatasize <= 38,
+                     0,
+                     3_calldata[38]),
+                  If(3_calldatasize <= 39,
+                     0,
+                     3_calldata[39]),
+                  If(3_calldatasize <= 40,
+                     0,
+                     3_calldata[40]),
+                  If(3_calldatasize <= 41,
+                     0,
+                     3_calldata[41]),
+                  If(3_calldatasize <= 42,
+                     0,
+                     3_calldata[42]),
+                  If(3_calldatasize <= 43,
+                     0,
+                     3_calldata[43]),
+                  If(3_calldatasize <= 44,
+                     0,
+                     3_calldata[44]),
+                  If(3_calldatasize <= 45,
+                     0,
+                     3_calldata[45]),
+                  If(3_calldatasize <= 46,
+                     0,
+                     3_calldata[46]),
+                  If(3_calldatasize <= 47,
+                     0,
+                     3_calldata[47]),
+                  If(3_calldatasize <= 48,
+                     0,
+                     3_calldata[48]),
+                  If(3_calldatasize <= 49,
+                     0,
+                     3_calldata[49]),
+                  If(3_calldatasize <= 50,
+                     0,
+                     3_calldata[50]),
+                  If(3_calldatasize <= 51,
+                     0,
+                     3_calldata[51]),
+                  If(3_calldatasize <= 52,
+                     0,
+                     3_calldata[52]),
+                  If(3_calldatasize <= 53,
+                     0,
+                     3_calldata[53]),
+                  If(3_calldatasize <= 54,
+                     0,
+                     3_calldata[54]),
+                  If(3_calldatasize <= 55,
+                     0,
+                     3_calldata[55]),
+                  If(3_calldatasize <= 56,
+                     0,
+                     3_calldata[56]),
+                  If(3_calldatasize <= 57,
+                     0,
+                     3_calldata[57]),
+                  If(3_calldatasize <= 58,
+                     0,
+                     3_calldata[58]),
+                  If(3_calldatasize <= 59,
+                     0,
+                     3_calldata[59]),
+                  If(3_calldatasize <= 60,
+                     0,
+                     3_calldata[60]),
+                  If(3_calldatasize <= 61,
+                     0,
+                     3_calldata[61]),
+                  If(3_calldatasize <= 62,
+                     0,
+                     3_calldata[62]),
+                  If(3_calldatasize <= 63,
+                     0,
+                     3_calldata[63]),
+                  If(3_calldatasize <= 64,
+                     0,
+                     3_calldata[64]),
+                  If(3_calldatasize <= 65,
+                     0,
+                     3_calldata[65]),
+                  If(3_calldatasize <= 66,
+                     0,
+                     3_calldata[66]),
+                  If(3_calldatasize <= 67,
+                     0,
+                     3_calldata[67])))),
+   Store(Store(Store(Store(Store(balance,
+                                 1004753105490295263244812946565948198177742958590,
+                                 balance[1004753105490295263244812946565948198177742958590] +
+                                 115792089237316195423570985008687907853269984665640564039457584007913129639935*
+                                 call_value1 +
+                                 115792089237316195423570985008687907853269984665640564039457584007913129639935*
+                                 call_value2),
+                           1271270613000041655817448348132275889066893754095,
+                           balance[1271270613000041655817448348132275889066893754095]),
+                     51421440056055728346017419001665401074216449311,
+                     call_value1),
+               321474317806661133005631537738372018995223047802,
+               call_value2 + call_value3),
+         sender_3,
+         Store(Store(Store(Store(balance,
+                                 1004753105490295263244812946565948198177742958590,
+                                 balance[1004753105490295263244812946565948198177742958590] +
+                                 115792089237316195423570985008687907853269984665640564039457584007913129639935*
+                                 call_value1 +
+                                 115792089237316195423570985008687907853269984665640564039457584007913129639935*
+                                 call_value2),
+                           1271270613000041655817448348132275889066893754095,
+                           balance[1271270613000041655817448348132275889066893754095]),
+                     51421440056055728346017419001665401074216449311,
+                     call_value1),
+               321474317806661133005631537738372018995223047802,
+               call_value2 + call_value3)[sender_3] +
+         115792089237316195423570985008687907853269984665640564039457584007913129639935*
+         call_value3)[51421440056055728346017419001665401074216449311] ==
+   Concat(If(3_calldatasize <= 36, 0, 3_calldata[36]),
+          If(3_calldatasize <= 37, 0, 3_calldata[37]),
+          If(3_calldatasize <= 38, 0, 3_calldata[38]),
+          If(3_calldatasize <= 39, 0, 3_calldata[39]),
+          If(3_calldatasize <= 40, 0, 3_calldata[40]),
+          If(3_calldatasize <= 41, 0, 3_calldata[41]),
+          If(3_calldatasize <= 42, 0, 3_calldata[42]),
+          If(3_calldatasize <= 43, 0, 3_calldata[43]),
+          If(3_calldatasize <= 44, 0, 3_calldata[44]),
+          If(3_calldatasize <= 45, 0, 3_calldata[45]),
+          If(3_calldatasize <= 46, 0, 3_calldata[46]),
+          If(3_calldatasize <= 47, 0, 3_calldata[47]),
+          If(3_calldatasize <= 48, 0, 3_calldata[48]),
+          If(3_calldatasize <= 49, 0, 3_calldata[49]),
+          If(3_calldatasize <= 50, 0, 3_calldata[50]),
+          If(3_calldatasize <= 51, 0, 3_calldata[51]),
+          If(3_calldatasize <= 52, 0, 3_calldata[52]),
+          If(3_calldatasize <= 53, 0, 3_calldata[53]),
+          If(3_calldatasize <= 54, 0, 3_calldata[54]),
+          If(3_calldatasize <= 55, 0, 3_calldata[55]),
+          If(3_calldatasize <= 56, 0, 3_calldata[56]),
+          If(3_calldatasize <= 57, 0, 3_calldata[57]),
+          If(3_calldatasize <= 58, 0, 3_calldata[58]),
+          If(3_calldatasize <= 59, 0, 3_calldata[59]),
+          If(3_calldatasize <= 60, 0, 3_calldata[60]),
+          If(3_calldatasize <= 61, 0, 3_calldata[61]),
+          If(3_calldatasize <= 62, 0, 3_calldata[62]),
+          If(3_calldatasize <= 63, 0, 3_calldata[63]),
+          If(3_calldatasize <= 64, 0, 3_calldata[64]),
+          If(3_calldatasize <= 65, 0, 3_calldata[65]),
+          If(3_calldatasize <= 66, 0, 3_calldata[66]),
+          If(3_calldatasize <= 67, 0, 3_calldata[67])
+
+          ))
+
+
+
+
+
+
+
+
+Not(4_returndatasize == 0)
+
+===
+
+用户 1: 1004753105490295263244812946565948198177742958590
+用户 2: 1271270613000041655817448348132275889066893754095
+用户 3: 51421440056055728346017419001665401074216449311
+       0x321474317806661133005631537738372018995223047802
+用户 4: 974334424887268612135789888477522013103955028650
+       0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+
+用户 1: creation 过程: 
+   1. init global_state: UGE(global_state.world_state.balances[sender], value):
+       Or(Not(ULE(balance[1004753105490295263244812946565948198177742958590],
+           call_value1)),
+       balance[1004753105490295263244812946565948198177742958590] ==
+       call_value1)
+   2. setup global_state: Or(*[transaction.caller == actor for actor in ACTORS.addresses.values()])
+       (True)
+   3. jumpi: 添加了 constraint 
+       一种是: call_value1 == 0 一种是 not(call_value1 == 0)
+  执行命令后添加: 
+   call_value1 == 0]
+---------------------------------------------------------------------------------------------------------
+用户2 的 creation 过程:
+    1. 接着原来的 constraint:    
+       [Or(Not(ULE(balance[1004753105490295263244812946565948198177742958590],
+                  call_value1)),
+       balance[1004753105490295263244812946565948198177742958590] ==
+       call_value1), True, call_value1 == 0, ]
+    2. UGE(global_state.world_state.balances[sender], value) 大于(不小于) 或者 等于
+       global_state.world_state.balances[sender] 为 [balance[1004753105490295263244812946565948198177742958590] +
+              115792089237316195423570985008687907853269984665640564039457584007913129639935*call_value1]
+
+       --------
+       Or(Not(ULE(
+              balance[1004753105490295263244812946565948198177742958590] +
+              115792089237316195423570985008687907853269984665640564039457584007913129639935*
+              call_value1, call_value2)),
+          balance[1004753105490295263244812946565948198177742958590] +
+          115792089237316195423570985008687907853269984665640564039457584007913129639935*
+          call_value1 == call_value2)
+    3. True, 
+    4. Not(call_value2 == 0)
+    5. 2_calldatasize == 1764
+    6. True, 
+    7. jumpi 
+       Not(And(Or(2_calldatasize <= 11, 2_calldata[11] == 0),
+        Or(2_calldata[10] == 0, 2_calldatasize <= 10),
+        Or(2_calldatasize <= 9, 2_calldata[9] == 0),
+        Or(2_calldatasize <= 8, 2_calldata[8] == 0),
+        Or(2_calldatasize <= 7, 2_calldata[7] == 0),
+        Or(2_calldatasize <= 6, 2_calldata[6] == 0),
+        Or(2_calldata[5] == 0, 2_calldatasize <= 5),
+        Or(2_calldatasize <= 4, 2_calldata[4] == 0),
+        Or(2_calldatasize <= 3, 2_calldata[3] == 0),
+        Or(2_calldatasize <= 2, 2_calldata[2] == 0),
+        Or(2_calldatasize <= 1, 2_calldata[1] == 0),
+        Or(2_calldatasize <= 0, 2_calldata[0] == 0)))]
+    8. exp_ -> exponent _function)_manager 
+       Power(256, 0) == 1
+-------
+用户 3 执行  execute message call 的 
+
+       Or(Not(ULE(Store(Store(Store(Store(balance,
+                                   1004753105490295263244812946565948198177742958590,
+                                   balance[1004753105490295263244812946565948198177742958590] +
+                                   115792089237316195423570985008687907853269984665640564039457584007913129639935*
+                                   call_value1 +
+                                   115792089237316195423570985008687907853269984665640564039457584007913129639935*
+                                   call_value2),
+                             1271270613000041655817448348132275889066893754095,
+                             balance[1271270613000041655817448348132275889066893754095]),
+                       51421440056055728346017419001665401074216449311,
+                       call_value1),
+                 321474317806661133005631537738372018995223047802,
+                 call_value2)[sender_3],
+           call_value3)),
+   Store(Store(Store(Store(balance,
+                           1004753105490295263244812946565948198177742958590,
+                           balance[1004753105490295263244812946565948198177742958590] +
+                           115792089237316195423570985008687907853269984665640564039457584007913129639935*
+                           call_value1 +
+                           115792089237316195423570985008687907853269984665640564039457584007913129639935*
+                           call_value2),
+                     1271270613000041655817448348132275889066893754095,
+                     balance[1271270613000041655817448348132275889066893754095]),
+               51421440056055728346017419001665401074216449311,
+               call_value1),
+         321474317806661133005631537738372018995223047802,
+         call_value2)[sender_3] ==
+   call_value3)
+   Or(sender_3 ==
+   1271270613000041655817448348132275889066893754095,
+   sender_3 ==
+   1004753105490295263244812946565948198177742958590,
+   sender_3 ==
+   974334424887268612135789888477522013103955028650)
+   call_value3 == 0
+   ULE(4, 3_calldatasize)
+
+执行 call 的时候的 stack : 
+
+
+[
+LShR(Concat(If(3_calldatasize <= 0, 0, 3_calldata[0]),
+            If(3_calldatasize <= 1, 0, 3_calldata[1]),
+            If(3_calldatasize <= 2, 0, 3_calldata[2]),
+            If(3_calldatasize <= 3, 0, 3_calldata[3]),
+            If(3_calldatasize <= 4, 0, 3_calldata[4]),
+            If(3_calldatasize <= 5, 0, 3_calldata[5]),
+            If(3_calldatasize <= 6, 0, 3_calldata[6]),
+            If(3_calldatasize <= 7, 0, 3_calldata[7]),
+            If(3_calldatasize <= 8, 0, 3_calldata[8]),
+            If(3_calldatasize <= 9, 0, 3_calldata[9]),
+            If(3_calldatasize <= 10, 0, 3_calldata[10]),
+            If(3_calldatasize <= 11, 0, 3_calldata[11]),
+            If(3_calldatasize <= 12, 0, 3_calldata[12]),
+            If(3_calldatasize <= 13, 0, 3_calldata[13]),
+            If(3_calldatasize <= 14, 0, 3_calldata[14]),
+            If(3_calldatasize <= 15, 0, 3_calldata[15]),
+            If(3_calldatasize <= 16, 0, 3_calldata[16]),
+            If(3_calldatasize <= 17, 0, 3_calldata[17]),
+            If(3_calldatasize <= 18, 0, 3_calldata[18]),
+            If(3_calldatasize <= 19, 0, 3_calldata[19]),
+            If(3_calldatasize <= 20, 0, 3_calldata[20]),
+            If(3_calldatasize <= 21, 0, 3_calldata[21]),
+            If(3_calldatasize <= 22, 0, 3_calldata[22]),
+            If(3_calldatasize <= 23, 0, 3_calldata[23]),
+            If(3_calldatasize <= 24, 0, 3_calldata[24]),
+            If(3_calldatasize <= 25, 0, 3_calldata[25]),
+            If(3_calldatasize <= 26, 0, 3_calldata[26]),
+            If(3_calldatasize <= 27, 0, 3_calldata[27]),
+            If(3_calldatasize <= 28, 0, 3_calldata[28]),
+            If(3_calldatasize <= 29, 0, 3_calldata[29]),
+            If(3_calldatasize <= 30, 0, 3_calldata[30]),
+            If(3_calldatasize <= 31, 0, 3_calldata[31])),
+     224), Concat(0, Concat(0, 96)), Concat(If(3_calldatasize <= 4, 0, 3_calldata[4]),
+       If(3_calldatasize <= 5, 0, 3_calldata[5]),
+       If(3_calldatasize <= 6, 0, 3_calldata[6]),
+       If(3_calldatasize <= 7, 0, 3_calldata[7]),
+       If(3_calldatasize <= 8, 0, 3_calldata[8]),
+       If(3_calldatasize <= 9, 0, 3_calldata[9]),
+       If(3_calldatasize <= 10, 0, 3_calldata[10]),
+       If(3_calldatasize <= 11, 0, 3_calldata[11]),
+       If(3_calldatasize <= 12, 0, 3_calldata[12]),
+       If(3_calldatasize <= 13, 0, 3_calldata[13]),
+       If(3_calldatasize <= 14, 0, 3_calldata[14]),
+       If(3_calldatasize <= 15, 0, 3_calldata[15]),
+       If(3_calldatasize <= 16, 0, 3_calldata[16]),
+       If(3_calldatasize <= 17, 0, 3_calldata[17]),
+       If(3_calldatasize <= 18, 0, 3_calldata[18]),
+       If(3_calldatasize <= 19, 0, 3_calldata[19]),
+       If(3_calldatasize <= 20, 0, 3_calldata[20]),
+       If(3_calldatasize <= 21, 0, 3_calldata[21]),
+       If(3_calldatasize <= 22, 0, 3_calldata[22]),
+       If(3_calldatasize <= 23, 0, 3_calldata[23]),
+       If(3_calldatasize <= 24, 0, 3_calldata[24]),
+       If(3_calldatasize <= 25, 0, 3_calldata[25]),
+       If(3_calldatasize <= 26, 0, 3_calldata[26]),
+       If(3_calldatasize <= 27, 0, 3_calldata[27]),
+       If(3_calldatasize <= 28, 0, 3_calldata[28]),
+       If(3_calldatasize <= 29, 0, 3_calldata[29]),
+       If(3_calldatasize <= 30, 0, 3_calldata[30]),
+       If(3_calldatasize <= 31, 0, 3_calldata[31]),
+       If(3_calldatasize <= 32, 0, 3_calldata[32]),
+       If(3_calldatasize <= 33, 0, 3_calldata[33]),
+       If(3_calldatasize <= 34, 0, 3_calldata[34]),
+       If(3_calldatasize <= 35, 0, 3_calldata[35])), Concat(If(3_calldatasize <= 36, 0, 3_calldata[36]),
+       If(3_calldatasize <= 37, 0, 3_calldata[37]),
+       If(3_calldatasize <= 38, 0, 3_calldata[38]),
+       If(3_calldatasize <= 39, 0, 3_calldata[39]),
+       If(3_calldatasize <= 40, 0, 3_calldata[40]),
+       If(3_calldatasize <= 41, 0, 3_calldata[41]),
+       If(3_calldatasize <= 42, 0, 3_calldata[42]),
+       If(3_calldatasize <= 43, 0, 3_calldata[43]),
+       If(3_calldatasize <= 44, 0, 3_calldata[44]),
+       If(3_calldatasize <= 45, 0, 3_calldata[45]),
+       If(3_calldatasize <= 46, 0, 3_calldata[46]),
+       If(3_calldatasize <= 47, 0, 3_calldata[47]),
+       If(3_calldatasize <= 48, 0, 3_calldata[48]),
+       If(3_calldatasize <= 49, 0, 3_calldata[49]),
+       If(3_calldatasize <= 50, 0, 3_calldata[50]),
+       If(3_calldatasize <= 51, 0, 3_calldata[51]),
+       If(3_calldatasize <= 52, 0, 3_calldata[52]),
+       If(3_calldatasize <= 53, 0, 3_calldata[53]),
+       If(3_calldatasize <= 54, 0, 3_calldata[54]),
+       If(3_calldatasize <= 55, 0, 3_calldata[55]),
+       If(3_calldatasize <= 56, 0, 3_calldata[56]),
+       If(3_calldatasize <= 57, 0, 3_calldata[57]),
+       If(3_calldatasize <= 58, 0, 3_calldata[58]),
+       If(3_calldatasize <= 59, 0, 3_calldata[59]),
+       If(3_calldatasize <= 60, 0, 3_calldata[60]),
+       If(3_calldatasize <= 61, 0, 3_calldata[61]),
+       If(3_calldatasize <= 62, 0, 3_calldata[62]),
+       If(3_calldatasize <= 63, 0, 3_calldata[63]),
+       If(3_calldatasize <= 64, 0, 3_calldata[64]),
+       If(3_calldatasize <= 65, 0, 3_calldata[65]),
+       If(3_calldatasize <= 66, 0, 3_calldata[66]),
+       If(3_calldatasize <= 67, 0, 3_calldata[67])), Concat(0,
+       If(2_calldatasize <= 12, 0, 2_calldata[12]),
+       If(2_calldatasize <= 13, 0, 2_calldata[13]),
+       If(2_calldatasize <= 14, 0, 2_calldata[14]),
+       If(2_calldatasize <= 15, 0, 2_calldata[15]),
+       If(2_calldatasize <= 16, 0, 2_calldata[16]),
+       If(2_calldatasize <= 17, 0, 2_calldata[17]),
+       If(2_calldatasize <= 18, 0, 2_calldata[18]),
+       If(2_calldatasize <= 19, 0, 2_calldata[19]),
+       If(2_calldatasize <= 20, 0, 2_calldata[20]),
+       If(2_calldatasize <= 21, 0, 2_calldata[21]),
+       If(2_calldatasize <= 22, 0, 2_calldata[22]),
+       If(2_calldatasize <= 23, 0, 2_calldata[23]),
+       If(2_calldatasize <= 24, 0, 2_calldata[24]),
+       If(2_calldatasize <= 25, 0, 2_calldata[25]),
+       If(2_calldatasize <= 26, 0, 2_calldata[26]),
+       If(2_calldatasize <= 27, 0, 2_calldata[27]),
+       If(2_calldatasize <= 28, 0, 2_calldata[28]),
+       If(2_calldatasize <= 29, 0, 2_calldata[29]),
+       If(2_calldatasize <= 30, 0, 2_calldata[30]),
+       If(2_calldatasize <= 31, 0, 2_calldata[31])), Concat(0, Concat(Concat(Concat(72, 70), 27), 86)), 196, Concat(0, 0), 128, 196 - 128, 128, 0, Concat(0,
+       If(2_calldatasize <= 12, 0, 2_calldata[12]),
+       If(2_calldatasize <= 13, 0, 2_calldata[13]),
+       If(2_calldatasize <= 14, 0, 2_calldata[14]),
+       If(2_calldatasize <= 15, 0, 2_calldata[15]),
+       If(2_calldatasize <= 16, 0, 2_calldata[16]),
+       If(2_calldatasize <= 17, 0, 2_calldata[17]),
+       If(2_calldatasize <= 18, 0, 2_calldata[18]),
+       If(2_calldatasize <= 19, 0, 2_calldata[19]),
+       If(2_calldatasize <= 20, 0, 2_calldata[20]),
+       If(2_calldatasize <= 21, 0, 2_calldata[21]),
+       If(2_calldatasize <= 22, 0, 2_calldata[22]),
+       If(2_calldatasize <= 23, 0, 2_calldata[23]),
+       If(2_calldatasize <= 24, 0, 2_calldata[24]),
+       If(2_calldatasize <= 25, 0, 2_calldata[25]),
+       If(2_calldatasize <= 26, 0, 2_calldata[26]),
+       If(2_calldatasize <= 27, 0, 2_calldata[27]),
+       If(2_calldatasize <= 28, 0, 2_calldata[28]),
+       If(2_calldatasize <= 29, 0, 2_calldata[29]),
+       If(2_calldatasize <= 30, 0, 2_calldata[30]),
+       If(2_calldatasize <= 31, 0, 2_calldata[31])), 3_gas]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

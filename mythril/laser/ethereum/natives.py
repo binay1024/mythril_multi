@@ -62,6 +62,7 @@ def ecrecover_to_pub(rawhash, v, r, s):
             x, y = result
             pub = encode_int32(x) + encode_int32(y)
         else:
+            print("Error: Invalid VRS")
             raise ValueError("Invalid VRS")
     assert len(pub) == 64
     return pub
@@ -245,6 +246,7 @@ def blake2b_fcompress(data: List[int]) -> List[int]:
     try:
         parameters = extract_blake2b_parameters(bytes(data))
     except ValidationError as v:
+        print("Error: Invalid blake2b params: {}".format(v))
         logging.debug("Invalid blake2b params: {}".format(v))
         return []
     return list(bytearray(blake2b.compress(*parameters)))

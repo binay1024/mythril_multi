@@ -77,6 +77,7 @@ class DetectionModule(ABC):
         """
 
         log.debug("Entering analysis module: {}".format(self.__class__.__name__))
+        # print("Entering analysis module: {}".format(self.__class__.__name__))
 
         if (
             target.get_current_instruction()["address"],
@@ -89,7 +90,7 @@ class DetectionModule(ABC):
 
         result = self._execute(target)
         log.debug("Exiting analysis module: {}".format(self.__class__.__name__))
-
+        # print("Exiting analysis module: {}".format(self.__class__.__name__))
         if result and not args.use_issue_annotations:
             if self.auto_cache:
                 self.update_cache(result)

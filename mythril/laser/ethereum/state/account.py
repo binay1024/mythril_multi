@@ -70,6 +70,7 @@ class Storage:
                 self.storage_keys_loaded.add(int(item.value))
                 self.printable_storage[item] = storage[item]
             except ValueError as e:
+                print("Error: Couldn't read storage at %s: %s", item, e)
                 log.debug("Couldn't read storage at %s: %s", item, e)
 
         return simplify(storage[item])
@@ -92,8 +93,8 @@ class Storage:
             concrete=concrete, address=self.address, dynamic_loader=self.dynld
         )
         storage._standard_storage = deepcopy(self._standard_storage)
-        storage.printable_storage = copy(self.printable_storage)
-        storage.storage_keys_loaded = copy(self.storage_keys_loaded)
+        storage.printable_storage = deepcopy(self.printable_storage)
+        storage.storage_keys_loaded = deepcopy(self.storage_keys_loaded)
         storage.keys_set = deepcopy(self.keys_set)
         storage.keys_get = deepcopy(self.keys_get)
         return storage
@@ -167,6 +168,19 @@ class Account:
         )
         assert self._balances is not None
         self._balances[self.address] = balance
+    
+    def get_balance(self, balance: Union[int, BitVec]) -> BitVec:
+        """
+
+        :param balance:
+        """
+        balance = (
+            symbol_factory.BitVecVal(balance, 256)
+            if isinstance(balance, int)
+            else balance
+        )
+        
+        return self._balances[self.address]
 
     def set_storage(self, storage: Dict):
         """
@@ -213,16 +227,32 @@ class Account:
             else:
                 new_code += "<call_data>"
         return new_code
-
+    # 这是按照 deepcopy 要求写的
     def __copy__(self, memodict={}):
         new_account = Account(
-            address=self.address,
-            code=self.code,
-            contract_name=self.contract_name,
+            address=self.address, # str
+            code=self.code, # 可以维持一个对象
+            contract_name=self.contract_name, # str
             balances=deepcopy(self._balances),
-            concrete_storage=self.concrete_storage,
-            nonce=self.nonce,
+            concrete_storage=self.concrete_storage, # Bool 类型
+            nonce=self.nonce, # int
         )
         new_account.storage = deepcopy(self.storage)
-        new_account.code = self.code
+        # new_account.code = self.code
+        return new_account
+    
+    def __deepcopy__ (self, memo):
+        # balances 是 整个 world 的 balances
+        # balance 才是 自己的 balance
+        new_account = Account(
+            address=deepcopy(self.address), # str
+            code=deepcopy(self.code), # 可以维持一个对象
+            contract_name=deepcopy(self.contract_name), # str
+            # balances=deepcopy(self._balances),
+            concrete_storage=deepcopy(self.concrete_storage), # Bool 类型
+            nonce=deepcopy(self.nonce), # int
+        )
+        new_account.storage = deepcopy(self.storage)
+        new_account.deleted = deepcopy(self.deleted)
+        new_account.balance = deepcopy(self.balance)
         return new_account

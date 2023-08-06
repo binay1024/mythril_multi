@@ -6,6 +6,7 @@ from mythril.laser.ethereum.state.annotation import StateAnnotation
 from mythril.laser.ethereum.state.global_state import GlobalState
 from mythril.laser.smt import And
 from mythril.support.support_args import args
+from copy import copy, deepcopy
 
 
 class PotentialIssue:
@@ -60,6 +61,18 @@ class PotentialIssuesAnnotation(StateAnnotation):
     @property
     def search_importance(self):
         return 10 * len(self.potential_issues)
+    
+    def __deepcopy__(self, memo):
+        if id(self) in memo:
+            return memo[id(self)]
+        
+        new_PotentialIssuesAnnotation = PotentialIssuesAnnotation()
+        memo[id(self)] = new_PotentialIssuesAnnotation
+        
+        for annotation in self.potential_issues:
+            new_PotentialIssuesAnnotation.potential_issues.append(deepcopy(annotation))
+
+        return new_PotentialIssuesAnnotation
 
 
 def get_potential_issues_annotation(state: GlobalState) -> PotentialIssuesAnnotation:
@@ -99,14 +112,35 @@ def check_potential_issues(state: GlobalState) -> None:
     annotation = get_potential_issues_annotation(state)
     unsat_potential_issues = []
     for potential_issue in annotation.potential_issues:
+        # for debug
+        print(potential_issue.description_tail) 
+        try:
+            transaction_sequence = get_transaction_sequence(
+                state, state.world_state.constraints
+            )
+        except UnsatError:
+            print("global_state constraints solve failed!")
+            unsat_potential_issues.append(potential_issue)
+            continue
+        print("global_state constraints get solved passed!")
+        try:
+            transaction_sequence = get_transaction_sequence(
+                state, potential_issue.constraints
+            )
+        except UnsatError:
+            print("potential_issue constraints solve failed!")
+            unsat_potential_issues.append(potential_issue)
+            continue
+        print("potential_issue constraints get solved passed!")
         try:
             transaction_sequence = get_transaction_sequence(
                 state, state.world_state.constraints + potential_issue.constraints
             )
         except UnsatError:
+            print("global_state + potential_issue constraints solve failed!")
             unsat_potential_issues.append(potential_issue)
             continue
-
+        print("[Good!!] global_state + potential_issue constraints get solved passed!")
         issue = Issue(
             contract=potential_issue.contract,
             function_name=potential_issue.function_name,
