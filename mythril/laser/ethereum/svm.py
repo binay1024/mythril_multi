@@ -7,7 +7,8 @@ import random
 from typing import Callable, Dict, DefaultDict, List, Tuple, Optional
 
 from mythril.support.opcodes import OPCODES
-from mythril.analysis.potential_issues import check_potential_issues
+# from mythril.analysis.potential_issues import check_potential_issues
+from mythril.analysis.solver import get_transaction_sequence
 from mythril.laser.execution_info import ExecutionInfo
 from mythril.laser.ethereum.cfg import NodeFlags, Node, Edge, JumpType
 from mythril.laser.ethereum.evm_exceptions import InvalidInstruction, StackUnderflowException, VmException
@@ -20,9 +21,9 @@ from mythril.laser.ethereum.strategy.basic import DepthFirstSearchStrategy
 from mythril.laser.ethereum.strategy.constraint_strategy import DelayConstraintStrategy
 from abc import ABCMeta
 from mythril.laser.ethereum.time_handler import time_handler
-
+from mythril.laser.ethereum.state.calldata import ConcreteCalldata, SymbolicCalldata
 from mythril.analysis import solver
-from mythril.exceptions import UnsatError
+from mythril.exceptions import UnsatError, SolverTimeOutException
 
 from mythril.laser.ethereum.transaction import (
     ContractCreationTransaction,
@@ -32,6 +33,7 @@ from mythril.laser.ethereum.transaction import (
     execute_sub_contract_creation,
     execute_contract_creation,
     execute_message_call,
+    tx_id_manager,
 )
 from mythril.laser.smt import symbol_factory
 from mythril.support.support_args import args
@@ -196,12 +198,6 @@ class LaserEVM:
 
         elif scratch_mode:
             log.info("Starting contract creation transaction")
-            if sub_contracts is not None:
-                sub_accounts = execute_sub_contract_creation(
-                    self, contract_name="SUB", world_state=world_state, sub_contracts = sub_contracts
-                )
-            # 这个时候 worldstate 里面不是最新状态了已经, open_state 里面的 world_state 的 account 是有值的, 
-            # 但是 这里的现在的 world_state 里面account 里面木有任何代码, 所以我们不可以相信这个捏
             if(len(self.open_states) != 0):
                 print("Multi analyze mode")
                 created_account = execute_contract_creation(
@@ -212,9 +208,19 @@ class LaserEVM:
                 created_account = execute_contract_creation(
                     self, creation_code, contract_name, world_state = world_state
                 )
+            if(len(self.open_states) > 1 or len(self.open_states) == 0):
+                print("Error, open_states more than 1 or is zero")
+                exit(0)
+            if sub_contracts is not None:
+                sub_accounts = execute_sub_contract_creation(
+                    self, contract_name="SUB", world_state=self.open_states[0], sub_contracts = sub_contracts
+                )
+            # 这个时候 worldstate 里面不是最新状态了已经, open_state 里面的 world_state 的 account 是有值的, 
+            # 但是 这里的现在的 world_state 里面account 里面木有任何代码, 所以我们不可以相信这个捏
+            
             print("main: ", created_account.code.bytecode)
             # print("sub: ", sub_accounts[0].code.bytecode if (sub_accounts is not None and sub_accounts!= []) else "Empty Sub Contract" ) 
-
+            # exit(1)
             log.info(
                 "Finished contract creation, found {} open states".format(
                     len(self.open_states)
@@ -227,10 +233,25 @@ class LaserEVM:
                     "Increase the resources for creation execution (--max-depth or --create-timeout) "
                     "Check whether the bytecode is indeed the creation code, otherwise use the --bin-runtime flag"
                 )
-
-            self.execute_transactions(created_account.address)
+            if not self.open_states[0].accounts[0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF]:
+                print("cannot get attacker account error")
+                exit(0)
+            attackBridge_addr = symbol_factory.BitVecVal(0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF, 256)
+            accounts_ = self.open_states[0].accounts
+            for (addr, acc) in accounts_.items():
+                acc.set_balance(100000000000000000000)
+            # self.execute_transactions(created_account.address)
+            self.execute_transactions(attackBridge_addr)
 
         log.info("Finished symbolic execution")
+        print("Finished symbolic execution")
+        print("\n\n================ Print openstates call_chain ================")
+        for i in range(len(self.open_states)):
+            world_stt = self.open_states[i]
+            print("print {}th world_state`s call_chain".format(i))
+            print(world_stt.transaction_sequence[-1].call_chain)
+            print("----------------------------------------------------")
+        print("\n\n================ Print openstates call_chain finish ================")
         if self.requires_statespace:
             log.info(
                 "%d nodes, %d edges, %d total states",
@@ -268,7 +289,7 @@ class LaserEVM:
         # 记得删除
         self.transaction_count = 1
         for i in range(self.transaction_count):
-            print("Excute %d TX Loop!!!"%i)
+            print("\n=========== Excute %d TX Loop!!!==========\n"%i)
             # 这句话决定了 如果你的 open_states 为空 那么不执行剩下的语句
             if len(self.open_states) == 0:
                 break
@@ -309,6 +330,14 @@ class LaserEVM:
 
             for hook in self._stop_sym_trans_hooks:
                 hook()
+            print("Excute %d TX Loop finish!!!\noutput the call_chain"%i)
+            for i in range(len(self.open_states)):
+                print("++++++++++++++++++++ In {}th open_state ++++++++++++++++++++".format(i))
+                for j in range(len(self.open_states[i].transaction_sequence)):
+                    TX = self.open_states[i].transaction_sequence[j]
+                    print("    -------- output {}th TX --------".format(j))
+                    print(TX.call_chain)
+
 
         self.executed_transactions = True
 
@@ -341,18 +370,31 @@ class LaserEVM:
             
             if(len(self.work_list)>=1):
                 print("+++++++++++++ change to execute next path +++++++++++++++++")
-            # print("Print stack states ")
-            # print(global_state.mstate.stack)
-            # for wo_global in self.work_list:
-            #     print(wo_global.mstate.stack)
             print("=========================")
             print("current opcode is {}".format(global_state.environment.code.instruction_list[global_state.mstate.pc]))
+            # print("Print stack states ")
+            # print(global_state.mstate.stack)
+            # print("print memory")
+            
+            # print("memory size is {}".format(global_state.mstate.memory._msize))
+            # for ind in range(global_state.mstate.memory._msize//32):
+                # print("word {}: {}".format(ind, global_state.mstate.memory.get_word_at(ind*32)))
+            # for wo_global in self.work_list:
+            #     print(wo_global.mstate.stack)
+            
             # print("current constraint is {}".format(global_state.world_state.constraints))
-            try:
-                constraints = global_state.world_state.constraints
-                solver.get_model(constraints)
-            except UnsatError:
-                exit(0)
+            # try:
+            #     constraints = global_state.world_state.constraints
+            #     solver.get_model(constraints)
+            # except UnsatError:
+            #     print("Warning !!!world_state unsatisfied")
+            #     continue
+            # except SolverTimeOutException:
+            #     print("Warning !!!world_state Timeout")
+            #     continue
+            if not (global_state.world_state.constraints.is_possible()):
+                print("Warning !!!world_state unsatisfied")
+                continue
 
             if len(self.work_list)!= temp:
                 print("now we have {} global state (path)!".format(len(self.work_list)+1))
@@ -366,7 +408,7 @@ class LaserEVM:
                 return final_states + [global_state] if track_gas else None
             try:
                 new_states, op_code = self.execute_state(global_state)
-                print("op code is {}".format(op_code))
+                # print("op code is {}".format(op_code))
             except NotImplementedError:
                 log.debug("Encountered unimplemented instruction")
                 print("Error Encountered unimplemented instruction")
@@ -411,7 +453,7 @@ class LaserEVM:
                 # return
                 continue
 
-        self.open_states.append(global_state.world_state)
+        self.open_states.append(deepcopy(global_state.world_state))
     # 当 opcode 是 "INVALID"的时候处理, 或者 命令执行有问题的时候, 比如 dup4时候 stack 只有3个元素
     def handle_vm_exception(
         self, global_state: GlobalState, op_code: str, error_msg: str
@@ -462,6 +504,7 @@ class LaserEVM:
                     instructions[global_state.mstate.pc]["address"]
                 )
             )
+            print(error_msg)
             new_global_states = self.handle_vm_exception(
                 global_state, op_code, error_msg
             )
@@ -493,7 +536,6 @@ class LaserEVM:
 
         except TransactionStartSignal as start_signal:
             #start_signal = (transactions, op_code, global_state)
-
             new_global_states = []
             index = 0
             for tx in start_signal.transaction:
@@ -501,38 +543,76 @@ class LaserEVM:
                 # step 2: 深拷贝 旧 GlobalState 然后放入新的 global_stack 中
                 # 最后 再复制好 整个 Global_state 的情况下 给他 放入栈里
                 # 这是用于存储现在caller 的 global_state
+                if not start_signal.global_state.world_state.constraints.is_possible():
+                    print("warning give up this TX")
+                    continue
                 forked_caller_global_state = deepcopy(start_signal.global_state)
                 
                 #################下面是 进一步的处理, 我们希望 要提前为了 处理 revert 情况 做一些处理 ####   
                 # fork 一下 caller的 world_state 给 callee
                 forked_new_world_state = deepcopy(forked_caller_global_state.world_state)
                 # assert(tx.id is not None, "Warning !! tx.id is None")
-                new_transaction = MessageCallTransaction(
-                    world_state = forked_new_world_state,
-                    gas_price = forked_caller_global_state.environment.gasprice,
-                    gas_limit = deepcopy(tx.gas_limit),
-                    identifier = tx.id,
-                    origin = forked_caller_global_state.environment.origin,
-                    caller = forked_caller_global_state.environment.active_account.address,
-                    callee_account = forked_new_world_state._accounts[tx.callee_account.address.value],
-                    code=forked_new_world_state._accounts[tx.callee_account.address.value].code,
-                    call_data = deepcopy(tx.call_data), # symbol
-                    call_value = deepcopy(tx.call_value),
-                    static = forked_caller_global_state.environment.static,
-                    txtype = "Internal_MessageCall",
+                if tx.__class__.__name__ == "ContractCreationTransaction":
+                    new_transaction = ContractCreationTransaction(
+                        world_state=forked_new_world_state,
+                        caller=forked_caller_global_state.environment.active_account.address,
+                        code=tx.code,
+                        call_data=tx.call_data,
+                        gas_price=forked_caller_global_state.environment.gasprice,
+                        gas_limit=tx.gas_limit,
+                        origin=forked_caller_global_state.environment.origin,
+                        call_value=tx.call_value,
+                        contract_address=tx.contract_address,
+                        txtype = "Internal_MessageCall",
                     )
+                else:
+                    next_transaction_id = tx_id_manager.get_next_tx_id()
+                    # 处于 某些 原因， 他在从 fallback出发调用 其他地方的时候 calldata 有些问题啊。。。。
+                    # if forked_caller_global_state.environment.active_function_name == "fallback":
+                    #     calldata = SymbolicCalldata(next_transaction_id+"_temp")
+                    # else:
+                    #     calldata = deepcopy(tx.call_data)
+                    if tx.call_data.__class__.__name__ == "SymbolicCalldata":
+                        calldata = SymbolicCalldata(next_transaction_id)
+                    else:
+                        tx.call_data.tx_id = next_transaction_id
+                        calldata = deepcopy(tx.call_data)
+
+                    new_transaction = MessageCallTransaction(
+                        world_state = forked_new_world_state,
+                        gas_price = forked_caller_global_state.environment.gasprice,
+                        gas_limit = deepcopy(tx.gas_limit),
+                        identifier = next_transaction_id,
+                        origin = forked_caller_global_state.environment.origin,
+                        caller = forked_caller_global_state.environment.active_account.address,
+                        callee_account = forked_new_world_state._accounts[tx.callee_account.address.value],
+                        code=forked_new_world_state._accounts[tx.callee_account.address.value].code,
+                        # call_data = deepcopy(tx.call_data), # symbol
+                        # 我这种行为算强行给他一个call_data了。。。
+                        call_data = calldata,
+                        call_value = deepcopy(tx.call_value),
+                        static = forked_caller_global_state.environment.static,
+                        txtype = "Internal_MessageCall",
+                        )
                 new_global_state = new_transaction.initial_global_state()
                 # 这一步才是负责与之前 global_state 的链接
                 new_global_state.transaction_stack = forked_caller_global_state.transaction_stack + [(new_transaction, forked_caller_global_state)]
+                if new_global_state.current_transaction.call_chain[1][0] == "":
+                    new_global_state.current_transaction.call_chain[1][0] = forked_caller_global_state.environment.active_account.contract_name
                 new_global_state.node = forked_caller_global_state.node
                 # 要加上 call 对象的 匹配这个 constraint
-                new_constraint = start_signal.constraints[index]
-                new_global_state.world_state.constraints.append(new_constraint)
-                print("\n======= Print forked caller stack ========== {}\n".format(forked_caller_global_state.mstate.stack))
+                if start_signal.constraints is not None and tx.__class__.__name__ != "ContractCreationTransaction":
+                    new_constraint = start_signal.constraints[index]
+                    new_global_state.world_state.constraints.append(new_constraint)
+                if not new_global_state.world_state.constraints.is_possible():
+                    print("warning ! after the global_state inint, constraint unsolveable !!")
+                    continue
+                # print("\n======= Print forked caller stack ========== {}\n".format(forked_caller_global_state.mstate.stack))
                 log.debug("Setup new transaction %s", new_transaction)
                 print("Setup new transaction %s", new_transaction)
                 new_global_states.append(new_global_state)
                 index += 1
+            
             return new_global_states, op_code
         
         # 因为在每次执行的时候只添加当前的 callfunction 所以, 当当前环境执行结束的时候需要将这次执行的记录传递给之前的环境 这样才能记录上
@@ -545,7 +625,7 @@ class LaserEVM:
             # 打印 约束条件们
             # calldata_exp = global_state.world_state.constraints.as_list
             # print(calldata_exp)            
-            print("try to print global_state_call_chain: {}".format(global_state.world_state.transaction_sequence[-1].call_chain))
+            # print("try to print global_state_call_chain: {}".format(global_state.world_state.transaction_sequence[-1].call_chain))
             
             for hook in self._transaction_end_hooks:
                 hook(
@@ -559,31 +639,58 @@ class LaserEVM:
             if end_signal.global_state.world_state != end_signal.global_state.world_state.transaction_sequence[-1].world_state:
                 print("Error +++++++++++++++++++ world_sate not match")
 
+            # 要处理一下 call_chain的问题
+
             # 情况一 结束 creation TX
             # from an EOA send a TX to a smartcontract case
             if return_global_state is None:
                 print("END with EOA TX CASE: {} ***********".format(transaction))
+                
+
+                temp = end_signal.call_chain.split("-") if end_signal.call_chain!=None else None
+                if temp is None:
+                    print("call chain process error")
+                    exit(0)
+                function_name_ = temp[-1] if temp[-1] != "revert" else temp[-2]+"_"+temp[-1]
+                contract_name_ = temp[-2] if temp[-1] != "revert" else temp[-3]
+                callee_record = [contract_name_,function_name_]
+                caller_record = ["EOA","None"]
+                
+                end_signal.global_state.current_transaction.call_chain[1] = caller_record
+                end_signal.global_state.current_transaction.call_chain[2] = callee_record
+                
                 # 如果 不是 revert 那么 返回 漏洞相关的 potentialIssues
                 if (
                     not isinstance(transaction, ContractCreationTransaction)
                     or transaction.return_data
                 ) and not end_signal.revert:
-                    print("output EOA case global_state: {}".format(global_state.world_state.transaction_sequence[-1].call_chain))
+                    print("output EOA case global_state: {}".format(end_signal.global_state.world_state.transaction_sequence[-1].call_chain))
                     # 先执行一下当前路径是否存在 issue 这种
-                    check_potential_issues(global_state)
+                    # check_potential_issues(end_signal.global_state)
+                    try:
+                        transaction_sequence = get_transaction_sequence(
+                            end_signal.global_state, end_signal.global_state.world_state.constraints
+                            )
+                    except UnsatError:
+                        print("global_state constraints solve failed!")
+                        return 
+                    # print("[Good!!] global_state constraints get solved passed!")
                     end_signal.global_state.world_state.node = global_state.node
                     # 加到 EVM open_states 里面
                     self._add_world_state(end_signal.global_state)
                 # if (transaction.type == "EOA_MessageCall"):
+
 
                 # 不论是不是 revert 结束的情况 那么 因为状态回滚 返回的新世界状态为 0
                 new_global_states = []
                 if not end_signal.revert:
                     print("End Transaction with EOA TX:  [%s]".format(global_state.current_transaction))
                     print("call_chain is {}".format(global_state.world_state.transaction_sequence[-1].call_chain))
+                    
                 else:
                     print("End Transaction with messagecall Revert: [%s]".format(global_state.current_transaction))
                     print("call_chain is {}".format(global_state.world_state.transaction_sequence[-1].call_chain))
+                    
                 
             # 情况二 结束 MessageCall TX
             # from an smartcontract send a TX to a smartcontract case, end internal messageTX
@@ -593,6 +700,40 @@ class LaserEVM:
                 
                 # First execute the post hook for the transaction ending instruction
                 self._execute_post_hook(op_code, [end_signal.global_state])
+                    # [合约名，函数名]
+                temp = end_signal.call_chain.split("-") if end_signal.call_chain!=None else None
+                if temp is None:
+                    print("call chain process error")
+                    exit(0)
+                function_name_ = temp[-1] if temp[-1] != "revert" else temp[-2]+"_"+temp[-1]
+                contract_name_ = temp[-2] if temp[-1] != "revert" else temp[-3]
+                callee_record = [contract_name_,function_name_]
+                caller_record = [return_global_state.environment.active_account.contract_name,return_global_state.environment.active_function_name]
+                # ele = [["START"], caller_record, callee_record, ["END"]]
+                # current_EOA_tx = return_global_state.world_state.transaction_sequence[-1]
+                callee_tx = end_signal.global_state.current_transaction
+                caller_tx = return_global_state.current_transaction
+                # 每个 callee 回去之前补满 callee的 call_chain 然后 加到 caller的 call_chain后面
+                # 反正每次 补充的时候都是从 callee的 头部开始确认
+                
+                callee_tx.call_chain[1] = caller_record
+                callee_tx.call_chain[2] = callee_record
+                caller_tx.call_chain += callee_tx.call_chain                    
+
+                # if current_EOA_tx.call_chain is None or current_EOA_tx.call_chain == []:
+                #     current_EOA_tx.call_chain = ele 
+                # else:
+                #         # 如果 current_EOA_tx.call_chain 里面有内容 说明 1) A->B->C 情况中的 B return A 情况 B call C 已经在里面了
+                #         # 情况 2) A->B 结束后 A 继续执行 A->C 情况下 C return A 的时候 A call B 已经在里面了 
+                #     if len(current_EOA_tx.call_chain)<3 or len(ele)<3:
+                #         print("error, len of call_chain less than 3")
+                #         print(current_EOA_tx.call_chain)
+                #         print("print ele")
+                #         exit(0)
+                #     if current_EOA_tx.call_chain[1] == ele[1]: # caller 没结束 向后延长
+                #         current_EOA_tx.call_chain = current_EOA_tx.call_chain + ele
+                #     else: # caller 结束 回头了该
+                #         current_EOA_tx.call_chain = ele + current_EOA_tx.call_chain
 
                 # Propagate annotations
                 # new_annotations = [
@@ -603,20 +744,21 @@ class LaserEVM:
                 # modified 06.20 kevin
                 # 如果不是 revert 情况
                 if not end_signal.revert:
+                    # 正常结束 messagecallTX 处理 call_chain
+                    
                     new_annotations = end_signal.global_state.annotations
                     # 加上 annotation
                     return_global_state.add_annotations(new_annotations)
                     # 更新 world_state, 尤其是 constraint
                     return_global_state.update_world_state(end_signal.global_state)
-
                     print("End Transaction with MessageTX Normally: {}".format(end_signal.global_state.current_transaction))
                     print("call_chain is {}".format(end_signal.global_state.world_state.transaction_sequence[-1].call_chain))
-                # 如果是 revert
+
+                # 如果是 revert 要不要给 revert的那个 constraint 一个 Not 公式 然后 还回去。
                 else:
                     print("End Transaction with Revert: {}".format(end_signal.global_state.current_transaction))
                     print("call_chain is {}\n".format(end_signal.global_state.world_state.transaction_sequence[-1].call_chain))
-                
-                
+
                 revert_changes = end_signal.end_type
                 
 
@@ -661,9 +803,11 @@ class LaserEVM:
 
         # Set execution result in the return_state of callee_global_state
         if return_global_state.last_return_data is None:
-            print("Warning! last_return_data.mem_out_off and size may be none")
+            print("error! last_return_data.mem_out_off and size may be none")
             return_global_state.last_return_data = return_data
+
         elif return_data is None:
+            print("warning, tx.returndata is None")
             pass
         else:
             return_global_state.last_return_data.return_data = return_data.return_data

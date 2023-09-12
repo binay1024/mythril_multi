@@ -19,6 +19,9 @@ from mythril.laser.ethereum.state.calldata import (
     SymbolicCalldata,
     ConcreteCalldata,
 )
+from mythril.laser.ethereum.transaction import (
+    tx_id_manager,
+)
 from mythril.laser.ethereum.state.global_state import GlobalState
 from mythril.laser.smt import BitVec, If
 from mythril.laser.smt import simplify, Expression, symbol_factory
@@ -75,7 +78,9 @@ def get_call_parameters(
     callee_address = get_callee_address(global_state, dynamic_loader, to)
 
     callee_account = None
+
     call_data = get_call_data(global_state, memory_input_offset, memory_input_size)
+
     if isinstance(callee_address, BitVec) or (
         isinstance(callee_address, str)
         and (int(callee_address, 16) > PRECOMPILE_COUNT or int(callee_address, 16) == 0)
@@ -136,6 +141,7 @@ def get_callee_address(
             )
         # TODO: verify whether this happens or not
         except:
+            print("warning in get para")
             return symbolic_to_address
 
         # testrpc simply returns the address, geth response is more elaborate.
@@ -181,7 +187,12 @@ def get_call_data(
     :return: Tuple containing: call_data array from memory or empty array if symbolic, type found
     """
     state = global_state.mstate
-    transaction_id = "{}_internalcall".format(global_state.current_transaction.id)
+    # transaction_id = "{}_internalcall".format(global_state.current_transaction.id)
+    transaction_id = tx_id_manager._next_transaction_id
+    # if (global_state.current_transaction.id == "4"):
+    #     print("okokokokokokokok get 4")
+    #     exit(0)
+    # 还是存在的， 但是为什么后来就木有了呢， 好奇怪哦。
 
     memory_start = cast(
         BitVec,
@@ -191,6 +202,12 @@ def get_call_data(
             else memory_start
         ),
     )
+    # print("memory start is: {}".format(memory_start))
+    from mythril.laser.ethereum.state.constraints import Constraints
+    # memory_start.
+    # print(Constraints([memory_start.simplify()]).is_possible())
+    # print((global_state.world_state.constraints+[memory_start]).is_possible()) # 这个 可以解开 
+    # 为什么 simplify 之后反而 求解 不通过呢？ 
     memory_size = cast(
         BitVec,
         (
@@ -200,18 +217,25 @@ def get_call_data(
         ),
     )
 
+    # 320 的 意义是 1个 0x20 变量大小是 32 byte, 如果 能放10个左右的变量 大概就是 320个 byte
+    print("print origin memory size {}".format(memory_size))
     if memory_size.symbolic:
         memory_size = SYMBOLIC_CALLDATA_SIZE
+        print("memory size is symbolic, so is {}".format(memory_size))
+    # print("---------")
+    # print("whole memory is: ")
+    # print(global_state.mstate.memory)
     try:
         calldata_from_mem = state.memory[
-            util.get_concrete_int(memory_start) : util.get_concrete_int(
-                memory_start + memory_size
-            )
+            util.get_concrete_int(memory_start) : util.get_concrete_int( memory_start + memory_size  )
         ]
         return ConcreteCalldata(transaction_id, calldata_from_mem)
+    
     except TypeError:
         log.debug("Unsupported symbolic memory offset and size")
-        return SymbolicCalldata(transaction_id)
+        print("Error Unsupported symbolic memory offset and size")
+        # return SymbolicCalldata(transaction_id)
+    
 
 
 def native_call(
@@ -224,15 +248,17 @@ def native_call(
 
     if isinstance(callee_address, BitVec) or not (
         0 < int(callee_address, 16) <= PRECOMPILE_COUNT
-        or hevm_cheat_code.is_cheat_address(callee_address)
+        # or hevm_cheat_code.is_cheat_address(callee_address)
     ):
         return None
     if hevm_cheat_code.is_cheat_address(callee_address):
-        log.info("HEVM cheat code address triggered")
-        handle_cheat_codes(
-            global_state, callee_address, call_data, memory_out_offset, memory_out_size
-        )
-        return [global_state]
+        print("triger cheat code")
+        return None
+        # log.info("HEVM cheat code address triggered")
+        # handle_cheat_codes(
+        #     global_state, callee_address, call_data, memory_out_offset, memory_out_size
+        # )
+        # return [global_state]
 
     log.debug("Native contract called: " + callee_address)
     try:
@@ -241,6 +267,7 @@ def native_call(
     except TypeError:
         insert_ret_val(global_state)
         log.debug("CALL with symbolic start or offset not supported")
+        print("CALL with symbolic start or offset not supported")
         return [global_state]
 
     call_address_int = int(callee_address, 16)

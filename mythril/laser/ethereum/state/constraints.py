@@ -33,12 +33,15 @@ class Constraints(list):
         try:
             get_model(self, solver_timeout=solver_timeout)
         except SolverTimeOutException:
+            print("Timeout error")
             # If it uses the long analysis solver timeout
             if solver_timeout is None:
+                print("solver Timeout error")
                 return False
             # If it uses a short custom solver timeout
             return True
         except UnsatError:
+            print("is_possible solver error")
             return False
         return True
 

@@ -1,0 +1,121 @@
+Function : func_sig() with hash 0x74c52242 , address 3429 found
+Function : attack(uint256,string,address,bytes,bytes,bytes,bytes,bytes) with hash 0x7866f851 , address 3573 found
+Function : func_sig_re() with hash 0x7d268d4f , address 4558 found
+Function : call_data5() with hash 0xa81c3984 , address 4702 found
+Function : last_caller_addr() with hash 0xad1ab8a1 , address 4846 found
+Function : victim_addr() with hash 0xe1b73aa1 , address 4911 found
+Function : call_data1() with hash 0x07e22f79 , address 2810 found
+Function : call_data4() with hash 0x41737941 , address 2954 found
+Function : call_data3() with hash 0x604eec0f , address 3098 found
+Function : counter() with hash 0x61bc221a , address 3242 found
+Function : call_data2() with hash 0x73336d3f , address 3285 found
+Function : func_sig() with hash 0x74c52242 , address 3429 found
+Function : attack(uint256,string,address,bytes,bytes,bytes,bytes,bytes) with hash 0x7866f851 , address 3573 found
+Function : func_sig_re() with hash 0x7d268d4f , address 4558 found
+Function : call_data5() with hash 0xa81c3984 , address 4702 found
+Function : last_caller_addr() with hash 0xad1ab8a1 , address 4846 found
+Function : victim_addr() with hash 0xe1b73aa1 , address 4911 found
+Function : call_data1() with hash 0x07e22f79 , address 2810 found
+Function : call_data4() with hash 0x41737941 , address 2954 found
+Function : call_data3() with hash 0x604eec0f , address 3098 found
+Function : counter() with hash 0x61bc221a , address 3242 found
+Function : call_data2() with hash 0x73336d3f , address 3285 found
+Single analyze mode
+Function : func_sig() with hash 0x74c52242 , address 3429 found
+Function : attack(uint256,string,address,bytes,bytes,bytes,bytes,bytes) with hash 0x7866f851 , address 3573 found
+Function : func_sig_re() with hash 0x7d268d4f , address 4558 found
+Function : call_data5() with hash 0xa81c3984 , address 4702 found
+Function : last_caller_addr() with hash 0xad1ab8a1 , address 4846 found
+Function : victim_addr() with hash 0xe1b73aa1 , address 4911 found
+Function : call_data1() with hash 0x07e22f79 , address 2810 found
+Function : call_data4() with hash 0x41737941 , address 2954 found
+Function : call_data3() with hash 0x604eec0f , address 3098 found
+Function : counter() with hash 0x61bc221a , address 3242 found
+Function : call_data2() with hash 0x73336d3f , address 3285 found
+Now in function: constructor in contract: AttackBridge
+2 worklist added! now the worklist num is 2
+now we have 2 global state (path)!
+now in creation end, the activate_function is: constructor
+try to print global_state_call_chain: []
+END with EOA TX CASE: ContractCreationTransaction 1 from 1004753105490295263244812946565948198177742958590 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f ***********
+End Transaction with messagecall Revert: [%s]
+call_chain is []
+now we have 1 global state (path)!
+unreached path
+Now in function: constructor in contract: AttackBridge
+Now in function: constructor in contract: AttackBridge
+2 worklist added! now the worklist num is 2
+now we have 2 global state (path)!
+now in creation end, the activate_function is: constructor
+try to print global_state_call_chain: []
+END with EOA TX CASE: ContractCreationTransaction 1 from 1004753105490295263244812946565948198177742958590 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f ***********
+End Transaction with messagecall Revert: [%s]
+call_chain is []
+now we have 1 global state (path)!
+Now in function: constructor in contract: AttackBridge
+2 worklist added! now the worklist num is 2
+now we have 2 global state (path)!
+now in creation end, the activate_function is: constructor
+try to print global_state_call_chain: []
+END with EOA TX CASE: ContractCreationTransaction 1 from 1004753105490295263244812946565948198177742958590 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f ***********
+End Transaction with messagecall Revert: [%s]
+call_chain is []
+now we have 1 global state (path)!
+unreached path
+Now in function: constructor in contract: AttackBridge
+unreached path
+Now in function: constructor in contract: AttackBridge
+unreached path
+Now in function: constructor in contract: AttackBridge
+unreached path
+Now in function: constructor in contract: AttackBridge
+now in creation end, the activate_function is: constructor
+Function : func_sig() with hash 0x74c52242 , address 3429 found
+Function : attack(uint256,string,address,bytes,bytes,bytes,bytes,bytes) with hash 0x7866f851 , address 3573 found
+Function : func_sig_re() with hash 0x7d268d4f , address 4558 found
+Function : call_data5() with hash 0xa81c3984 , address 4702 found
+Function : last_caller_addr() with hash 0xad1ab8a1 , address 4846 found
+Function : victim_addr() with hash 0xe1b73aa1 , address 4911 found
+Function : call_data1() with hash 0x07e22f79 , address 2810 found
+Function : call_data4() with hash 0x41737941 , address 2954 found
+Function : call_data3() with hash 0x604eec0f , address 3098 found
+Function : counter() with hash 0x61bc221a , address 3242 found
+Function : call_data2() with hash 0x73336d3f , address 3285 found
+try to print global_state_call_chain: []
+END with EOA TX CASE: ContractCreationTransaction 1 from 1004753105490295263244812946565948198177742958590 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f ***********
+output EOA case global_state: []
+It is possible to write to arbitrary storage locations. By modifying the values of storage variables, attackers may bypass security controls or manipulate the business logic of the smart contract.
+global_state constraints solve failed!
+It is possible to write to arbitrary storage locations. By modifying the values of storage variables, attackers may bypass security controls or manipulate the business logic of the smart contract.
+global_state constraints solve failed!
+It is possible to write to arbitrary storage locations. By modifying the values of storage variables, attackers may bypass security controls or manipulate the business logic of the smart contract.
+global_state constraints solve failed!
+It is possible to write to arbitrary storage locations. By modifying the values of storage variables, attackers may bypass security controls or manipulate the business logic of the smart contract.
+global_state constraints solve failed!
+End Transaction with EOA TX:  [%s]
+call_chain is []
+main:  
+Excute 0 TX Loop!!!
+Now we have 1 open states!!!
+Starting message call transaction, iteration: 0, 1 initial states
+Starting message call transaction to: 1271270613000041655817448348132275889066893754095
+[IndexError] opcode indexError ********************************
+Excute 1 TX Loop!!!
+Now we have 1 open states!!!
+Starting message call transaction, iteration: 1, 1 initial states
+Starting message call transaction to: 1271270613000041655817448348132275889066893754095
+[IndexError] opcode indexError ********************************
+Finished symbolic execution
+
+
+================ Print openstates call_chain ================
+print 0th world_state`s call_chain
+[]
+----------------------------------------------------
+
+
+================ Print openstates call_chain finish ================
+print report in [0]th open_state
+The analysis was completed successfully. No issues were detected.
+
+time cost [11s]

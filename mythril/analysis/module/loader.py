@@ -91,19 +91,19 @@ class ModuleLoader(object, metaclass=Singleton):
     def _register_mythril_modules(self):
         self._modules.extend(
             [
-                ArbitraryJump(),
-                ArbitraryStorage(),
-                ArbitraryDelegateCall(),
-                PredictableVariables(),
-                TxOrigin(),
-                EtherThief(),
-                Exceptions(),
-                ExternalCalls(),
-                IntegerArithmetics(),
-                MultipleSends(),
-                StateChangeAfterCall(),
-                AccidentallyKillable(),
-                UncheckedRetval(),
-                UserAssertions(),
+                # ArbitraryJump(),
+                # ArbitraryStorage(),
+                # ArbitraryDelegateCall(),
+                # PredictableVariables(),
+                # TxOrigin(),
+                # EtherThief(),
+                # Exceptions(),
+                # ExternalCalls(),
+                # IntegerArithmetics(),
+                # MultipleSends(),
+                # StateChangeAfterCall(),
+                # AccidentallyKillable(),
+                # UncheckedRetval(),
+                # UserAssertions(),
             ]
         )

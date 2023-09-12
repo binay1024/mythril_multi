@@ -45,10 +45,11 @@ tx_id_manager = TxIdManager()
 class TransactionEndSignal(Exception):
     """Exception raised when a transaction is finalized."""
 
-    def __init__(self, global_state: GlobalState, revert=None, end_type = None) -> None:
+    def __init__(self, global_state: GlobalState, revert=None, end_type = None, call_chain: str = None) -> None:
         self.global_state = global_state
         self.revert = revert
         self.end_type = end_type
+        self.call_chain = call_chain
 
 
 class TransactionStartSignal(Exception):
@@ -97,6 +98,7 @@ class BaseTransaction:
         
         self.id = identifier if identifier is not None else tx_id_manager.get_next_tx_id()
         self.call_function = "fallback"
+        # 记录 call graph
         self.call_chain = []
         self.gas_price = (
             gas_price
@@ -133,7 +135,7 @@ class BaseTransaction:
         self.call_value = (
             call_value
             if call_value is not None
-            else symbol_factory.BitVecSym(f"callvalue{identifier}", 256)
+            else symbol_factory.BitVecSym(f"callvalue{self.id}", 256)
         )
         self.static = static
         self.return_data = None  # type: str
@@ -163,13 +165,13 @@ class BaseTransaction:
         global_state.world_state.constraints.append(
             UGE(global_state.world_state.balances[sender], value)
         )
-        
+        # 这里 在 append里面 通过 simplify 之后 简化了
 
         global_state.world_state.balances[receiver] += value
         global_state.world_state.balances[sender] -= value
-        if not global_state.world_state.constraints.is_possible():
-            print("Constraint error !! ")
-            exit(0)
+        # if not global_state.world_state.constraints.is_possible():
+        #     print("Constraint error !! ")
+        #     exit(0)
         return global_state
 
     def initial_global_state(self) -> GlobalState:
@@ -257,6 +259,18 @@ class MessageCallTransaction(BaseTransaction):
             code=self.code if self.code is not None else self.callee_account.code,
             static=self.static,
         )
+        start = ["START"]
+        end = ["END"]
+        if self.type == "EOA_MessageCall":
+            caller_name = "EOA"
+        else:    
+            caller_name = ""
+        caller_func = ""
+        callee_name = environment.active_account.contract_name
+        callee_func = []
+        record = [start,[caller_name,caller_func],[callee_name,callee_func],end]
+        
+        self.call_chain = record
         # 加上 如果是 调用一个 可识别的 合约 我们加上 constraint
         return super().initial_global_state_from_environment(
             environment, active_function="fallback"
@@ -273,15 +287,16 @@ class MessageCallTransaction(BaseTransaction):
         print("now in msTX end, the activate_function is: {}".format(global_state.environment.active_function_name))
         # memory return value 
         self.return_data = return_data
+
         function_name = global_state.environment.active_function_name
         if end_type == "REVERT":
             revert = True
-            record = "TX_"+global_state.current_transaction.id.__str__()+"_"+global_state.environment.active_account.contract_name+"."+function_name+"_"+"revert"
+            record = "TX-"+global_state.current_transaction.id.__str__()+"-"+global_state.environment.active_account.contract_name+"-"+function_name+"-"+"revert"
         else:
-            record = "TX_"+global_state.current_transaction.id.__str__()+"_"+global_state.environment.active_account.contract_name+"."+function_name
-        global_state.world_state.transaction_sequence[-1].call_chain.append(record)
+            record = "TX-"+global_state.current_transaction.id.__str__()+"-"+global_state.environment.active_account.contract_name+"-"+function_name
+        # global_state.world_state.transaction_sequence[-1].call_chain.append(record)
 
-        raise TransactionEndSignal(global_state, revert=revert, end_type = end_type)
+        raise TransactionEndSignal(global_state, revert=revert, end_type = end_type, call_chain=record)
 
 
 class ContractCreationTransaction(BaseTransaction):
@@ -303,15 +318,17 @@ class ContractCreationTransaction(BaseTransaction):
         base_fee=None,
         fork=False,
         memo = None,
+        txtype = None,
     ) -> None:
         # 这里的 prev 只用于值得计算所以 fork 之后应该无需特别赋值操作
         
         self.prev_world_state = deepcopy(world_state, None) # 这时候希望 后续这个 prev_world_state 不改变所以 深拷贝
         # 如果不是 fork 而是从一开始总行的 Creation 那么给他 callee_account
-        if not fork and world_state!=None:
-            contract_address = (
+        self.contract_address = (
             contract_address if isinstance(contract_address, int) else None
             )
+        if not fork and world_state!=None:
+            
             # 新 account 就被装入 原world_state里面了, 找到多个 account 出现的原因了. fork 也运行这里就会出问题.
             callee_account = world_state.create_account(
                 0, concrete_storage=True, creator=caller.value, address=contract_address
@@ -335,6 +352,7 @@ class ContractCreationTransaction(BaseTransaction):
             call_value=call_value,
             init_call_data=True,
             base_fee=base_fee,
+            txtype = txtype,
         )
 
     def __deepcopy__(self, memo=None) -> "ContractCreationTransaction":
@@ -427,6 +445,19 @@ class ContractCreationTransaction(BaseTransaction):
             basefee=self.base_fee,
             code=self.code,
         )
+        start = ["START"]
+        end = ["END"]
+        if self.type == "EOA_MessageCall":
+            caller_name = "EOA"
+        else:
+            caller_name = ""
+        caller_func = ""
+        callee_name = environment.active_account.contract_name
+        callee_func = []
+        record = [start,[caller_name,caller_func],[callee_name,callee_func],end]
+        
+        self.call_chain = record
+
         return super().initial_global_state_from_environment(
             environment, active_function="constructor"
         )
@@ -443,21 +474,29 @@ class ContractCreationTransaction(BaseTransaction):
         function_name = global_state.environment.active_function_name
         if end_type == "REVERT":
             revert = True
-            record = "TX_"+global_state.current_transaction.id.__str__()+"_"+global_state.environment.active_account.contract_name+"."+function_name+"_"+"revert"
+            record = "TX-"+global_state.current_transaction.id.__str__()+"-"+global_state.environment.active_account.contract_name+"-"+function_name+"-"+"revert"
         else:
-            record = "TX_"+global_state.current_transaction.id.__str__()+"_"+global_state.environment.active_account.contract_name+"."+function_name
-        global_state.world_state.transaction_sequence[-1].call_chain.append(record)
+            record = "TX-"+global_state.current_transaction.id.__str__()+"-"+global_state.environment.active_account.contract_name+"-"+function_name
+        # global_state.world_state.transaction_sequence[-1].call_chain.append(record)
 
         if return_data is None or return_data.size == 0:
             self.return_data = None
-            raise TransactionEndSignal(global_state, revert=revert, end_type = end_type)
+            raise TransactionEndSignal(global_state, revert=revert, end_type = end_type, call_chain=record)
         # 在这里 代码会被放入 active_account.code 里面
         global_state.environment.active_account.code.assign_bytecode(
             tuple(return_data.return_data)
         )
+        global_state.environment.active_account.code.func_to_parasize = global_state.current_transaction.code.func_to_parasize
+        # global_state.environment.active_account.code.func_to_parasize = global_state.current_transaction.code.func_to_parasize
+        print("print creation end info")
+        # print(global_state.environment.active_account.code.function_name_to_address)
+        # print("print creation end info 2")
+        global_state.environment.active_account.code.assign_func_parasize_post()
+        print(global_state.environment.active_account.code.func_to_parasize)
         return_data = str(hex(global_state.environment.active_account.address.value))
-        self.return_data = ReturnData(return_data, len(return_data) // 2)
+        #设置　TX.return_data
+        self.return_data = ReturnData( return_data = return_data, return_data_size = len(return_data) // 2)
         # 最后保存的时候里面放的是 当前 active_account的地址值 可以 copy 或者 deepcopy
         assert global_state.environment.active_account.code.instruction_list != []
 
-        raise TransactionEndSignal(global_state, revert=revert, end_type = end_type)
+        raise TransactionEndSignal(global_state, revert=revert, end_type = end_type,call_chain=record)

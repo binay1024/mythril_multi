@@ -104,7 +104,7 @@ def ULT(a: BitVec, b: BitVec) -> Bool:
 
 def ULE(a: BitVec, b: BitVec) -> Bool:
     """Create an unsigned less than or equal to expression.
-
+        unsigned 小于等于
     :param a:
     :param b:
     :return:

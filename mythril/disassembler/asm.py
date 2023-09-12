@@ -71,7 +71,9 @@ def find_op_code_sequence(pattern: list, instruction_list: list) -> Generator:
     :param instruction_list: List of instructions to look in
     :return: Indices to the instruction sequences
     """
+
     for i in range(0, len(instruction_list) - len(pattern) + 1):
+        # print("inde is {}".format(i))
         if is_sequence_match(pattern, instruction_list, i):
             yield i
 
@@ -84,11 +86,14 @@ def is_sequence_match(pattern: list, instruction_list: list, index: int) -> bool
     :param index: Index to check for
     :return: Pattern matched
     """
-    for index, pattern_slot in enumerate(pattern, start=index):
+    # print("in is sequence match")
+    for index, pattern_slot in enumerate(pattern, start=index): 
         try:
             if not instruction_list[index]["opcode"] in pattern_slot:
+                # print("instruction {} is not in patternslot".format(instruction_list[index]["opcode"]))
                 return False
         except IndexError:
+            print("index error")
             return False
     return True
 

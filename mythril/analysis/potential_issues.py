@@ -167,3 +167,5 @@ def check_potential_issues(state: GlobalState) -> None:
             potential_issue.detector.issues.append(issue)
             potential_issue.detector.update_cache([issue])
     annotation.potential_issues = unsat_potential_issues
+
+

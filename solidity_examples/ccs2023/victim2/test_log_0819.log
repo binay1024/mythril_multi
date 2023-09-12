@@ -1,0 +1,527 @@
+Function : func_sig() with hash 0x74c52242 , address 3414 found
+Function : attack(uint256,string,address,bytes,bytes,bytes,bytes,bytes) with hash 0x7866f851 , address 3558 found
+Function : func_sig_re() with hash 0x7d268d4f , address 4543 found
+Function : call_data5() with hash 0xa81c3984 , address 4687 found
+Function : last_caller_addr() with hash 0xad1ab8a1 , address 4831 found
+Function : victim_addr() with hash 0xe1b73aa1 , address 4896 found
+Function : call_data1() with hash 0x07e22f79 , address 2795 found
+Function : call_data4() with hash 0x41737941 , address 2939 found
+Function : call_data3() with hash 0x604eec0f , address 3083 found
+Function : counter() with hash 0x61bc221a , address 3227 found
+Function : call_data2() with hash 0x73336d3f , address 3270 found
+Function : withdrawRewardFor() with hash 0x39a110e6 , address 310 found
+Function : closingTime() with hash 0x4b6753bc , address 355 found
+Function : paidOut(address) with hash 0x81f03fcb , address 398 found
+Function : paid(address) with hash 0xa340cf79 , address 499 found
+Function : minTokensToCreate() with hash 0x0c3b7b96 , address 159 found
+Function : rewardAccount() with hash 0x0e708203 , address 202 found
+Function : totalSupply() with hash 0x18160ddd , address 267 found
+Function : payOut(address,uint256) with hash 0x0221038a , address 75 found
+Function : ideal_warn_timed(uint256,uint128) or owner() with hash 0x8da5cb5b , address 175 found
+Function : accumulatedInput() with hash 0xd2cc718f , address 240 found
+setup AttackBridge
+Function : withdrawRewardFor() with hash 0x39a110e6 , address 310 found
+Function : closingTime() with hash 0x4b6753bc , address 355 found
+Function : paidOut(address) with hash 0x81f03fcb , address 398 found
+Function : paid(address) with hash 0xa340cf79 , address 499 found
+Function : minTokensToCreate() with hash 0x0c3b7b96 , address 159 found
+Function : rewardAccount() with hash 0x0e708203 , address 202 found
+Function : totalSupply() with hash 0x18160ddd , address 267 found
+Function : payOut(address,uint256) with hash 0x0221038a , address 75 found
+Function : ideal_warn_timed(uint256,uint128) or owner() with hash 0x8da5cb5b , address 175 found
+Function : accumulatedInput() with hash 0xd2cc718f , address 240 found
+=========================
+current opcode is {'address': 0, 'opcode': 'PUSH1', 'argument': '0x80'}
+op code is PUSH1
+=========================
+current opcode is {'address': 2, 'opcode': 'PUSH1', 'argument': '0x40'}
+op code is PUSH1
+=========================
+current opcode is {'address': 4, 'opcode': 'MSTORE'}
+op code is MSTORE
+=========================
+current opcode is {'address': 5, 'opcode': 'CALLVALUE'}
+op code is CALLVALUE
+=========================
+current opcode is {'address': 6, 'opcode': 'DUP1'}
+op code is DUP1
+=========================
+current opcode is {'address': 7, 'opcode': 'ISZERO'}
+op code is ISZERO
+=========================
+current opcode is {'address': 8, 'opcode': 'PUSH2', 'argument': '0x0010'}
+op code is PUSH2
+=========================
+current opcode is {'address': 11, 'opcode': 'JUMPI'}
+unreached path
+Now in function: constructor in contract: AttackBridge
+op code is JUMPI
+=========================
+current opcode is {'address': 16, 'opcode': 'JUMPDEST'}
+op code is JUMPDEST
+=========================
+current opcode is {'address': 17, 'opcode': 'POP'}
+op code is POP
+=========================
+current opcode is {'address': 18, 'opcode': 'PUSH1', 'argument': '0x40'}
+op code is PUSH1
+=========================
+current opcode is {'address': 20, 'opcode': 'MLOAD'}
+op code is MLOAD
+=========================
+current opcode is {'address': 21, 'opcode': 'PUSH2', 'argument': '0x09ef'}
+op code is PUSH2
+=========================
+current opcode is {'address': 24, 'opcode': 'CODESIZE'}
+op code is CODESIZE
+=========================
+current opcode is {'address': 25, 'opcode': 'SUB'}
+op code is SUB
+=========================
+current opcode is {'address': 26, 'opcode': 'DUP1'}
+op code is DUP1
+=========================
+current opcode is {'address': 27, 'opcode': 'PUSH2', 'argument': '0x09ef'}
+op code is PUSH2
+=========================
+current opcode is {'address': 30, 'opcode': 'DUP4'}
+op code is DUP4
+=========================
+current opcode is {'address': 31, 'opcode': 'CODECOPY'}
+op code is CODECOPY
+=========================
+current opcode is {'address': 32, 'opcode': 'DUP2'}
+op code is DUP2
+=========================
+current opcode is {'address': 33, 'opcode': 'DUP2'}
+op code is DUP2
+=========================
+current opcode is {'address': 34, 'opcode': 'ADD'}
+op code is ADD
+=========================
+current opcode is {'address': 35, 'opcode': 'PUSH1', 'argument': '0x40'}
+op code is PUSH1
+=========================
+current opcode is {'address': 37, 'opcode': 'MSTORE'}
+op code is MSTORE
+=========================
+current opcode is {'address': 38, 'opcode': 'PUSH1', 'argument': '0x20'}
+op code is PUSH1
+=========================
+current opcode is {'address': 40, 'opcode': 'DUP2'}
+op code is DUP2
+=========================
+current opcode is {'address': 41, 'opcode': 'LT'}
+op code is LT
+=========================
+current opcode is {'address': 42, 'opcode': 'ISZERO'}
+op code is ISZERO
+=========================
+current opcode is {'address': 43, 'opcode': 'PUSH2', 'argument': '0x0033'}
+op code is PUSH2
+=========================
+current opcode is {'address': 46, 'opcode': 'JUMPI'}
+unreached path
+Now in function: constructor in contract: AttackBridge
+op code is JUMPI
+=========================
+current opcode is {'address': 51, 'opcode': 'JUMPDEST'}
+op code is JUMPDEST
+=========================
+current opcode is {'address': 52, 'opcode': 'DUP2'}
+op code is DUP2
+=========================
+current opcode is {'address': 53, 'opcode': 'ADD'}
+op code is ADD
+=========================
+current opcode is {'address': 54, 'opcode': 'SWAP1'}
+op code is SWAP1
+=========================
+current opcode is {'address': 55, 'opcode': 'DUP1'}
+op code is DUP1
+=========================
+current opcode is {'address': 56, 'opcode': 'DUP1'}
+op code is DUP1
+=========================
+current opcode is {'address': 57, 'opcode': 'MLOAD'}
+op code is MLOAD
+=========================
+current opcode is {'address': 58, 'opcode': 'SWAP1'}
+op code is SWAP1
+=========================
+current opcode is {'address': 59, 'opcode': 'PUSH1', 'argument': '0x20'}
+op code is PUSH1
+=========================
+current opcode is {'address': 61, 'opcode': 'ADD'}
+op code is ADD
+=========================
+current opcode is {'address': 62, 'opcode': 'SWAP1'}
+op code is SWAP1
+=========================
+current opcode is {'address': 63, 'opcode': 'SWAP3'}
+op code is SWAP3
+=========================
+current opcode is {'address': 64, 'opcode': 'SWAP2'}
+op code is SWAP2
+=========================
+current opcode is {'address': 65, 'opcode': 'SWAP1'}
+op code is SWAP1
+=========================
+current opcode is {'address': 66, 'opcode': 'POP'}
+op code is POP
+=========================
+current opcode is {'address': 67, 'opcode': 'POP'}
+op code is POP
+=========================
+current opcode is {'address': 68, 'opcode': 'POP'}
+op code is POP
+=========================
+current opcode is {'address': 69, 'opcode': 'ADDRESS'}
+op code is ADDRESS
+=========================
+current opcode is {'address': 70, 'opcode': 'PUSH1', 'argument': '0x40'}
+op code is PUSH1
+=========================
+current opcode is {'address': 72, 'opcode': 'MLOAD'}
+op code is MLOAD
+=========================
+current opcode is {'address': 73, 'opcode': 'PUSH2', 'argument': '0x0051'}
+op code is PUSH2
+=========================
+current opcode is {'address': 76, 'opcode': 'SWAP1'}
+op code is SWAP1
+=========================
+current opcode is {'address': 77, 'opcode': 'PUSH2', 'argument': '0x0134'}
+op code is PUSH2
+=========================
+current opcode is {'address': 80, 'opcode': 'JUMP'}
+op code is JUMP
+=========================
+current opcode is {'address': 308, 'opcode': 'JUMPDEST'}
+op code is JUMPDEST
+=========================
+current opcode is {'address': 309, 'opcode': 'PUSH2', 'argument': '0x02ee'}
+op code is PUSH2
+=========================
+current opcode is {'address': 312, 'opcode': 'DUP1'}
+op code is DUP1
+=========================
+current opcode is {'address': 313, 'opcode': 'PUSH2', 'argument': '0x0701'}
+op code is PUSH2
+=========================
+current opcode is {'address': 316, 'opcode': 'DUP4'}
+op code is DUP4
+=========================
+current opcode is {'address': 317, 'opcode': 'CODECOPY'}
+op code is CODECOPY
+=========================
+current opcode is {'address': 318, 'opcode': 'ADD'}
+op code is ADD
+=========================
+current opcode is {'address': 319, 'opcode': 'SWAP1'}
+op code is SWAP1
+=========================
+current opcode is {'address': 320, 'opcode': 'JUMP'}
+op code is JUMP
+=========================
+current opcode is {'address': 81, 'opcode': 'JUMPDEST'}
+op code is JUMPDEST
+=========================
+current opcode is {'address': 82, 'opcode': 'DUP1'}
+op code is DUP1
+=========================
+current opcode is {'address': 83, 'opcode': 'DUP3'}
+op code is DUP3
+=========================
+current opcode is {'address': 84, 'opcode': 'PUSH20', 'argument': '0xffffffffffffffffffffffffffffffffffffffff'}
+op code is PUSH20
+=========================
+current opcode is {'address': 105, 'opcode': 'AND'}
+op code is AND
+=========================
+current opcode is {'address': 106, 'opcode': 'DUP2'}
+op code is DUP2
+=========================
+current opcode is {'address': 107, 'opcode': 'MSTORE'}
+op code is MSTORE
+=========================
+current opcode is {'address': 108, 'opcode': 'PUSH1', 'argument': '0x20'}
+op code is PUSH1
+=========================
+current opcode is {'address': 110, 'opcode': 'ADD'}
+op code is ADD
+=========================
+current opcode is {'address': 111, 'opcode': 'SWAP2'}
+op code is SWAP2
+=========================
+current opcode is {'address': 112, 'opcode': 'POP'}
+op code is POP
+=========================
+current opcode is {'address': 113, 'opcode': 'POP'}
+op code is POP
+=========================
+current opcode is {'address': 114, 'opcode': 'PUSH1', 'argument': '0x40'}
+op code is PUSH1
+=========================
+current opcode is {'address': 116, 'opcode': 'MLOAD'}
+op code is MLOAD
+=========================
+current opcode is {'address': 117, 'opcode': 'DUP1'}
+op code is DUP1
+=========================
+current opcode is {'address': 118, 'opcode': 'SWAP2'}
+op code is SWAP2
+=========================
+current opcode is {'address': 119, 'opcode': 'SUB'}
+op code is SUB
+=========================
+current opcode is {'address': 120, 'opcode': 'SWAP1'}
+op code is SWAP1
+=========================
+current opcode is {'address': 121, 'opcode': 'PUSH1', 'argument': '0x00'}
+op code is PUSH1
+=========================
+current opcode is {'address': 123, 'opcode': 'CREATE'}
+Function : payOut(address,uint256) with hash 0x0221038a , address 75 found
+Function : ideal_warn_timed(uint256,uint128) or owner() with hash 0x8da5cb5b , address 175 found
+Function : accumulatedInput() with hash 0xd2cc718f , address 240 found
+Setup new transaction %s ContractCreationTransaction 3 from 1271270613000041655817448348132275889066893754095 to  0x2c03d1f9a079f3970c10ce3ded1164070fa2c60
+op code is CREATE
+=========================
+current opcode is {'address': 0, 'opcode': 'PUSH1', 'argument': '0x80'}
+op code is PUSH1
+=========================
+current opcode is {'address': 2, 'opcode': 'PUSH1', 'argument': '0x40'}
+op code is PUSH1
+=========================
+current opcode is {'address': 4, 'opcode': 'MSTORE'}
+op code is MSTORE
+=========================
+current opcode is {'address': 5, 'opcode': 'CALLVALUE'}
+op code is CALLVALUE
+=========================
+current opcode is {'address': 6, 'opcode': 'DUP1'}
+op code is DUP1
+=========================
+current opcode is {'address': 7, 'opcode': 'ISZERO'}
+op code is ISZERO
+=========================
+current opcode is {'address': 8, 'opcode': 'PUSH2', 'argument': '0x0010'}
+op code is PUSH2
+=========================
+current opcode is {'address': 11, 'opcode': 'JUMPI'}
+unreached path
+Now in function: constructor in contract: 0x02c03d1f9a079f3970c10ce3ded1164070fa2c60
+op code is JUMPI
+=========================
+current opcode is {'address': 16, 'opcode': 'JUMPDEST'}
+op code is JUMPDEST
+=========================
+current opcode is {'address': 17, 'opcode': 'POP'}
+op code is POP
+=========================
+current opcode is {'address': 18, 'opcode': 'PUSH1', 'argument': '0x40'}
+op code is PUSH1
+=========================
+current opcode is {'address': 20, 'opcode': 'MLOAD'}
+op code is MLOAD
+=========================
+current opcode is {'address': 21, 'opcode': 'PUSH2', 'argument': '0x02ee'}
+op code is PUSH2
+=========================
+current opcode is {'address': 24, 'opcode': 'CODESIZE'}
+op code is CODESIZE
+=========================
+current opcode is {'address': 25, 'opcode': 'SUB'}
+op code is SUB
+=========================
+current opcode is {'address': 26, 'opcode': 'DUP1'}
+op code is DUP1
+=========================
+current opcode is {'address': 27, 'opcode': 'PUSH2', 'argument': '0x02ee'}
+op code is PUSH2
+=========================
+current opcode is {'address': 30, 'opcode': 'DUP4'}
+op code is DUP4
+=========================
+current opcode is {'address': 31, 'opcode': 'CODECOPY'}
+op code is CODECOPY
+=========================
+current opcode is {'address': 32, 'opcode': 'DUP2'}
+op code is DUP2
+=========================
+current opcode is {'address': 33, 'opcode': 'DUP2'}
+op code is DUP2
+=========================
+current opcode is {'address': 34, 'opcode': 'ADD'}
+op code is ADD
+=========================
+current opcode is {'address': 35, 'opcode': 'PUSH1', 'argument': '0x40'}
+op code is PUSH1
+=========================
+current opcode is {'address': 37, 'opcode': 'MSTORE'}
+op code is MSTORE
+=========================
+current opcode is {'address': 38, 'opcode': 'PUSH1', 'argument': '0x20'}
+op code is PUSH1
+=========================
+current opcode is {'address': 40, 'opcode': 'DUP2'}
+op code is DUP2
+=========================
+current opcode is {'address': 41, 'opcode': 'LT'}
+op code is LT
+=========================
+current opcode is {'address': 42, 'opcode': 'ISZERO'}
+op code is ISZERO
+=========================
+current opcode is {'address': 43, 'opcode': 'PUSH2', 'argument': '0x0033'}
+op code is PUSH2
+=========================
+current opcode is {'address': 46, 'opcode': 'JUMPI'}
+unreached path
+Now in function: constructor in contract: 0x02c03d1f9a079f3970c10ce3ded1164070fa2c60
+op code is JUMPI
+=========================
+current opcode is {'address': 51, 'opcode': 'JUMPDEST'}
+op code is JUMPDEST
+=========================
+current opcode is {'address': 52, 'opcode': 'DUP2'}
+op code is DUP2
+=========================
+current opcode is {'address': 53, 'opcode': 'ADD'}
+op code is ADD
+=========================
+current opcode is {'address': 54, 'opcode': 'SWAP1'}
+op code is SWAP1
+=========================
+current opcode is {'address': 55, 'opcode': 'DUP1'}
+op code is DUP1
+=========================
+current opcode is {'address': 56, 'opcode': 'DUP1'}
+op code is DUP1
+=========================
+current opcode is {'address': 57, 'opcode': 'MLOAD'}
+op code is MLOAD
+=========================
+current opcode is {'address': 58, 'opcode': 'SWAP1'}
+op code is SWAP1
+=========================
+current opcode is {'address': 59, 'opcode': 'PUSH1', 'argument': '0x20'}
+op code is PUSH1
+=========================
+current opcode is {'address': 61, 'opcode': 'ADD'}
+op code is ADD
+=========================
+current opcode is {'address': 62, 'opcode': 'SWAP1'}
+op code is SWAP1
+=========================
+current opcode is {'address': 63, 'opcode': 'SWAP3'}
+op code is SWAP3
+=========================
+current opcode is {'address': 64, 'opcode': 'SWAP2'}
+op code is SWAP2
+=========================
+current opcode is {'address': 65, 'opcode': 'SWAP1'}
+op code is SWAP1
+=========================
+current opcode is {'address': 66, 'opcode': 'POP'}
+op code is POP
+=========================
+current opcode is {'address': 67, 'opcode': 'POP'}
+op code is POP
+=========================
+current opcode is {'address': 68, 'opcode': 'POP'}
+op code is POP
+=========================
+current opcode is {'address': 69, 'opcode': 'DUP1'}
+op code is DUP1
+=========================
+current opcode is {'address': 70, 'opcode': 'PUSH1', 'argument': '0x00'}
+op code is PUSH1
+=========================
+current opcode is {'address': 72, 'opcode': 'DUP1'}
+op code is DUP1
+=========================
+current opcode is {'address': 73, 'opcode': 'PUSH2', 'argument': '0x0100'}
+op code is PUSH2
+=========================
+current opcode is {'address': 76, 'opcode': 'EXP'}
+op code is EXP
+=========================
+current opcode is {'address': 77, 'opcode': 'DUP2'}
+op code is DUP2
+=========================
+current opcode is {'address': 78, 'opcode': 'SLOAD'}
+op code is SLOAD
+=========================
+current opcode is {'address': 79, 'opcode': 'DUP2'}
+op code is DUP2
+=========================
+current opcode is {'address': 80, 'opcode': 'PUSH20', 'argument': '0xffffffffffffffffffffffffffffffffffffffff'}
+op code is PUSH20
+=========================
+current opcode is {'address': 101, 'opcode': 'MUL'}
+op code is MUL
+=========================
+current opcode is {'address': 102, 'opcode': 'NOT'}
+op code is NOT
+=========================
+current opcode is {'address': 103, 'opcode': 'AND'}
+op code is AND
+=========================
+current opcode is {'address': 104, 'opcode': 'SWAP1'}
+op code is SWAP1
+=========================
+current opcode is {'address': 105, 'opcode': 'DUP4'}
+op code is DUP4
+=========================
+current opcode is {'address': 106, 'opcode': 'PUSH20', 'argument': '0xffffffffffffffffffffffffffffffffffffffff'}
+op code is PUSH20
+=========================
+current opcode is {'address': 127, 'opcode': 'AND'}
+op code is AND
+=========================
+current opcode is {'address': 128, 'opcode': 'MUL'}
+op code is MUL
+=========================
+current opcode is {'address': 129, 'opcode': 'OR'}
+op code is OR
+=========================
+current opcode is {'address': 130, 'opcode': 'SWAP1'}
+op code is SWAP1
+=========================
+current opcode is {'address': 131, 'opcode': 'SSTORE'}
+op code is SSTORE
+=========================
+current opcode is {'address': 132, 'opcode': 'POP'}
+op code is POP
+=========================
+current opcode is {'address': 133, 'opcode': 'POP'}
+op code is POP
+=========================
+current opcode is {'address': 134, 'opcode': 'PUSH2', 'argument': '0x025a'}
+op code is PUSH2
+=========================
+current opcode is {'address': 137, 'opcode': 'DUP1'}
+op code is DUP1
+=========================
+current opcode is {'address': 138, 'opcode': 'PUSH2', 'argument': '0x0094'}
+op code is PUSH2
+=========================
+current opcode is {'address': 141, 'opcode': 'PUSH1', 'argument': '0x00'}
+op code is PUSH1
+=========================
+current opcode is {'address': 143, 'opcode': 'CODECOPY'}
+op code is CODECOPY
+=========================
+current opcode is {'address': 144, 'opcode': 'PUSH1', 'argument': '0x00'}
+op code is PUSH1
+=========================
+current opcode is {'address': 146, 'opcode': 'RETURN'}
+now in creation end, the activate_function is: constructor
+Function : payOut(address,uint256) with hash 0x0221038a , address 75 found
+Function : ideal_warn_timed(uint256,uint128) or owner() with hash 0x8da5cb5b , address 175 found
+Function : accumulatedInput() with hash 0xd2cc718f , address 240 found
+try to print global_state_call_chain: []
+END WITH Internal MessageCALLTX: ContractCreationTransaction 3 from 1271270613000041655817448348132275889066893754095 to  0x2c03d1f9a079f3970c10ce3ded1164070fa2c60 **************************
+time cost [32s]

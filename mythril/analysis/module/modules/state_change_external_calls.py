@@ -205,7 +205,8 @@ class StateChangeAfterCall(DetectionModule):
 
         # Record state changes following from a transfer of ether
         
-        callable_sc = get_callable_sc_list(global_state)
+        # callable_sc = get_callable_sc_list(global_state)
+        callable_sc = []
         # 如果 cunzai call 并且 balance 改变了 那么 存入当前全球环境
         # 情况三
         if op_code in CALL_LIST :

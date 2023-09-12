@@ -84,6 +84,7 @@ class MutationPruner(LaserPlugin):
                 return
             except UnsatError:
                 # callvalue is constrained to 0, therefore there is no balance based world state mutation
+                print("warning callvalue is constrained to 0, therefore there is no balance based world state mutation")
                 pass
 
             if len(list(global_state.get_annotations(MutationAnnotation))) == 0:

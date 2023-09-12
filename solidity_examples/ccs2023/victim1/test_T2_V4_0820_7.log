@@ -1,0 +1,2025 @@
+Function : attacked(uint256,address) with hash 0xd1d52ab1 , address 34 found
+Function : attack0(uint256,bytes4) with hash 0x4ee77ec4 , address 232 found
+Function : attack1(uint256,bytes4,bytes32) with hash 0xef9e8267 , address 265 found
+Single analyze mode
+Function : attacked(uint256,address) with hash 0xd1d52ab1 , address 34 found
+Now in function: constructor in contract: MAIN
+2 worklist added! now the worklist num is 2
+now we have 2 global state (path)!
+now in creation end, the activate_function is: constructor
+END with EOA TX CASE: ContractCreationTransaction 1 from 1004753105490295263244812946565948198177742958590 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f ***********
+End Transaction with messagecall Revert: [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['MAIN', 'constructor_revert'], ['END']]
+now we have 1 global state (path)!
+now in creation end, the activate_function is: constructor
+Function : attacked(uint256,address) with hash 0xd1d52ab1 , address 34 found
+END with EOA TX CASE: ContractCreationTransaction 1 from 1004753105490295263244812946565948198177742958590 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+setup AttackBridge
+Function : attack0(uint256,bytes4) with hash 0x4ee77ec4 , address 232 found
+Function : attack1(uint256,bytes4,bytes32) with hash 0xef9e8267 , address 265 found
+now in creation end, the activate_function is: constructor
+Function : attack0(uint256,bytes4) with hash 0x4ee77ec4 , address 232 found
+Function : attack1(uint256,bytes4,bytes32) with hash 0xef9e8267 , address 265 found
+END with EOA TX CASE: ContractCreationTransaction 2 from 1271270613000041655817448348132275889066893754095 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+main:  
+
+=========== Excute 0 TX Loop!!!==========
+
+Now we have 1 open states!!!
+Starting message call transaction, iteration: 0, 1 initial states
+Starting message call transaction to: 1271270613000041655817448348132275889066893754095
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 2
+now we have 2 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 3
+now we have 3 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 4
+now we have 4 global state (path)!
+now in msTX end, the activate_function is: fallback
+END with EOA TX CASE: MessageCallTransaction 3 from sender_3 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+now we have 3 global state (path)!
+now in msTX end, the activate_function is: fallback
+END with EOA TX CASE: MessageCallTransaction 3 from sender_3 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+now we have 2 global state (path)!
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 4 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+Now in function: fallback in contract: MAIN
+2 worklist added! now the worklist num is 3
+now we have 3 global state (path)!
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 4 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 4 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 4 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with Revert: MessageCallTransaction 4 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 5 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+unreached path
+Now in function: attack0(uint256,bytes4) in contract: AttackBridge
+unreached path
+Now in function: attack0(uint256,bytes4) in contract: AttackBridge
+now in msTX end, the activate_function is: attack0(uint256,bytes4)
+END with EOA TX CASE: MessageCallTransaction 3 from sender_3 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+now we have 2 global state (path)!
+Now in function: fallback in contract: MAIN
+2 worklist added! now the worklist num is 3
+now we have 3 global state (path)!
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 5 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 5 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: attack0(uint256,bytes4)
+END with EOA TX CASE: MessageCallTransaction 3 from sender_3 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+now we have 2 global state (path)!
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+unreached path
+Now in function: attack1(uint256,bytes4,bytes32) in contract: AttackBridge
+now in msTX end, the activate_function is: attack1(uint256,bytes4,bytes32)
+END with EOA TX CASE: MessageCallTransaction 3 from sender_3 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+now we have 1 global state (path)!
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 6 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+unreached path
+Now in function: fallback in contract: AttackBridge
+unreached path
+Now in function: fallback in contract: AttackBridge
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 2
+now we have 2 global state (path)!
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 7 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+unreached path
+Now in function: fallback in contract: MAIN
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 8 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 7 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with Revert: MessageCallTransaction 7 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+
+unreached path
+Now in function: fallback in contract: MAIN
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+unreached path
+Now in function: fallback in contract: AttackBridge
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 6 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 6 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now we have 1 global state (path)!
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 5 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 5 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+unreached path
+Now in function: attack1(uint256,bytes4,bytes32) in contract: AttackBridge
+now in msTX end, the activate_function is: attack1(uint256,bytes4,bytes32)
+END with EOA TX CASE: MessageCallTransaction 3 from sender_3 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+Excute 0 TX Loop finish!!!
+output the call_chain
+++++++++++++++++++++ In 0th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+++++++++++++++++++++ In 1th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+++++++++++++++++++++ In 2th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+++++++++++++++++++++ In 3th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+++++++++++++++++++++ In 4th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+++++++++++++++++++++ In 5th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+
+=========== Excute 1 TX Loop!!!==========
+
+Now we have 6 open states!!!
+Starting message call transaction, iteration: 1, 6 initial states
+Starting message call transaction to: 1271270613000041655817448348132275889066893754095
+now we have 6 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 7
+now we have 7 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 8
+now we have 8 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 9
+now we have 9 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 10
+now we have 10 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 11
+now we have 11 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 12
+now we have 12 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 13
+now we have 13 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 14
+now we have 14 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 15
+now we have 15 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 16
+now we have 16 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 17
+now we have 17 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 18
+now we have 18 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 19
+now we have 19 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 20
+now we have 20 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 21
+now we have 21 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 22
+now we have 22 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 23
+now we have 23 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 24
+now we have 24 global state (path)!
+now in msTX end, the activate_function is: fallback
+END with EOA TX CASE: MessageCallTransaction 9 from sender_9 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+now we have 23 global state (path)!
+now in msTX end, the activate_function is: fallback
+END with EOA TX CASE: MessageCallTransaction 10 from sender_10 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+now we have 22 global state (path)!
+now in msTX end, the activate_function is: fallback
+END with EOA TX CASE: MessageCallTransaction 11 from sender_11 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+now we have 21 global state (path)!
+now in msTX end, the activate_function is: fallback
+END with EOA TX CASE: MessageCallTransaction 12 from sender_12 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+now we have 20 global state (path)!
+now in msTX end, the activate_function is: fallback
+END with EOA TX CASE: MessageCallTransaction 13 from sender_13 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+now we have 19 global state (path)!
+now in msTX end, the activate_function is: fallback
+END with EOA TX CASE: MessageCallTransaction 14 from sender_14 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+now we have 18 global state (path)!
+now in msTX end, the activate_function is: fallback
+END with EOA TX CASE: MessageCallTransaction 9 from sender_9 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+now we have 17 global state (path)!
+now in msTX end, the activate_function is: fallback
+END with EOA TX CASE: MessageCallTransaction 10 from sender_10 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+now we have 16 global state (path)!
+now in msTX end, the activate_function is: fallback
+END with EOA TX CASE: MessageCallTransaction 11 from sender_11 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+now we have 15 global state (path)!
+now in msTX end, the activate_function is: fallback
+END with EOA TX CASE: MessageCallTransaction 12 from sender_12 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+now we have 14 global state (path)!
+now in msTX end, the activate_function is: fallback
+END with EOA TX CASE: MessageCallTransaction 13 from sender_13 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+now we have 13 global state (path)!
+now in msTX end, the activate_function is: fallback
+END with EOA TX CASE: MessageCallTransaction 14 from sender_14 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+now we have 12 global state (path)!
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 15 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 16 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 17 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 18 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 19 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 20 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+Now in function: fallback in contract: MAIN
+2 worklist added! now the worklist num is 13
+now we have 13 global state (path)!
+Now in function: fallback in contract: MAIN
+2 worklist added! now the worklist num is 14
+now we have 14 global state (path)!
+Now in function: fallback in contract: MAIN
+2 worklist added! now the worklist num is 15
+now we have 15 global state (path)!
+Now in function: fallback in contract: MAIN
+2 worklist added! now the worklist num is 16
+now we have 16 global state (path)!
+Now in function: fallback in contract: MAIN
+2 worklist added! now the worklist num is 17
+now we have 17 global state (path)!
+Now in function: fallback in contract: MAIN
+2 worklist added! now the worklist num is 18
+now we have 18 global state (path)!
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 15 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 15 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 16 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 16 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 17 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 17 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 18 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 18 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 19 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 19 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 20 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 20 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 15 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with Revert: MessageCallTransaction 15 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 16 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with Revert: MessageCallTransaction 16 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 17 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with Revert: MessageCallTransaction 17 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 18 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with Revert: MessageCallTransaction 18 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 19 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with Revert: MessageCallTransaction 19 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 20 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with Revert: MessageCallTransaction 20 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 21 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+unreached path
+Now in function: attack0(uint256,bytes4) in contract: AttackBridge
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 22 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+unreached path
+Now in function: attack0(uint256,bytes4) in contract: AttackBridge
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 23 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+unreached path
+Now in function: attack0(uint256,bytes4) in contract: AttackBridge
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 24 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+unreached path
+Now in function: attack0(uint256,bytes4) in contract: AttackBridge
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 25 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+unreached path
+Now in function: attack0(uint256,bytes4) in contract: AttackBridge
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 26 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+unreached path
+Now in function: attack0(uint256,bytes4) in contract: AttackBridge
+unreached path
+Now in function: attack0(uint256,bytes4) in contract: AttackBridge
+unreached path
+Now in function: attack0(uint256,bytes4) in contract: AttackBridge
+unreached path
+Now in function: attack0(uint256,bytes4) in contract: AttackBridge
+unreached path
+Now in function: attack0(uint256,bytes4) in contract: AttackBridge
+unreached path
+Now in function: attack0(uint256,bytes4) in contract: AttackBridge
+unreached path
+Now in function: attack0(uint256,bytes4) in contract: AttackBridge
+now in msTX end, the activate_function is: attack0(uint256,bytes4)
+END with EOA TX CASE: MessageCallTransaction 9 from sender_9 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+now we have 17 global state (path)!
+now in msTX end, the activate_function is: attack0(uint256,bytes4)
+END with EOA TX CASE: MessageCallTransaction 10 from sender_10 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+now we have 16 global state (path)!
+now in msTX end, the activate_function is: attack0(uint256,bytes4)
+END with EOA TX CASE: MessageCallTransaction 11 from sender_11 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+now we have 15 global state (path)!
+now in msTX end, the activate_function is: attack0(uint256,bytes4)
+END with EOA TX CASE: MessageCallTransaction 12 from sender_12 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+now we have 14 global state (path)!
+now in msTX end, the activate_function is: attack0(uint256,bytes4)
+END with EOA TX CASE: MessageCallTransaction 13 from sender_13 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+now we have 13 global state (path)!
+now in msTX end, the activate_function is: attack0(uint256,bytes4)
+END with EOA TX CASE: MessageCallTransaction 14 from sender_14 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+now we have 12 global state (path)!
+Now in function: fallback in contract: MAIN
+2 worklist added! now the worklist num is 13
+now we have 13 global state (path)!
+Now in function: fallback in contract: MAIN
+2 worklist added! now the worklist num is 14
+now we have 14 global state (path)!
+Now in function: fallback in contract: MAIN
+2 worklist added! now the worklist num is 15
+now we have 15 global state (path)!
+Now in function: fallback in contract: MAIN
+2 worklist added! now the worklist num is 16
+now we have 16 global state (path)!
+Now in function: fallback in contract: MAIN
+2 worklist added! now the worklist num is 17
+now we have 17 global state (path)!
+Now in function: fallback in contract: MAIN
+2 worklist added! now the worklist num is 18
+now we have 18 global state (path)!
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 21 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 21 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 22 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 22 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 23 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 23 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 24 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 24 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 25 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 25 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 26 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 26 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: attack0(uint256,bytes4)
+END with EOA TX CASE: MessageCallTransaction 9 from sender_9 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+now we have 17 global state (path)!
+now in msTX end, the activate_function is: attack0(uint256,bytes4)
+END with EOA TX CASE: MessageCallTransaction 10 from sender_10 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+now we have 16 global state (path)!
+now in msTX end, the activate_function is: attack0(uint256,bytes4)
+END with EOA TX CASE: MessageCallTransaction 11 from sender_11 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+now we have 15 global state (path)!
+now in msTX end, the activate_function is: attack0(uint256,bytes4)
+END with EOA TX CASE: MessageCallTransaction 12 from sender_12 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+now we have 14 global state (path)!
+now in msTX end, the activate_function is: attack0(uint256,bytes4)
+END with EOA TX CASE: MessageCallTransaction 13 from sender_13 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+now we have 13 global state (path)!
+now in msTX end, the activate_function is: attack0(uint256,bytes4)
+END with EOA TX CASE: MessageCallTransaction 14 from sender_14 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+now we have 12 global state (path)!
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+unreached path
+Now in function: attack1(uint256,bytes4,bytes32) in contract: AttackBridge
+unreached path
+Now in function: attack1(uint256,bytes4,bytes32) in contract: AttackBridge
+unreached path
+Now in function: attack1(uint256,bytes4,bytes32) in contract: AttackBridge
+unreached path
+Now in function: attack1(uint256,bytes4,bytes32) in contract: AttackBridge
+unreached path
+Now in function: attack1(uint256,bytes4,bytes32) in contract: AttackBridge
+unreached path
+Now in function: attack1(uint256,bytes4,bytes32) in contract: AttackBridge
+now in msTX end, the activate_function is: attack1(uint256,bytes4,bytes32)
+END with EOA TX CASE: MessageCallTransaction 9 from sender_9 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+now we have 11 global state (path)!
+now in msTX end, the activate_function is: attack1(uint256,bytes4,bytes32)
+END with EOA TX CASE: MessageCallTransaction 10 from sender_10 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+now we have 10 global state (path)!
+now in msTX end, the activate_function is: attack1(uint256,bytes4,bytes32)
+END with EOA TX CASE: MessageCallTransaction 11 from sender_11 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+now we have 9 global state (path)!
+now in msTX end, the activate_function is: attack1(uint256,bytes4,bytes32)
+END with EOA TX CASE: MessageCallTransaction 12 from sender_12 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+now we have 8 global state (path)!
+now in msTX end, the activate_function is: attack1(uint256,bytes4,bytes32)
+END with EOA TX CASE: MessageCallTransaction 13 from sender_13 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+now we have 7 global state (path)!
+now in msTX end, the activate_function is: attack1(uint256,bytes4,bytes32)
+END with EOA TX CASE: MessageCallTransaction 14 from sender_14 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+now we have 6 global state (path)!
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 27 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 28 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 29 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 30 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 31 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 32 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+unreached path
+Now in function: fallback in contract: AttackBridge
+unreached path
+Now in function: fallback in contract: AttackBridge
+unreached path
+Now in function: fallback in contract: AttackBridge
+unreached path
+Now in function: fallback in contract: AttackBridge
+unreached path
+Now in function: fallback in contract: AttackBridge
+unreached path
+Now in function: fallback in contract: AttackBridge
+unreached path
+Now in function: fallback in contract: AttackBridge
+unreached path
+Now in function: fallback in contract: AttackBridge
+unreached path
+Now in function: fallback in contract: AttackBridge
+unreached path
+Now in function: fallback in contract: AttackBridge
+unreached path
+Now in function: fallback in contract: AttackBridge
+unreached path
+Now in function: fallback in contract: AttackBridge
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 7
+now we have 7 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 8
+now we have 8 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 9
+now we have 9 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 10
+now we have 10 global state (path)!
+Now in function: fallback in contract: AttackBridge
+2 worklist added! now the worklist num is 11
+now we have 11 global state (path)!
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 33 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 34 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 35 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 36 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 37 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 38 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+unreached path
+Now in function: fallback in contract: MAIN
+unreached path
+Now in function: fallback in contract: MAIN
+unreached path
+Now in function: fallback in contract: MAIN
+unreached path
+Now in function: fallback in contract: MAIN
+unreached path
+Now in function: fallback in contract: MAIN
+unreached path
+Now in function: fallback in contract: MAIN
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 39 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 40 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 41 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 42 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+=============Call Instruction!! print stack states=============
+get the account from address
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 43 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 33 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with Revert: MessageCallTransaction 33 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 34 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with Revert: MessageCallTransaction 34 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 35 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with Revert: MessageCallTransaction 35 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 36 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with Revert: MessageCallTransaction 36 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 37 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with Revert: MessageCallTransaction 37 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 38 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with Revert: MessageCallTransaction 38 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+
+unreached path
+Now in function: fallback in contract: MAIN
+unreached path
+Now in function: fallback in contract: MAIN
+unreached path
+Now in function: fallback in contract: MAIN
+unreached path
+Now in function: fallback in contract: MAIN
+unreached path
+Now in function: fallback in contract: MAIN
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+unreached path
+Now in function: fallback in contract: AttackBridge
+unreached path
+Now in function: fallback in contract: AttackBridge
+unreached path
+Now in function: fallback in contract: AttackBridge
+unreached path
+Now in function: fallback in contract: AttackBridge
+unreached path
+Now in function: fallback in contract: AttackBridge
+unreached path
+Now in function: fallback in contract: AttackBridge
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 27 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 27 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 28 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 28 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 29 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 29 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 30 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 30 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 31 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 31 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: fallback
+END WITH Internal MessageCALLTX: MessageCallTransaction 32 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 32 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now we have 10 global state (path)!
+now we have 9 global state (path)!
+now we have 8 global state (path)!
+now we have 7 global state (path)!
+now we have 6 global state (path)!
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+unreached path
+Now in function: attacked(uint256,address) in contract: MAIN
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 21 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 21 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 22 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 22 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 23 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 23 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 24 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 24 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 25 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 25 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+now in msTX end, the activate_function is: attacked(uint256,address)
+END WITH Internal MessageCALLTX: MessageCallTransaction 26 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f **************************
+End Transaction with MessageTX Normally: MessageCallTransaction 26 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+call_chain is [
+['START'], ['EOA', ''], ['AttackBridge', []], ['END']]
+unreached path
+Now in function: attack1(uint256,bytes4,bytes32) in contract: AttackBridge
+unreached path
+Now in function: attack1(uint256,bytes4,bytes32) in contract: AttackBridge
+unreached path
+Now in function: attack1(uint256,bytes4,bytes32) in contract: AttackBridge
+unreached path
+Now in function: attack1(uint256,bytes4,bytes32) in contract: AttackBridge
+unreached path
+Now in function: attack1(uint256,bytes4,bytes32) in contract: AttackBridge
+unreached path
+Now in function: attack1(uint256,bytes4,bytes32) in contract: AttackBridge
+now in msTX end, the activate_function is: attack1(uint256,bytes4,bytes32)
+END with EOA TX CASE: MessageCallTransaction 9 from sender_9 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+now we have 5 global state (path)!
+now in msTX end, the activate_function is: attack1(uint256,bytes4,bytes32)
+END with EOA TX CASE: MessageCallTransaction 10 from sender_10 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+now we have 4 global state (path)!
+now in msTX end, the activate_function is: attack1(uint256,bytes4,bytes32)
+END with EOA TX CASE: MessageCallTransaction 11 from sender_11 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+now we have 3 global state (path)!
+now in msTX end, the activate_function is: attack1(uint256,bytes4,bytes32)
+END with EOA TX CASE: MessageCallTransaction 12 from sender_12 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+now we have 2 global state (path)!
+now in msTX end, the activate_function is: attack1(uint256,bytes4,bytes32)
+END with EOA TX CASE: MessageCallTransaction 13 from sender_13 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+now we have 1 global state (path)!
+now in msTX end, the activate_function is: attack1(uint256,bytes4,bytes32)
+END with EOA TX CASE: MessageCallTransaction 14 from sender_14 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef ***********
+output EOA case global_state: [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+End Transaction with EOA TX:  [%s]
+call_chain is [
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+Excute 1 TX Loop finish!!!
+output the call_chain
+++++++++++++++++++++ In 0th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+++++++++++++++++++++ In 1th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+++++++++++++++++++++ In 2th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+++++++++++++++++++++ In 3th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+++++++++++++++++++++ In 4th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+++++++++++++++++++++ In 5th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+++++++++++++++++++++ In 6th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+++++++++++++++++++++ In 7th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+++++++++++++++++++++ In 8th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+++++++++++++++++++++ In 9th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+++++++++++++++++++++ In 10th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+++++++++++++++++++++ In 11th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+++++++++++++++++++++ In 12th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+++++++++++++++++++++ In 13th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+++++++++++++++++++++ In 14th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+++++++++++++++++++++ In 15th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+++++++++++++++++++++ In 16th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+++++++++++++++++++++ In 17th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+++++++++++++++++++++ In 18th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+++++++++++++++++++++ In 19th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+++++++++++++++++++++ In 20th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+++++++++++++++++++++ In 21th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+++++++++++++++++++++ In 22th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+++++++++++++++++++++ In 23th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+++++++++++++++++++++ In 24th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+++++++++++++++++++++ In 25th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+++++++++++++++++++++ In 26th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+++++++++++++++++++++ In 27th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+++++++++++++++++++++ In 28th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+++++++++++++++++++++ In 29th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+++++++++++++++++++++ In 30th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+++++++++++++++++++++ In 31th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+++++++++++++++++++++ In 32th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+++++++++++++++++++++ In 33th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+++++++++++++++++++++ In 34th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+++++++++++++++++++++ In 35th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+Finished symbolic execution
+
+
+================ Print openstates call_chain ================
+print 0th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+----------------------------------------------------
+print 1th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+----------------------------------------------------
+print 2th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+----------------------------------------------------
+print 3th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+----------------------------------------------------
+print 4th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+----------------------------------------------------
+print 5th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+----------------------------------------------------
+print 6th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+----------------------------------------------------
+print 7th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+----------------------------------------------------
+print 8th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+----------------------------------------------------
+print 9th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+----------------------------------------------------
+print 10th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+----------------------------------------------------
+print 11th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'fallback'], ['END']]
+----------------------------------------------------
+print 12th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+----------------------------------------------------
+print 13th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+----------------------------------------------------
+print 14th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+----------------------------------------------------
+print 15th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+----------------------------------------------------
+print 16th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+----------------------------------------------------
+print 17th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'fallback'], ['END']]
+----------------------------------------------------
+print 18th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+----------------------------------------------------
+print 19th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+----------------------------------------------------
+print 20th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+----------------------------------------------------
+print 21th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+----------------------------------------------------
+print 22th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+----------------------------------------------------
+print 23th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['END'], 
+['START'], ['AttackBridge', 'attack0(uint256,bytes4)'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+----------------------------------------------------
+print 24th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+----------------------------------------------------
+print 25th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+----------------------------------------------------
+print 26th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+----------------------------------------------------
+print 27th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+----------------------------------------------------
+print 28th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+----------------------------------------------------
+print 29th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'fallback'], ['END']]
+----------------------------------------------------
+print 30th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+----------------------------------------------------
+print 31th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+----------------------------------------------------
+print 32th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+----------------------------------------------------
+print 33th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+----------------------------------------------------
+print 34th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+----------------------------------------------------
+print 35th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['END'], 
+['START'], ['AttackBridge', 'attack1(uint256,bytes4,bytes32)'], ['MAIN', 'attacked(uint256,address)'], ['END'], 
+['START'], ['MAIN', 'attacked(uint256,address)'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'attacked(uint256,address)_revert'], ['END']]
+----------------------------------------------------
+
+
+================ Print openstates call_chain finish ================
+print report in [0]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [1]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [2]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [3]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [4]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [5]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [6]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [7]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [8]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [9]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [10]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [11]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [12]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [13]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [14]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [15]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [16]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [17]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [18]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [19]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [20]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [21]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [22]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [23]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [24]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [25]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [26]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [27]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [28]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [29]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [30]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [31]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [32]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [33]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [34]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [35]th open_state
+The analysis was completed successfully. No issues were detected.
+
+time cost [127s]

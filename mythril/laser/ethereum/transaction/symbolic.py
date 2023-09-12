@@ -125,12 +125,13 @@ def execute_message_call(
         if open_world_state._accounts[callee_address.value].deleted:
             log.debug("Can not execute dead contract, skipping.")
             continue
-        tx_id_manager.set_counter(int(open_world_state.transaction_sequence[-1].id))
+        # tx_id_manager.set_counter(int(open_world_state.transaction_sequence[-1].id))
         next_transaction_id = tx_id_manager.get_next_tx_id()
 
         external_sender = symbol_factory.BitVecSym(
             "sender_{}".format(next_transaction_id), 256
         )
+        
         calldata = SymbolicCalldata(next_transaction_id)
         # 因为 在分支执行的时候我不希望两个 world_state 会互相影响 以及和 tx_sequence 里面存好的 world_state 互相影响
         # 如果说 world_state1, world_state2 -> execute_message_call 
@@ -185,8 +186,7 @@ def execute_sub_contract_creation(
     world_state = world_state or WorldState()
     # open_states = [world_state]
     # 删除 整个列表的对象引用, 只留着列表自己本身
-    
-    
+    # 我们规定 第一个sub 永远是 AttackBridge
     
     sub_transactions = []
     sub_accounts = []
@@ -194,32 +194,56 @@ def execute_sub_contract_creation(
         open_states = [world_state]
         for open_world_state in open_states:
             del laser_evm.open_states[:]
-            next_transaction_id = tx_id_manager.get_next_tx_id()
-            sub_transactions.append(
-                ContractCreationTransaction(
-                    world_state=open_world_state,
-                    identifier=next_transaction_id,
-                    gas_price=symbol_factory.BitVecSym(
-                        "gas_price{}".format(next_transaction_id), 256
-                    ),
-                    gas_limit=8000000,  # block gas limit
-                    origin=origin,
-                    code=Disassembly(sub_contracts[i].creation_code),
-                    caller=caller,
-                    contract_name=contract_name,
-                    call_data=None,
-                    call_value=symbol_factory.BitVecSym(
-                        "call_value{}".format(next_transaction_id), 256
-                    ),
+            if i == 0:
+                print("setup AttackBridge")
+                next_transaction_id = tx_id_manager.get_next_tx_id()
+                sub_transactions.append(
+                    ContractCreationTransaction(
+                        world_state=open_world_state,
+                        identifier=next_transaction_id,
+                        gas_price=symbol_factory.BitVecSym(
+                            "gas_price{}".format(next_transaction_id), 256
+                        ),
+                        gas_limit=8000000,  # block gas limit
+                        origin=ACTORS["ATTACKER"],
+                        code=Disassembly(sub_contracts[i].creation_code),
+                        caller=ACTORS["ATTACKER"],
+                        contract_name="AttackBridge",
+                        contract_address=ACTORS["ATTACKER"],
+                        call_data=None,
+                        call_value=symbol_factory.BitVecSym(
+                            "call_value{}".format(next_transaction_id), 256
+                        ),
+                    )
                 )
-            )
+            else:
+                next_transaction_id = tx_id_manager.get_next_tx_id()
+                print("setup Subcontract_{}".format(i-1))
+                sub_transactions.append(
+                    ContractCreationTransaction(
+                        world_state=open_world_state,
+                        identifier=next_transaction_id,
+                        gas_price=symbol_factory.BitVecSym(
+                            "gas_price{}".format(next_transaction_id), 256
+                        ),
+                        gas_limit=8000000,  # block gas limit
+                        origin=origin,
+                        code=Disassembly(sub_contracts[i].creation_code),
+                        caller=caller,
+                        contract_name="SUB_"+str(i-1),
+                        call_data=None,
+                        call_value=symbol_factory.BitVecSym(
+                            "call_value{}".format(next_transaction_id), 256
+                        ),
+                    )
+                )
+
             _setup_global_state_for_execution(laser_evm, sub_transactions[i])
-            
             laser_evm.exec(True)
             sub_accounts.append(sub_transactions[i].callee_account)
             # 为了可以让下一个合约续上
-            if len(sub_contracts) >1:
-                open_states = laser_evm.open_states
+        if len(sub_contracts) >1:
+            open_states = laser_evm.open_states
             
     return sub_accounts if sub_accounts is not [] else None
 

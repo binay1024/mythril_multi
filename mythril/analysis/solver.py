@@ -73,6 +73,7 @@ def get_transaction_sequence(
     try:
         model = get_model(tx_constraints, minimize=minimize)
     except UnsatError:
+        print("[Warning]cannot solve constraint in get_transaction_sequence")
         raise UnsatError
 
     if isinstance(transaction_sequence[0], ContractCreationTransaction):

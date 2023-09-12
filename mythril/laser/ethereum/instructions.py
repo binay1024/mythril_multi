@@ -68,7 +68,7 @@ from mythril.support.loader import DynLoader
 from mythril.laser.ethereum.state.account import Account
 from mythril.laser.ethereum.state.world_state import WorldState
 
-from mythril.support.my_utils import get_callable_sc_list
+# from mythril.support.my_utils import get_callable_sc_list
 
 log = logging.getLogger(__name__)
 
@@ -840,18 +840,21 @@ class Instruction:
             mstart = util.get_concrete_int(mstart)
         except TypeError:
             log.debug("Unsupported symbolic memory offset in CALLDATACOPY")
+            print(" error Unsupported symbolic memory offset in CALLDATACOPY")
             return [global_state]
 
         try:
             dstart = util.get_concrete_int(dstart)  # type: Union[int, BitVec]
         except TypeError:
             log.debug("Unsupported symbolic calldata offset in CALLDATACOPY")
+            print("error Unsupported symbolic calldata offset in CALLDATACOPY")
             dstart = simplify(dstart)
 
         try:
             size = util.get_concrete_int(size)  # type: Union[int, BitVec]
         except TypeError:
             log.debug("Unsupported symbolic size in CALLDATACOPY")
+            print("error Unsupported symbolic size in CALLDATACOPY")
             size = SYMBOLIC_CALLDATA_SIZE  # The excess size will get overwritten
 
         size = cast(int, size)
@@ -860,6 +863,7 @@ class Instruction:
                 mstate.mem_extend(mstart, size)
             except TypeError as e:
                 log.debug("Memory allocation error: {}".format(e))
+                print("Memory allocation error: {}".format(e))
                 mstate.mem_extend(mstart, 1)
                 mstate.memory[mstart] = global_state.new_bitvec(
                     "calldata_"
@@ -890,7 +894,7 @@ class Instruction:
 
             except IndexError:
                 log.debug("Exception copying calldata to memory")
-
+                print("error, Exception copying calldata to memory")
                 mstate.memory[mstart] = global_state.new_bitvec(
                     "calldata_"
                     + str(environment.active_account.contract_name)
@@ -1024,7 +1028,7 @@ class Instruction:
             else:
                 no_of_bytes += 0x200  # space for 16 32-byte arguments
                 global_state.world_state.constraints.append(
-                    global_state.environment.calldata.size == no_of_bytes
+                    global_state.environment.calldata.size <= no_of_bytes
                 )
 
         else:
@@ -1125,10 +1129,11 @@ class Instruction:
             log.debug("Copying from code offset: {} with size: {}".format(offset, size))
 
             if isinstance(global_state.environment.calldata, SymbolicCalldata):
-                if code_offset >= code_size:
+                if code_offset >= code_size: #　这是　确实　传进来的代码　没有参数的情况
                     return self._calldata_copy_helper(
                         global_state, mstate, memory_offset, offset, size
                     )
+                # 没说如果不是怎么办呢还？ 
             else:
                 # Copy from both code and calldata appropriately.
                 concrete_code_offset = helper.get_concrete_int(code_offset)
@@ -1167,7 +1172,7 @@ class Instruction:
                     dstart=calldata_copy_offset,
                     size=calldata_copy_size,
                 )
-
+        # 不是 contract creation 而是 messagecall 处理情况。
         return self._code_copy_helper(
             code=global_state.environment.code.bytecode,
             memory_offset=memory_offset,
@@ -1357,9 +1362,11 @@ class Instruction:
 
         try:
             concrete_memory_offset = helper.get_concrete_int(memory_offset)
+
         except TypeError:
             log.debug("Unsupported symbolic memory offset in RETURNDATACOPY")
             print("Warning! Unsupported symbolic memory offset in RETURNDATACOPY " )
+            print(memory_offset)
             return [global_state]
 
         try:
@@ -1367,6 +1374,7 @@ class Instruction:
         except TypeError:
             log.debug("Unsupported symbolic return offset in RETURNDATACOPY")
             print(" Warning! Unsupported symbolic return offset in RETURNDATACOPY")
+            print(return_offset)
             return [global_state]
 
         try:
@@ -1374,9 +1382,10 @@ class Instruction:
         except TypeError:
             log.debug("Unsupported symbolic max_length offset in RETURNDATACOPY")
             print("Warning! Unsupported symbolic max_length offset in RETURNDATACOPY")
+            print(size)
             return [global_state]
 
-        if global_state.last_return_data is None or global_state.last_return_data.return_data is None:
+        if global_state.last_return_data is None or global_state.last_return_data.return_data is None or concrete_size == 0:
             print("Warning!! global_state.last_return_data is None, but value exits, just return...")
             return [global_state]
         
@@ -1401,7 +1410,7 @@ class Instruction:
         if global_state.last_return_data.return_data_size:
             global_state.mstate.stack.append(global_state.last_return_data.size)
         else:
-            global_state.mstate.stack.append(0)
+            global_state.mstate.stack.append(symbol_factory.BitVecVal(0, 256))
         return [global_state]
 
     @StateTransition()
@@ -1495,10 +1504,13 @@ class Instruction:
         """
         state = global_state.mstate
         mstart, value = state.stack.pop(), state.stack.pop()
+        # mstart 是 内存中的 offset（byte单位的）
+        # value 是 要存入内存中的 32 byte的一个值。 
 
         try:
             state.mem_extend(mstart, 32)
         except Exception:
+            print("error extending memory")
             log.debug("Error extending memory")
 
         state.memory.write_word_at(mstart, value)
@@ -1565,17 +1577,20 @@ class Instruction:
         try:
             jump_addr = util.get_concrete_int(state.stack.pop())
         except TypeError:
+            print("Invalid jump argument (symbolic address)")
             raise InvalidJumpDestination("Invalid jump argument (symbolic address)")
         except IndexError:
             raise StackUnderflowException()
 
         index = util.get_instruction_index(disassembly.instruction_list, jump_addr)
         if index is None:
+            print("Invalid jump argument (symbolic address)")
             raise InvalidJumpDestination("JUMP to invalid address")
 
         op_code = disassembly.instruction_list[index]["opcode"]
 
         if op_code != "JUMPDEST":
+            print("Invalid jump argument (symbolic address)")
             raise InvalidJumpDestination(
                 "Skipping JUMP to invalid destination (not JUMPDEST): " + str(jump_addr)
             )
@@ -1640,6 +1655,8 @@ class Instruction:
         # print("=============Jumpi Instruction!! print stack states=============")
         # print(global_state.mstate.stack)
         # 这个是不满足的路, 一般下面都有一个 invalid 命令, 需要手动加 pc
+        # neg_constraints = global_state.world_state.constraints + [negated]
+        # if negated_cond and neg_constraints.is_possible():
         if negated_cond:
             # States have to be deep copied during a fork as summaries assume independence across states.
             # 分叉的时候会 深度拷贝 但是 TX_stack 却又 浅拷贝 ! 为什么呢? 
@@ -1659,8 +1676,12 @@ class Instruction:
             new_state.world_state.constraints.append(negated)
             states.append(new_state)
         else:
-            log.debug("Pruned unreachable states.")
+            log.debug("Pruned unreachable states. in nega")
             print("unreached path")
+            # print(negated_cond)
+            print("------")
+            # print(neg_constraints)
+            print("--- end -----")
 
         # 根据跳转地址(从栈里面读出来的) 得到 要跳转的pc 地址
         index = util.get_instruction_index(disassembly.instruction_list, jump_addr)
@@ -1673,6 +1694,8 @@ class Instruction:
         instr = disassembly.instruction_list[index]
 
         if instr["opcode"] == "JUMPDEST": # 说明 这个 index 是有效跳转地址
+            # post_constraints = global_state.world_state.constraints + [condi]
+            # if positive_cond and post_constraints.is_possible():
             if positive_cond:
                 print("Now in function: %s in contract: %s"%(global_state.environment.active_function_name, global_state.environment.active_account.contract_name))
                 # 一个分叉深拷贝, 一个 接着走
@@ -1724,6 +1747,7 @@ class Instruction:
                     # print(condi.__str__())
 
             else:
+                print("Pruned unreachable states. in positive case")
                 log.debug("Pruned unreachable states.")
         return states
 
@@ -1890,13 +1914,14 @@ class Instruction:
             world_state=world_state,
             caller=caller,
             code=code,
-            identifier=next_transaction_id,
+            identifier=1,
             call_data=constructor_arguments,
             gas_price=gas_price,
             gas_limit=mstate.gas_limit,
             origin=origin,
             call_value=call_value,
             contract_address=contract_address,
+            fork=True,
         )
         raise TransactionStartSignal([transaction], self.op_code, global_state)
 
@@ -1935,10 +1960,10 @@ class Instruction:
 
     @staticmethod
     def _handle_create_type_post(global_state, opcode="create"):
-        if opcode == "create2":
-            global_state.mstate.pop(4)
-        else:
-            global_state.mstate.pop(3)
+        # if opcode == "create2":
+        #     global_state.mstate.pop(4)
+        # else:
+        #     global_state.mstate.pop(3)
         if global_state.last_return_data and global_state.last_return_data.return_data:
             return_val = symbol_factory.BitVecVal(
                 int(global_state.last_return_data.return_data, 16), 256
@@ -1959,7 +1984,7 @@ class Instruction:
         if length.symbolic:
             return_data = [global_state.new_bitvec("return_data", 8)]
             log.debug("Return with symbolic length or offset. Not supported")
-            print("[Warning!!!] Return with symbolic length or offset. Not supported")
+            print("[error!!!] Return with symbolic length or offset. Not supported")
         else:
             state.mem_extend(offset, length)
             StateTransition.check_gas_usage_limit(global_state)
@@ -2000,6 +2025,7 @@ class Instruction:
         """
         state = global_state.mstate
         offset, length = state.stack.pop(), state.stack.pop()
+        # 创建一个 符号类型的 return_data, 
         if length.symbolic is False:
             return_data = [
                 global_state.new_bitvec(
@@ -2018,17 +2044,24 @@ class Instruction:
                 )
                 for i in range(300)
             ]
-
+        # 如果 这个 offset和 length 可以解开成 int ， 那么就 覆盖之前的 符号类型的 return data 否则就用 符号类型的 return data 
         try:
             return_data = state.memory[
                 util.get_concrete_int(offset) : util.get_concrete_int(offset + length)
             ]
+            # 如果 length是 0 就返回 0 0 revert
+            if util.get_concrete_int(length) == 0:
+                length = symbol_factory.BitVecVal(0, 256)         
+                return_data = [length]
+
         except TypeError:
             log.debug("Return with symbolic length or offset. Not supported")
             print("Error: Return with symbolic length or offset. Not supported")
 
+        
+
         global_state.current_transaction.end(
-            global_state, return_data=ReturnData(return_data, length, ), end_type = "REVERT",
+            global_state, return_data=ReturnData(return_data = return_data, return_data_size = length, ), end_type = "REVERT",
         )
 
     @StateTransition()
@@ -2038,8 +2071,11 @@ class Instruction:
         :param global_state:
         """
         # 0xfe: designated invalid opcode
-        print("Error, designated Invalid opcode ***************************")
-        raise InvalidInstruction
+        zero = symbol_factory.BitVecVal(0, 256)
+        returndata_size = zero
+        return_data_data = [zero]
+        return_data = ReturnData( return_data = return_data_data, return_data_size = returndata_size)
+        global_state.current_transaction.end(global_state, return_data = return_data, end_type = "REVERT",)
 
     @StateTransition()
     def invalid_(self, global_state: GlobalState):
@@ -2048,7 +2084,14 @@ class Instruction:
         :param global_state:
         """
         print("Error, Invalid opcode ***************************")
-        raise InvalidInstruction
+        # 按照 revert 取执行吗？
+        # raise InvalidInstruction
+        zero = symbol_factory.BitVecVal(0, 256)
+        returndata_size = zero
+        return_data_data = [zero]
+        return_data = ReturnData( return_data = return_data_data, return_data_size = returndata_size)
+        global_state.current_transaction.end(global_state, return_data = return_data, end_type = "REVERT",)
+
 
     @StateTransition()
     def stop_(self, global_state: GlobalState):
@@ -2056,7 +2099,14 @@ class Instruction:
 
         :param global_state:
         """
-        global_state.current_transaction.end(global_state, end_type = "STOP",)
+
+        zero = symbol_factory.BitVecVal(0, 256)
+        returndata_size = zero
+        return_data_data = [zero]
+        return_data = ReturnData( return_data = return_data_data, return_data_size = returndata_size)
+        global_state.current_transaction.end(global_state, return_data = return_data, end_type = "STOP",)
+
+
 
     @staticmethod
     def _write_symbolic_returndata(
@@ -2111,7 +2161,7 @@ class Instruction:
         :return:
         """
         print("=============Call Instruction!! print stack states=============")
-        print(global_state.mstate.stack)
+        # print(global_state.mstate.stack)
         instr = global_state.get_current_instruction()
         environment = global_state.environment
 
@@ -2121,10 +2171,11 @@ class Instruction:
         # global_state.call_chain.append(global_state.environment.active_account.contract_name+"."+function_name)
         
         recursive_call = False
+        # just for test, can be removed 
+        # callable_sc = get_callable_sc_list(global_state)
 
-        callable_sc = get_callable_sc_list(global_state)
-        if callable_sc == []:
-            print("Empty callable list, so this is a external call, we will just return.")
+        # if callable_sc == []:
+        #     print("Empty callable list, so this is a external call, we will just return.")
         try:
             (
                 callee_address,
@@ -2139,49 +2190,68 @@ class Instruction:
             # 所以此时 global_state 已经具有了 last_return_data了
 
 
-            tx_id_manager.set_counter(int(global_state.world_state.transaction_sequence[-1].id))
-            next_id = tx_id_manager.get_next_tx_id()
+            # tx_id_manager.set_counter(int(global_state.world_state.transaction_sequence[-1].id))
+            # next_id = tx_id_manager.get_next_tx_id()
             
             # 情况一: callee account 以符号的形式存在 并且 不含有代码, 
-            if callee_account is not None and callee_account.code.bytecode == "" and callable_sc == []:
+            # if callee_account is not None and callee_account.code.bytecode == "" and global_state.environment.active_account.address.value != int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16):
+            Tx_stack = global_state.transaction_stack
+            temp = []
+            for (tx, global_state_) in Tx_stack:
+                if global_state_ is None:
+                    continue
+                temp.append(global_state_.environment.active_account.contract_name)
+
+            if (callee_account is not None and callee_account.code.bytecode == "") or (temp.count("MAIN") > 4):
                 print("------------------call to EOA-------------------------------")
                 log.debug("The call is related to ether transfer between accounts")
                 sender = environment.active_account.address
                 receiver = callee_account.address
 
                 transfer_ether(global_state, sender, receiver, value)
+
                 self._write_symbolic_returndata(
                     global_state, memory_out_offset, memory_out_size
                 )
 
                 global_state.mstate.stack.append(
-                    global_state.new_bitvec("retval_" + str(instr["address"]), 256)
+                    global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
                 )
                 return [global_state]
             
-            # 情况三  callee account 以符号的形式存在 并且 含有代码 但是 callable 为空 证明已经呼叫过了.
-            if callee_account is not None and callee_account.code.bytecode != "" and callable_sc == []:
-                print("------------------no callable target, return -------------------------------")
-                log.debug("The call is related to ether transfer between accounts")
-                sender = environment.active_account.address
-                receiver = callee_account.address
+            # 情况三  callee account 存在 并且 含有代码 但是 callable 为空 证明已经呼叫过了.
+            # if callee_account is not None and callee_account.code.bytecode != "":
+            #     print("Error Second callee account case")
+            #     exit(0)
+            #     print("------------------no callable target, return -------------------------------")
+            #     log.debug("The call is related to ether transfer between accounts")
+            #     sender = environment.active_account.address
+            #     receiver = callee_account.address
 
-                transfer_ether(global_state, sender, receiver, value)
-                self._write_symbolic_returndata(
-                    global_state, memory_out_offset, memory_out_size
-                )
+            #     transfer_ether(global_state, sender, receiver, value)
+            #     self._write_symbolic_returndata(
+            #         global_state, memory_out_offset, memory_out_size
+            #     )
 
-                global_state.mstate.stack.append(
-                    global_state.new_bitvec("retval_" + str(instr["address"]), 256)
-                )
-                return [global_state]
+            #     global_state.mstate.stack.append(
+            #         global_state.new_bitvec("retval_" + str(instr["address"]), 256)
+            #     )
+            #     return [global_state]
             
             # Add by kevin
             # 情况二: callee_account 地址 是符号型的, 所以账户目前是空, 
             # 生成 可能 call 的 callsub 然后这个输入取决于用户输入
-            if callee_account is not None and callee_account.code.bytecode == "" and callable_sc is not []:
+            if callee_account is not None and callee_account.code.bytecode == "" and global_state.environment.active_account.address.value == int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16):
                 print("------------------ get callable target call -------------------------------")
                 transactions = []
+                if global_state.environment.active_function_name == "fallback":
+                    print("call from fallback")
+                    print("calldata id is {}".format(call_data.tx_id))
+                    if call_data.__class__.__name__ != "ConcreteCalldata":
+                        print("calldata size is {}".format(call_data._size))
+                    else:
+                        print("calldata size is {}".format(call_data.calldatasize))
+                    print("calldata data is {}".format(call_data._calldata))
                 """
                 callee_account,
                 call_data,
@@ -2197,22 +2267,47 @@ class Instruction:
                 # print("print calldata: {}".format(call_data))
                 
                 newconstraints = []
-                for sc in callable_sc:
-                    # to = global_state.mstate.stack[-2]
+
                     # print(to)
                     # print(sc.address)
                     # print(global_state.world_state.constraints.is_possible())
                     # step1 为了 后面 N 个 fork 生成 N 个 新的 TX
                     # 这里是否需要 fork???????????????????????????????????????? 我们可以扔个后面 fork
-                    transaction = MessageCallTransaction(
+                main_addr = None
+                for addr,sc in global_state.world_state.accounts.items():
+                    # print(addr)
+                    # print(sc.contract_name)
+                    if sc.contract_name != "MAIN":
+                        continue
+                    print("catch main account{}".format(addr))
+                    main_addr = addr
+                    callee_account_ = sc
+
+                if main_addr is None:
+                    print("cannot catch MAIN")
+                    exit(0)
+                if type(main_addr) is str:
+                    main_addr = int(main_addr, 16)
+                elif type(main_addr) is int:
+                    pass
+                else:
+                    print("main addr type error ")
+                    exit(0)            
+    
+                
+                sender = environment.active_account.address
+                receiver = callee_account.address
+                transfer_ether(global_state, sender, receiver, value)
+
+                transaction = MessageCallTransaction(
                     world_state= global_state.world_state,
                     gas_price=environment.gasprice,
                     gas_limit=gas,
-                    identifier=next_id,
+                    identifier=1,
                     origin=environment.origin,
                     caller=environment.active_account.address,
-                    callee_account=sc,
-                    code=sc.code,
+                    callee_account=callee_account_,
+                    code=callee_account_.code,
                     call_data=call_data, # symbol
                     call_value=value,
                     static=environment.static,
@@ -2221,8 +2316,37 @@ class Instruction:
                     # if index > 0:
                         # 为了让每个分支 互不干扰. 不需要! 需要深度拷贝的是 global_state 不是你.
                         # transaction = deepcopy(transaction)
-                    newconstraints.append(callee_address == sc.address)
-                    transactions.append(transaction)
+                newconstraints.append(callee_address == callee_account_.address)
+                transactions.append(transaction)
+
+
+                # 下面这段代码是强制让他调用 某个合约的代码
+                # for sc in callable_sc:
+                #     # to = global_state.mstate.stack[-2]
+                #     # print(to)
+                #     # print(sc.address)
+                #     # print(global_state.world_state.constraints.is_possible())
+                #     # step1 为了 后面 N 个 fork 生成 N 个 新的 TX
+                #     # 这里是否需要 fork???????????????????????????????????????? 我们可以扔个后面 fork
+                #     transaction = MessageCallTransaction(
+                #     world_state= global_state.world_state,
+                #     gas_price=environment.gasprice,
+                #     gas_limit=gas,
+                #     identifier=1,
+                #     origin=environment.origin,
+                #     caller=environment.active_account.address,
+                #     callee_account=sc,
+                #     code=sc.code,
+                #     call_data=call_data, # symbol
+                #     call_value=value,
+                #     static=environment.static,
+                #     txtype = "Internal_MessageCall",
+                #     )
+                #     # if index > 0:
+                #         # 为了让每个分支 互不干扰. 不需要! 需要深度拷贝的是 global_state 不是你.
+                #         # transaction = deepcopy(transaction)
+                #     newconstraints.append(callee_address == sc.address)
+                #     transactions.append(transaction)
                     
                 
                 # 添加 call 的 to 为一个指定地址 by kevin
@@ -2259,7 +2383,7 @@ class Instruction:
             )
             # TODO: decide what to do in this case
             global_state.mstate.stack.append(
-                global_state.new_bitvec("retval_" + str(instr["address"]), 256)
+                global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
             )
             return [global_state]
 
@@ -2289,11 +2413,22 @@ class Instruction:
         
         # 情况四 callee_account 存在 并且包含代码
         print("------------------ call to a fixed or created target  -------------------------------")
+        sender = environment.active_account.address
+        receiver = callee_account.address
+        transfer_ether(global_state, sender, receiver, value)
+        if global_state.environment.active_function_name == "fallback":
+            print("call from fallback")
+            print("calldata id is {}".format(call_data.tx_id))
+            if call_data.__class__.__name__ != "ConcreteCalldata":
+                print("calldata size is {}".format(call_data._size))
+            else:
+                print("calldata size is {}".format(call_data.calldatasize))
+            print("calldata data is {}".format(call_data._calldata))
         transaction = MessageCallTransaction(
             world_state=global_state.world_state,
             gas_price=environment.gasprice,
             gas_limit=gas,
-            identifier=next_id,
+            identifier=1,
             origin=environment.origin,
             caller=environment.active_account.address,
             callee_account=callee_account,
@@ -2303,6 +2438,7 @@ class Instruction:
             static=environment.static,
             txtype = "Internal_MessageCall",
         )
+
         raise TransactionStartSignal([transaction], self.op_code, global_state)
 
     @StateTransition()
@@ -2346,7 +2482,7 @@ class Instruction:
                 )
 
                 global_state.mstate.stack.append(
-                    global_state.new_bitvec("retval_" + str(instr["address"]), 256)
+                    global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
                 )
                 return [global_state]
 
@@ -2363,7 +2499,7 @@ class Instruction:
                 global_state, memory_out_offset, memory_out_size
             )
             global_state.mstate.stack.append(
-                global_state.new_bitvec("retval_" + str(instr["address"]), 256)
+                global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
             )
             return [global_state]
 
@@ -2377,6 +2513,7 @@ class Instruction:
             world_state=global_state.world_state,
             gas_price=environment.gasprice,
             gas_limit=gas,
+            idendifier = 1,
             origin=environment.origin,
             code=callee_account.code,
             caller=environment.address,
@@ -2420,14 +2557,15 @@ class Instruction:
                 global_state, memory_out_offset, memory_out_size
             )
             global_state.mstate.stack.append(
-                global_state.new_bitvec("retval_" + str(instr["address"]), 256)
+                global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
             )
             return [global_state]
 
         if global_state.last_return_data is None or global_state.last_return_data.return_data is None:
             # Put return value on stack
+            print("error no last return data")
             return_value = global_state.new_bitvec(
-                "retval_" + str(instr["address"]), 256
+                global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
             )
             global_state.mstate.stack.append(return_value)
             self._write_symbolic_returndata(
@@ -2449,7 +2587,7 @@ class Instruction:
             )
         except TypeError:
             global_state.mstate.stack.append(
-                global_state.new_bitvec("retval_" + str(instr["address"]), 256)
+                global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
             )
             return [global_state]
 
@@ -2467,7 +2605,7 @@ class Instruction:
             ] = global_state.last_return_data[i]
 
         # Put return value on stack
-        return_value = global_state.new_bitvec("retval_" + str(instr["address"]), 256)
+        return_value = global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
         global_state.mstate.stack.append(return_value)
         global_state.world_state.constraints.append(return_value == 1)
         return [global_state]
@@ -2479,6 +2617,8 @@ class Instruction:
         :param global_state:
         :return:
         """
+        print("============= DelegateCall Instruction!! print stack states=============")
+        print(global_state.mstate.stack)
         instr = global_state.get_current_instruction()
         environment = global_state.environment
         memory_out_size, memory_out_offset = global_state.mstate.stack[-6:-4]
@@ -2504,7 +2644,7 @@ class Instruction:
                     global_state, memory_out_offset, memory_out_size
                 )
                 global_state.mstate.stack.append(
-                    global_state.new_bitvec("retval_" + str(instr["address"]), 256)
+                    global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
                 )
                 return [global_state]
         except ValueError as e:
@@ -2520,7 +2660,7 @@ class Instruction:
                 global_state, memory_out_offset, memory_out_size
             )
             global_state.mstate.stack.append(
-                global_state.new_bitvec("retval_" + str(instr["address"]), 256)
+                global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
             )
             return [global_state]
 
@@ -2534,6 +2674,7 @@ class Instruction:
             world_state=global_state.world_state,
             gas_price=environment.gasprice,
             gas_limit=gas,
+            identifier = 1,
             origin=environment.origin,
             code=callee_account.code,
             caller=environment.sender,
@@ -2575,7 +2716,7 @@ class Instruction:
                 )
             )
             global_state.mstate.stack.append(
-                global_state.new_bitvec("retval_" + str(instr["address"]), 256)
+                global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
             )
             self._write_symbolic_returndata(
                 global_state, memory_out_offset, memory_out_size
@@ -2585,7 +2726,7 @@ class Instruction:
         if global_state.last_return_data is None or global_state.last_return_data.return_data is None:
             # Put return value on stack
             return_value = global_state.new_bitvec(
-                "retval_" + str(instr["address"]), 256
+                global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
             )
             global_state.mstate.stack.append(return_value)
             global_state.world_state.constraints.append(return_value == 0)
@@ -2604,7 +2745,7 @@ class Instruction:
             )
         except TypeError:
             global_state.mstate.stack.append(
-                global_state.new_bitvec("retval_" + str(instr["address"]), 256)
+                global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
             )
             return [global_state]
 
@@ -2622,7 +2763,7 @@ class Instruction:
             ] = global_state.last_return_data[i]
 
         # Put return value on stack
-        return_value = global_state.new_bitvec("retval_" + str(instr["address"]), 256)
+        return_value = global_state.new_bitvec(global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256))
         global_state.mstate.stack.append(return_value)
         global_state.world_state.constraints.append(return_value == 1)
         return [global_state]
@@ -2657,7 +2798,7 @@ class Instruction:
                     global_state, memory_out_offset, memory_out_size
                 )
                 global_state.mstate.stack.append(
-                    global_state.new_bitvec("retval_" + str(instr["address"]), 256)
+                    global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
                 )
 
                 return [global_state]
@@ -2675,7 +2816,7 @@ class Instruction:
                 global_state, memory_out_offset, memory_out_size
             )
             global_state.mstate.stack.append(
-                global_state.new_bitvec("retval_" + str(instr["address"]), 256)
+                global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
             )
 
             return [global_state]
@@ -2691,6 +2832,7 @@ class Instruction:
             world_state=global_state.world_state,
             gas_price=environment.gasprice,
             gas_limit=gas,
+            identifier = 1,
             origin=environment.origin,
             code=callee_account.code,
             caller=environment.address,
@@ -2738,12 +2880,12 @@ class Instruction:
                     function_name, e
                 )
             )
-            print("Could not determine required parameters for {}, putting fresh symbol on the stack".format(function_name, e))
+            print("error Could not determine required parameters for {}, putting fresh symbol on the stack".format(function_name, e))
             self._write_symbolic_returndata(
                 global_state, memory_out_offset, memory_out_size
             )
             global_state.mstate.stack.append(
-                global_state.new_bitvec("retval_" + str(instr["address"]), 256)
+                global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
             )
             return [global_state]
         
@@ -2751,18 +2893,22 @@ class Instruction:
         # STOP 命令就会这样，没有返回值， 但是返回值希望是1 ，下面 return 有 return_data 我们也让他返回值1 
         if global_state.last_return_data is None or global_state.last_return_data.return_data is None:
             # Put return value on stack
-            return_value = global_state.new_bitvec(
-                "retval_" + str(instr["address"]), 256
-            )
-            global_state.mstate.stack.append(return_value)
+            # return_value = global_state.new_bitvec(
+            #     "retval_" + str(instr["address"]) + "_" + str(global_state.current_transaction.id) , 256
+            # )
+            # global_state.mstate.stack.append(return_value)
             # 如果是 stop 则
-            if end_type == "STOP":
-                global_state.world_state.constraints.append(return_value == 1)
-            # 如果是 revert 则 
+            # if end_type == "STOP":
+            #     global_state.world_state.constraints.append(return_value == 1)
+            # # 如果是 revert 则 
             if end_type == "REVERT":
-                global_state.world_state.constraints.append(return_value == 0)
+                # global_state.world_state.constraints.append(return_value == 0)
+                global_state.mstate.stack.append(symbol_factory.BitVecVal(0, 256))
+            else:
+                # global_state.world_state.constraints.append(return_value == 1)
+                global_state.mstate.stack.append(symbol_factory.BitVecVal(1, 256))
             return [global_state]
-
+    
         try:
             memory_out_offset = (
                 util.get_concrete_int(memory_out_offset)
@@ -2775,8 +2921,9 @@ class Instruction:
                 else memory_out_size
             )
         except TypeError:
+            print("get concolic return mem value error")
             global_state.mstate.stack.append(
-                global_state.new_bitvec("retval_" + str(instr["address"]), 256)
+                global_state.new_bitvec("retval_" + str(instr["address"])+"_" + str(global_state.current_transaction.id), 256)
             )
             return [global_state]
 
@@ -2795,7 +2942,7 @@ class Instruction:
 
         # Put return value on stack
         return_value = global_state.new_bitvec(
-            "retval_" + str(global_state.get_current_instruction()["address"]), 256
+            "retval_" + str(global_state.get_current_instruction()["address"])+"_" + str(global_state.current_transaction.id), 256
         )
         global_state.mstate.stack.append(return_value)
         global_state.world_state.constraints.append(return_value == 1)

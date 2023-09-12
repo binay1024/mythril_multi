@@ -40,6 +40,7 @@ class WorldState:
         self.node = None  # type: Optional['Node']
         self.transaction_sequence = transaction_sequence or []
         self._annotations = annotations or []
+        # self.internal_transaction_sequence = []
 
     @property
     def accounts(self):
@@ -111,6 +112,7 @@ class WorldState:
             new_world_state.put_account(copy.copy(account))
         new_world_state.node = self.node
         new_world_state.constraints = copy.copy(self.constraints)
+        
         
         return new_world_state
     # 这个 deepcopy 只会拷贝 worldstate - tx - tx_seq 这一块, 至于 global_state 这一块的 tx 不会拷贝.
@@ -200,9 +202,11 @@ class WorldState:
             addr_bitvec = addr
 
         if addr_bitvec.value in self.accounts:
+            print("get the account from address")
             return self.accounts[addr_bitvec.value]
         
         if dynamic_loader is None:
+            print("error dynamic_loader is None")
             raise ValueError("dynamic_loader is None")
 
         if dynamic_loader.active is False:
@@ -257,16 +261,28 @@ class WorldState:
             nonce = self.accounts[creator].nonce
         elif creator:
             self.create_account(address=creator)
-
-        address = (
-            symbol_factory.BitVecVal(address, 256)
-            if address is not None
-            else self._generate_new_address(creator, nonce=self.accounts[creator].nonce)
-        )
+        address_ = None
+        if address is not None:
+            if type(address) is int:
+                address_ = symbol_factory.BitVecVal(address, 256)
+            elif type(address) is str:
+                address_ = symbol_factory.BitVecVal(int(address,16), 256)
+            elif type(address) is BitVec:
+                address_ = address
+            else:
+                print("address type error !")
+                exit(0)
+        else:
+            address_ = self._generate_new_address(creator, nonce=self.accounts[creator].nonce)
+        # address = (
+        #     symbol_factory.BitVecVal(address, 256)
+        #     if address is not None
+        #     else self._generate_new_address(creator, nonce=self.accounts[creator].nonce)
+        # )
         if creator:
             self.accounts[creator].nonce += 1
         new_account = Account(
-            address=address,
+            address=address_,
             balances=self.balances,
             dynamic_loader=dynamic_loader,
             concrete_storage=concrete_storage,
