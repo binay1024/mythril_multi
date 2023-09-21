@@ -557,6 +557,7 @@ class LaserEVM:
                         world_state=forked_new_world_state,
                         caller=forked_caller_global_state.environment.active_account.address,
                         code=tx.code,
+                        identifier=tx.id,
                         call_data=tx.call_data,
                         gas_price=forked_caller_global_state.environment.gasprice,
                         gas_limit=tx.gas_limit,

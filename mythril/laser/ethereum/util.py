@@ -12,6 +12,17 @@ TT256 = 2**256
 TT256M1 = 2**256 - 1
 TT255 = 2**255
 
+TYPE_LIST = [   "bool", 
+                "int", 
+                "uint", 
+             #   "fixed",
+             #   "ufixed",
+                "address",
+            #    "function", 
+                ]
+
+# 给定 函数签名 foo(uint256 a) 或者 foo(bytes a) 或者 foo(uint256a,bytes b) 我们需要 parsing 出来他们里面的参数
+
 
 def safe_decode(hex_encoded_string: str) -> bytes:
     """

@@ -5,10 +5,12 @@ from z3 import sat, unsat
 from z3.z3types import Z3Exception
 from mock import MagicMock
 
+
 uninitialized_test_data = [
     ([]),  # Empty concrete calldata
     ([1, 4, 5, 3, 4, 72, 230, 53]),  # Concrete calldata
 ]
+
 
 
 @pytest.mark.parametrize("starting_calldata", uninitialized_test_data)
@@ -89,3 +91,4 @@ def test_symbolic_calldata_equal_indices():
 
     # Assert
     assert unsat == s.check()
+

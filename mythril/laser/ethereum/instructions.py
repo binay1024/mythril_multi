@@ -837,6 +837,14 @@ class Instruction:
         environment = global_state.environment
 
         try:
+            size = util.get_concrete_int(size)  # type: Union[int, BitVec]
+            if size == 0:
+                print("[log] calldatacopy size is zero, return")
+                return [global_state]
+        except TypeError:
+            pass
+
+        try:
             mstart = util.get_concrete_int(mstart)
         except TypeError:
             log.debug("Unsupported symbolic memory offset in CALLDATACOPY")
@@ -854,7 +862,7 @@ class Instruction:
             size = util.get_concrete_int(size)  # type: Union[int, BitVec]
         except TypeError:
             log.debug("Unsupported symbolic size in CALLDATACOPY")
-            print("error Unsupported symbolic size in CALLDATACOPY")
+            print("error Unsupported symbolic size in CALLDATACOPY, use 320 (0x140?)")
             size = SYMBOLIC_CALLDATA_SIZE  # The excess size will get overwritten
 
         size = cast(int, size)
@@ -1020,17 +1028,34 @@ class Instruction:
         environment = global_state.environment
         disassembly = environment.code
         calldata = global_state.environment.calldata
+        
         if isinstance(global_state.current_transaction, ContractCreationTransaction):
             # Hacky way to ensure constructor arguments work - Pick some reasonably large size.
             no_of_bytes = len(disassembly.bytecode) // 2
             if isinstance(calldata, ConcreteCalldata):
                 no_of_bytes += calldata.size
             else:
-                no_of_bytes += 0x200  # space for 16 32-byte arguments
+                # if 'constructor' in environment.code.func_to_parasize:
+                #     no_of_bytes += environment.code.func_to_parasize['constructor']
+                #     calldata_size = symbol_factory.BitVecVal(environment.code.func_to_parasize['constructor'], 256)
+                #     calldata._size = calldata_size
+                #     # global_state.world_state.constraints.append(
+                #     #     global_state.environment.calldata.size == no_of_bytes
+                #     # )
+                # else:
+                    # print("warning!, can not find constructor para size, defaulty set 0x200")
+                    # no_of_bytes += 0x200  # space for 16 32-byte arguments
+                    # global_state.world_state.constraints.append(
+                    #     global_state.environment.calldata.size <= no_of_bytes
+                    # )
+                print("warning!, can not find constructor para size, defaulty set 0x200")
+                # no_of_bytes += 0x200  # space for 16 32-byte arguments
+                bound = 0x200
+                no_of_bytes = symbol_factory.BitVecVal(no_of_bytes,256)
+                no_of_bytes = no_of_bytes + calldata._size
                 global_state.world_state.constraints.append(
-                    global_state.environment.calldata.size <= no_of_bytes
+                    global_state.environment.calldata.size <= bound
                 )
-
         else:
             no_of_bytes = len(disassembly.bytecode) // 2
         state.stack.append(no_of_bytes)
@@ -1116,7 +1141,8 @@ class Instruction:
             global_state.mstate.stack.pop(),
             global_state.mstate.stack.pop(),
         )
-        code = global_state.environment.code.bytecode
+        # 上面三个 这几个值应该都是 concrete 数 
+        code = global_state.environment.code.bytecode   # 如果是 create情况下， 这里也只是 代码， 参数还是给 calldata处理了
         if code[0:2] == "0x":
             code = code[2:]
         code_size = len(code) // 2
@@ -1128,33 +1154,42 @@ class Instruction:
             offset = code_offset - code_size
             log.debug("Copying from code offset: {} with size: {}".format(offset, size))
 
+            # calldatacopy 用于读取参数，然后 codecopyhelper用于处理 要部署的程序bytecode
             if isinstance(global_state.environment.calldata, SymbolicCalldata):
-                if code_offset >= code_size: #　这是　确实　传进来的代码　没有参数的情况
+                if code_offset >= code_size: #　这是　读取参数的情况
                     return self._calldata_copy_helper(
-                        global_state, mstate, memory_offset, offset, size
+                        global_state = global_state, 
+                        mstate = mstate,                # 确定值
+                        mstart = memory_offset,         # 确定值
+                        dstart = offset,                # 确定值
+                        size = size                     # 确定值
                     )
-                # 没说如果不是怎么办呢还？ 
+                # 没说上述条件没有满足则是 读取 code， 那就 走到最下面 处理 messagecall那边走 codecopyhelper
+
             else:
                 # Copy from both code and calldata appropriately.
+                # 读取 code中的 offset 具体数值
                 concrete_code_offset = helper.get_concrete_int(code_offset)
+                # 读取要 拷贝的 大小 具体数值
                 concrete_size = helper.get_concrete_int(size)
 
                 code_copy_offset = concrete_code_offset
                 code_copy_size = (
                     concrete_size
-                    if concrete_code_offset + concrete_size <= code_size
-                    else code_size - concrete_code_offset
+                    if concrete_code_offset + concrete_size <= code_size    # 代表正常的情况， 拷贝的末尾offset仍在 code范围内
+                    else code_size - concrete_code_offset                   # 代表不正常的情况, 超出 code范围， 那么就用 code减去 size， 也就是说把从 offset开始到末尾的值来覆盖得到的长度
                 )
-                code_copy_size = code_copy_size if code_copy_size >= 0 else 0
+                code_copy_size = code_copy_size if code_copy_size >= 0 else 0 # 保证 这个 size 不小于0 
 
                 calldata_copy_offset = (
-                    concrete_code_offset - code_size
-                    if concrete_code_offset - code_size > 0
-                    else 0
+                    concrete_code_offset - code_size                        # 
+                    if concrete_code_offset - code_size > 0                 # 我要拷贝的 offset 如果大于 bytecode 那么 就让 calldata offset = copyoffset - codesize(拷贝的是参数的情况）
+                    else 0                                                  # 否则 如果 copyoffset 小于等于 bytecode， 说明拷贝 代码， 让 calldataoffset = 0 不拷贝 calldata （拷贝的是bytecode的情况）
                 )
-                calldata_copy_size = concrete_code_offset + concrete_size - code_size
+
+                calldata_copy_size = concrete_code_offset + concrete_size - code_size   # 拷贝的起始位置 加上 长度 - bytecode长度 剩下的就是 参数的长度
                 calldata_copy_size = (
-                    calldata_copy_size if calldata_copy_size >= 0 else 0
+                    calldata_copy_size if calldata_copy_size >= 0 else 0                # 保证参数 不小于 0
                 )
 
                 [global_state] = self._code_copy_helper(
@@ -1219,6 +1254,17 @@ class Instruction:
         op: str,
         global_state: GlobalState,
     ) -> List[GlobalState]:
+        
+        try:
+            concrete_size = helper.get_concrete_int(size)
+            # concrete_memory_offset = helper.get_concrete_int(memory_offset)
+            if concrete_size == 0:
+                print("[log] codecopy size is 0, return")
+                return [global_state]
+        except TypeError:
+            # except both attribute error and Exception
+            pass
+
         try:
             concrete_memory_offset = helper.get_concrete_int(memory_offset)
         except TypeError:
@@ -1227,6 +1273,7 @@ class Instruction:
 
         try:
             concrete_size = helper.get_concrete_int(size)
+            # concrete_memory_offset = helper.get_concrete_int(memory_offset)
             global_state.mstate.mem_extend(concrete_memory_offset, concrete_size)
 
         except TypeError:
@@ -1870,6 +1917,7 @@ class Instruction:
         code_str = bytes.hex(bytes(code_raw))
 
         next_transaction_id = tx_id_manager.get_next_tx_id()
+        # 他判断 后面的部分是属于符号类型的变量， 就是属于 参数。 
         constructor_arguments = ConcreteCalldata(
             next_transaction_id, call_data[code_end:]
         )
@@ -1914,7 +1962,7 @@ class Instruction:
             world_state=world_state,
             caller=caller,
             code=code,
-            identifier=1,
+            identifier=next_transaction_id,
             call_data=constructor_arguments,
             gas_price=gas_price,
             gas_limit=mstate.gas_limit,

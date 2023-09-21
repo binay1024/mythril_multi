@@ -60,24 +60,45 @@ class Memory:
         :return: 32 byte word at the specified index
         """
         try:
-            return symbol_factory.BitVecVal(
-                util.concrete_int_from_bytes(
-                    bytes([util.get_concrete_int(b) for b in self[index : index + 32]]),
-                    0,
-                ),
-                256,
-            )
+            bytelist = []
+            word = self[index:index+32]
+            for byte_ in word:
+                concrete_byte = util.get_concrete_int(byte_)
+                bytelist.append(concrete_byte)
+            i = bytes(bytelist)
+            i = util.concrete_int_from_bytes(i,0)
+            i_val = symbol_factory.BitVecVal(i, 256)
+            return i_val
+            # return symbol_factory.BitVecVal(
+            #     util.concrete_int_from_bytes(
+            #         bytes([util.get_concrete_int(b) for b in self[index : index + 32]]),
+            #         0,
+            #     ),
+            #     256,
+            # )
         except TypeError:
-            result = simplify(
-                Concat(
-                    [
-                        b if isinstance(b, BitVec) else symbol_factory.BitVecVal(b, 8)
-                        for b in cast(
-                            List[Union[int, BitVec]], self[index : index + 32]
-                        )
-                    ]
-                )
-            )
+            # result = simplify(
+            #     Concat(
+            #         [
+            #             b if isinstance(b, BitVec) else symbol_factory.BitVecVal(b, 8)
+            #             for b in cast(
+            #                 List[Union[int, BitVec]], self[index : index + 32]
+            #             )
+            #         ]
+            #     )
+            # )
+            blist = cast(List[Union[int, BitVec]], self[index : index + 32])
+            newlist = []
+            for b in blist:
+                if isinstance(b, BitVec):
+                    newlist.append(b)
+                else:
+                    newlist.append(symbol_factory.BitVecVal(b, 8))
+            print("new list is {}".format(newlist))
+            exp = Concat(newlist)
+            print("new exp is {}".format(exp))
+            result = simplify(exp)
+            print("simplifyied exp is {}".format(result))
             assert result.size() == 256
             return result
 
@@ -138,24 +159,30 @@ class Memory:
                 raise IndexError("Invalid Memory Slice")
             if step is None:
                 step = 1
-            bvstart, bvstop, bvstep = (
+            bvstart, bvstop, bvstep = (                                         # 将整数类型转换成 bitvec类型
                 convert_bv(start),
                 convert_bv(stop),
                 convert_bv(step),
             )
-            ret_lis = []
-            symbolic_len = False
-            itr = symbol_factory.BitVecVal(0, 256)
-            if (bvstop - bvstart).symbolic:
+            ret_lis = []                                                        # 要返回的列表变量
+            symbolic_len = False                                                # 长度是否也是 符号类型的
+            itr = symbol_factory.BitVecVal(0, 256)                              # iteration 迭代的意思
+            if (bvstop - bvstart).symbolic:                                     # 通过计算 stop - sstart 检查是否是 符号类型的， 如果是 则 长度也是符号类型的
                 symbolic_len = True
+            
+            walk_step = bvstep * itr
+            distance = simplify(bvstop - bvstart)
 
-            while simplify(bvstep * itr != simplify(bvstop - bvstart)) and (
-                not symbolic_len or itr <= APPROX_ITR
-            ):
-                ret_lis.append(self[bvstart + bvstep * itr])
+            while simplify(walk_step != distance) and ( not symbolic_len or itr <= APPROX_ITR ):
+                byt_index = bvstart + bvstep * itr
+                byt = self[byt_index]
+                ret_lis.append(byt)
                 itr += 1
+                walk_step = bvstep * itr
             return ret_lis
+        # else: 这是读 单个 byte的情况
         item = simplify(convert_bv(item))
+        # 字典里 使用 get(item,0) 就是在字典里找 key=item的值， 如果木有 默认返回0的意思。
         return self._memory.get(item, 0)
 
     def __setitem__(

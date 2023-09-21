@@ -486,13 +486,13 @@ class ContractCreationTransaction(BaseTransaction):
         global_state.environment.active_account.code.assign_bytecode(
             tuple(return_data.return_data)
         )
-        global_state.environment.active_account.code.func_to_parasize = global_state.current_transaction.code.func_to_parasize
         # global_state.environment.active_account.code.func_to_parasize = global_state.current_transaction.code.func_to_parasize
-        print("print creation end info")
+        # global_state.environment.active_account.code.func_to_parasize = global_state.current_transaction.code.func_to_parasize
+        # print("print creation end info")
         # print(global_state.environment.active_account.code.function_name_to_address)
         # print("print creation end info 2")
-        global_state.environment.active_account.code.assign_func_parasize_post()
-        print(global_state.environment.active_account.code.func_to_parasize)
+        # global_state.environment.active_account.code.assign_func_parasize_post()
+        # print(global_state.environment.active_account.code.func_to_parasize)
         return_data = str(hex(global_state.environment.active_account.address.value))
         #设置　TX.return_data
         self.return_data = ReturnData( return_data = return_data, return_data_size = len(return_data) // 2)
