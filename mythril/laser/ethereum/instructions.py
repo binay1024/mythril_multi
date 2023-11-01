@@ -96,6 +96,7 @@ def transfer_ether(
     global_state.world_state.constraints.append(
         UGE(global_state.world_state.balances[sender], value)
     )
+    print("balances is {}".format(global_state.world_state.balances[sender]))
     global_state.world_state.balances[receiver] += value
     global_state.world_state.balances[sender] -= value
 
@@ -268,7 +269,9 @@ class Instruction:
             if not post
             else getattr(self, op + "_" + "post", None)
         )
+
         if instruction_mutator is None:
+            print("error instruction mutator is none")
             raise NotImplementedError
 
         self._execute_pre_hooks(global_state)
@@ -1033,31 +1036,25 @@ class Instruction:
             # Hacky way to ensure constructor arguments work - Pick some reasonably large size.
             no_of_bytes = len(disassembly.bytecode) // 2
             if isinstance(calldata, ConcreteCalldata):
+                print("codesize_ case1")
                 no_of_bytes += calldata.size
             else:
-                # if 'constructor' in environment.code.func_to_parasize:
-                #     no_of_bytes += environment.code.func_to_parasize['constructor']
-                #     calldata_size = symbol_factory.BitVecVal(environment.code.func_to_parasize['constructor'], 256)
-                #     calldata._size = calldata_size
-                #     # global_state.world_state.constraints.append(
-                #     #     global_state.environment.calldata.size == no_of_bytes
-                #     # )
-                # else:
-                    # print("warning!, can not find constructor para size, defaulty set 0x200")
-                    # no_of_bytes += 0x200  # space for 16 32-byte arguments
-                    # global_state.world_state.constraints.append(
-                    #     global_state.environment.calldata.size <= no_of_bytes
-                    # )
-                print("warning!, can not find constructor para size, defaulty set 0x200")
-                # no_of_bytes += 0x200  # space for 16 32-byte arguments
-                bound = 0x200
-                no_of_bytes = symbol_factory.BitVecVal(no_of_bytes,256)
-                no_of_bytes = no_of_bytes + calldata._size
-                global_state.world_state.constraints.append(
-                    global_state.environment.calldata.size <= bound
-                )
+                if 'constructor' in environment.code.func_to_parasize:
+                    no_of_bytes += environment.code.func_to_parasize['constructor']
+                    calldata_size = symbol_factory.BitVecVal(environment.code.func_to_parasize['constructor'], 256)
+                    calldata.update_size(calldata_size)
+                    print("codesize_ case2")
+                else:
+                    print("warning!, can not find constructor para size, defaulty set 0x200")
+                    print("codesize_ case3")
+                    no_of_bytes += 0x200  # space for 16 32-byte arguments 320
+                    global_state.world_state.constraints.append(
+                        global_state.environment.calldata.size <= no_of_bytes
+                    )
         else:
             no_of_bytes = len(disassembly.bytecode) // 2
+            print("codesize_ case4")
+
         state.stack.append(no_of_bytes)
         return [global_state]
 
@@ -1167,31 +1164,45 @@ class Instruction:
                 # 没说上述条件没有满足则是 读取 code， 那就 走到最下面 处理 messagecall那边走 codecopyhelper
 
             else:
-                # Copy from both code and calldata appropriately.
-                # 读取 code中的 offset 具体数值
                 concrete_code_offset = helper.get_concrete_int(code_offset)
                 # 读取要 拷贝的 大小 具体数值
                 concrete_size = helper.get_concrete_int(size)
 
+                # 如果 codeoffset + size 大于 codesize了 那么就说说明要拷贝 参数了
+                # 否则 如果小于 则是 拷贝代码
+                # 如果拷贝代码 那么 codecopysize = size
                 code_copy_offset = concrete_code_offset
-                code_copy_size = (
-                    concrete_size
-                    if concrete_code_offset + concrete_size <= code_size    # 代表正常的情况， 拷贝的末尾offset仍在 code范围内
-                    else code_size - concrete_code_offset                   # 代表不正常的情况, 超出 code范围， 那么就用 code减去 size， 也就是说把从 offset开始到末尾的值来覆盖得到的长度
-                )
-                code_copy_size = code_copy_size if code_copy_size >= 0 else 0 # 保证 这个 size 不小于0 
+                if concrete_code_offset + concrete_size <= code_size:
+                    code_copy_size = concrete_size
+                # 否则 如果 参数的情况
+                else:
+                    code_copy_size = code_size - concrete_code_offset       # 超出 code范围， 那么就求出要拷贝的code部分的size
+                # 若是只拷贝参数则 code部分应该是 0
 
-                calldata_copy_offset = (
-                    concrete_code_offset - code_size                        # 
-                    if concrete_code_offset - code_size > 0                 # 我要拷贝的 offset 如果大于 bytecode 那么 就让 calldata offset = copyoffset - codesize(拷贝的是参数的情况）
-                    else 0                                                  # 否则 如果 copyoffset 小于等于 bytecode， 说明拷贝 代码， 让 calldataoffset = 0 不拷贝 calldata （拷贝的是bytecode的情况）
-                )
+                # code_copy_size = (
+                #     concrete_size
+                #     if concrete_code_offset + concrete_size <= code_size    # 代表正常的情况， 拷贝的末尾offset仍在 code范围内
+                #     else code_size - concrete_code_offset                   # 代表不正常的情况, 超出 code范围， 那么就用 code减去 size， 也就是说把从 offset开始到calldata末尾的值来覆盖得到的长度
+                # )
+                code_copy_size = code_copy_size if code_copy_size >= 0 else 0 # 保证 这个 size 不小于0 
+                ###############
+                ############### 下面负责处理 拷贝参数部分的数据
+                if concrete_code_offset - code_size > 0: # 我要拷贝的 offset 如果大于 bytecode 那么 就让 calldata offset = copyoffset - codesize(拷贝的是参数的情况）
+                    calldata_copy_offset = concrete_code_offset - code_size
+                else:
+                    calldata_copy_offset = 0 # 否则我就从 calldata的 0位置开始拷贝。
+                # calldata_copy_offset = (
+                #     concrete_code_offset - code_size                        # 
+                #     if concrete_code_offset - code_size > 0                 # 我要拷贝的 offset 如果大于 bytecode 那么 就让 calldata offset = copyoffset - codesize(拷贝的是参数的情况）
+                #     else 0                                                  # 否则 如果 copyoffset 小于等于 bytecode， 说明拷贝 代码， 让 calldataoffset = 0 不拷贝 calldata （拷贝的是bytecode的情况）
+                # )
 
                 calldata_copy_size = concrete_code_offset + concrete_size - code_size   # 拷贝的起始位置 加上 长度 - bytecode长度 剩下的就是 参数的长度
                 calldata_copy_size = (
                     calldata_copy_size if calldata_copy_size >= 0 else 0                # 保证参数 不小于 0
                 )
-
+                
+                # 这个是 拷贝代码的部分
                 [global_state] = self._code_copy_helper(
                     code=global_state.environment.code.bytecode,
                     memory_offset=memory_offset,
@@ -1200,6 +1211,7 @@ class Instruction:
                     op="CODECOPY",
                     global_state=global_state,
                 )
+                # 这个是拷贝参数的部分
                 return self._calldata_copy_helper(
                     global_state=global_state,
                     mstate=mstate,
@@ -1207,6 +1219,7 @@ class Instruction:
                     dstart=calldata_copy_offset,
                     size=calldata_copy_size,
                 )
+        
         # 不是 contract creation 而是 messagecall 处理情况。
         return self._code_copy_helper(
             code=global_state.environment.code.bytecode,
@@ -1705,14 +1718,14 @@ class Instruction:
         # neg_constraints = global_state.world_state.constraints + [negated]
         # if negated_cond and neg_constraints.is_possible():
         if negated_cond:
+            print("false path satisify")
             # States have to be deep copied during a fork as summaries assume independence across states.
             # 分叉的时候会 深度拷贝 但是 TX_stack 却又 浅拷贝 ! 为什么呢? 
             new_state = deepcopy(global_state, memo=None)
             # 
             if new_state.world_state != new_state.world_state.transaction_sequence[-1].world_state:
                 print("Error +++++++++++++++++++ world_sate not match in jumpi")
-            # temp = [global_state]
-            # new_state = temp[:][0]
+            
             # add JUMPI gas cost
             new_state.mstate.min_gas_used += min_gas
             new_state.mstate.max_gas_used += max_gas
@@ -1723,9 +1736,9 @@ class Instruction:
             new_state.world_state.constraints.append(negated)
             states.append(new_state)
         else:
-            log.debug("Pruned unreachable states. in nega")
+            log.debug("Pruned unreachable states. in false case")
             print("unreached path")
-            # print(negated_cond)
+            print(negated_cond)
             print("------")
             # print(neg_constraints)
             print("--- end -----")
@@ -1744,6 +1757,7 @@ class Instruction:
             # post_constraints = global_state.world_state.constraints + [condi]
             # if positive_cond and post_constraints.is_possible():
             if positive_cond:
+                print("true case satisify")
                 print("Now in function: %s in contract: %s"%(global_state.environment.active_function_name, global_state.environment.active_account.contract_name))
                 # 一个分叉深拷贝, 一个 接着走
                 new_state2 = deepcopy(global_state, memo=None)
@@ -1758,43 +1772,9 @@ class Instruction:
                 new_state2.world_state.constraints.append(condi)
                 states.append(new_state2)
 
-                # if condi.raw.decl().name() == "and" and condi.raw.num_args() == 8 and \
-                #     condi.raw.arg(0).num_args() == 2 and "calldata" in condi.raw.arg(0).arg(0).__str__():
-                #     # print(condi.raw.arg(0).arg(0).__str__())
-                #     # print(condi.raw.arg(0).arg(1).as_long())
-                #     calldata =  (condi.raw.arg(6).arg(1).as_long() << 24) + \
-                #                 (condi.raw.arg(4).arg(1).as_long() << 16) + \
-                #                 (condi.raw.arg(2).arg(1).as_long() << 8) + \
-                #                 (condi.raw.arg(0).arg(1).as_long())
-                #     function_name = disassembly.hash_to_function_name[hex(calldata)]
-                #     new_state.current_transaction.call_function = function_name
-                #     record = "TX_"+global_state.current_transaction.id.__str__()+"_"+global_state.environment.active_account.contract_name+"."+function_name
-                #     # 因为这个是 每次执行 jumpi 的时候 他已经存储在 transaction_sequence 里面了 所以康康 是否反应上了
-                #     print("current_tx call_chain appended")
-                #     new_state.current_transaction.call_chain.append(record)
-                #     # 这里面的 添加 会导致 global_state.transaction_stack里面的 tx 添加 call_chain, 间接导致 
-                #     # world_state.transaction_sequence[-1]的 call_chain 也会发生改动
-                #     print("print transaction_stack call chain")
-                #     print(global_state.transaction_stack[-1][0].call_chain)
-                    # global_state.call_chain.append(record)
-                    
-                    # print(calldata)
-                    # print(hex(calldata))
-                    # print(disassembly.hash_to_function_name[hex(calldata)])
-                    # print("decl check ok !!!!!!!!!!")
-                # function_name = global_state.environment.active_account.code.address_to_function_name[jump_addr]
-                # print("current path reached function in addr {}".format(jump_addr))
-                # if jump_addr in disassembly.address_to_function_name:
-                    # function_name = disassembly.address_to_function_name[jump_addr]
-                    # print("current path reached function in addr {}".format(function_name))
-                    # record = "TX_"+global_state.current_transaction.id.__str__()+"_"+global_state.environment.active_account.contract_name+"."+function_name
-                    # global_state.world_state.transaction_sequence[-1].call_chain.append(record)
-                    # print("print transaction sequence: {}".format(global_state.world_state.transaction_sequence[-1].call_chain))
-                    # print("print transaction stack: {}".format(global_state.transaction_stack[-1][0].call_chain))
-                    # print(condi.__str__())
-
             else:
-                print("Pruned unreachable states. in positive case")
+                print("Pruned unreachable states. in true case")
+                print(condi)
                 log.debug("Pruned unreachable states.")
         return states
 
@@ -1894,33 +1874,49 @@ class Instruction:
         world_state = global_state.world_state
 
         call_data = get_call_data(global_state, mem_offset, mem_offset + mem_size)
+        # call_data is a dict key is "calldata", "total_length", "symbol"
+        if not call_data.get("symbol", False):
+            print("[_create_transaction_helper] error, cannot process symbolic calldata")
+            return [global_state]
+        
         code_raw = []
-        code_end = call_data.size
-        size = call_data.size
+        code_end = call_data.get("total_length")
+        size = call_data.get("total_length")
+
+        calldata_ = call_data.get("calldata")
+
         if isinstance(size, BitVec):
             # Other size restriction checks handle this
             if size.symbolic:
+                print("[_create_transaction_helper] warning, calldatasize is symbolic")
                 size = 10**5
             else:
                 size = size.value
+        # 从0 开始 一直到读取到 符号类型的变量 开始 退出， code_end是 符号类型变量的开始 index
+        # code_raw读到的 要么是 整个size 里的 所有数据， 要么就是 单纯的 code 两个都有可能感觉
         for i in range(size):
-            if call_data[i].symbolic:
+            if calldata_[i].symbolic:
                 code_end = i
                 break
-            code_raw.append(call_data[i].value)
+            code_raw.append(calldata_[i].value)
 
         if len(code_raw) < 1:
             global_state.mstate.stack.append(1)
             log.debug("No code found for trying to execute a create type instruction.")
+            print("warning, No code found for trying to execute a create type instruction.")
             return [global_state]
 
         code_str = bytes.hex(bytes(code_raw))
 
-        next_transaction_id = tx_id_manager.get_next_tx_id()
+        # next_transaction_id = tx_id_manager.get_next_tx_id()
         # 他判断 后面的部分是属于符号类型的变量， 就是属于 参数。 
-        constructor_arguments = ConcreteCalldata(
-            next_transaction_id, call_data[code_end:]
-        )
+        # constructor_arguments = ConcreteCalldata(
+        #     next_transaction_id, call_data[code_end:]
+        # )
+        
+        call_data["calldata"] = calldata_[code_end:]
+        call_data["total_length"] = len(calldata_[code_end:])
+
         code = Disassembly(code_str)
 
         caller = environment.active_account.address
@@ -1958,19 +1954,26 @@ class Instruction:
                     ],
                     16,
                 )
-        transaction = ContractCreationTransaction(
-            world_state=world_state,
-            caller=caller,
-            code=code,
-            identifier=next_transaction_id,
-            call_data=constructor_arguments,
-            gas_price=gas_price,
-            gas_limit=mstate.gas_limit,
-            origin=origin,
-            call_value=call_value,
-            contract_address=contract_address,
-            fork=True,
-        )
+        # transaction = ContractCreationTransaction(
+        #     world_state=world_state,
+        #     caller=caller,
+        #     code=code,
+        #     identifier=next_transaction_id,
+        #     call_data=constructor_arguments,
+        #     gas_price=gas_price,
+        #     gas_limit=mstate.gas_limit,
+        #     origin=origin,
+        #     call_value=call_value,
+        #     contract_address=contract_address,
+        #     fork=True,
+        # )
+        transaction = {}
+        transaction["code"] = code
+        transaction["contract_address"] = contract_address
+        transaction["calldata"] = call_data
+        transaction["call_value"] = call_value
+        transaction["type"] = "ContractCreationTransaction"
+        
         raise TransactionStartSignal([transaction], self.op_code, global_state)
 
     @StateTransition(is_state_mutation_instruction=True)
@@ -2039,7 +2042,7 @@ class Instruction:
             return_data = state.memory[offset : offset + length]
         
         global_state.current_transaction.end(
-            global_state, return_data=ReturnData(return_data, length, ), end_type = "RETURN",
+            global_state, return_data=ReturnData(return_data=return_data, return_data_size=length, ), end_type = "RETURN",
         )
 
     @StateTransition(is_state_mutation_instruction=True)
@@ -2104,7 +2107,7 @@ class Instruction:
 
         except TypeError:
             log.debug("Return with symbolic length or offset. Not supported")
-            print("Error: Return with symbolic length or offset. Not supported")
+            print("[revert] Error: Return with symbolic length or offset. Not supported")
 
         
 
@@ -2255,8 +2258,8 @@ class Instruction:
                 log.debug("The call is related to ether transfer between accounts")
                 sender = environment.active_account.address
                 receiver = callee_account.address
-
-                transfer_ether(global_state, sender, receiver, value)
+                if value.value is not None and value.value != 0:
+                    transfer_ether(global_state, sender, receiver, value)
 
                 self._write_symbolic_returndata(
                     global_state, memory_out_offset, memory_out_size
@@ -2292,36 +2295,9 @@ class Instruction:
             if callee_account is not None and callee_account.code.bytecode == "" and global_state.environment.active_account.address.value == int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16):
                 print("------------------ get callable target call -------------------------------")
                 transactions = []
-                if global_state.environment.active_function_name == "fallback":
-                    print("call from fallback")
-                    print("calldata id is {}".format(call_data.tx_id))
-                    if call_data.__class__.__name__ != "ConcreteCalldata":
-                        print("calldata size is {}".format(call_data._size))
-                    else:
-                        print("calldata size is {}".format(call_data.calldatasize))
-                    print("calldata data is {}".format(call_data._calldata))
-                """
-                callee_account,
-                call_data,
-                value,
-                gas,
-                memory_out_offset,
-                memory_out_size,
-                """
-                # print("print calldata: {}".format(call_data))
-                # print("print value: {}".format(value))
-                # print("print original callee_account: {}".format(callee_account.address))
-                
-                # print("print calldata: {}".format(call_data))
-                
                 newconstraints = []
-
-                    # print(to)
-                    # print(sc.address)
-                    # print(global_state.world_state.constraints.is_possible())
-                    # step1 为了 后面 N 个 fork 生成 N 个 新的 TX
-                    # 这里是否需要 fork???????????????????????????????????????? 我们可以扔个后面 fork
                 main_addr = None
+
                 for addr,sc in global_state.world_state.accounts.items():
                     # print(addr)
                     # print(sc.contract_name)
@@ -2345,25 +2321,33 @@ class Instruction:
                 
                 sender = environment.active_account.address
                 receiver = callee_account.address
-                transfer_ether(global_state, sender, receiver, value)
+                if value.value is not None and value.value != 0:
+                    transfer_ether(global_state, sender, receiver, value)
+                # transfer_ether(global_state, sender, receiver, value)
 
-                transaction = MessageCallTransaction(
-                    world_state= global_state.world_state,
-                    gas_price=environment.gasprice,
-                    gas_limit=gas,
-                    identifier=1,
-                    origin=environment.origin,
-                    caller=environment.active_account.address,
-                    callee_account=callee_account_,
-                    code=callee_account_.code,
-                    call_data=call_data, # symbol
-                    call_value=value,
-                    static=environment.static,
-                    txtype = "Internal_MessageCall",
-                    )
-                    # if index > 0:
-                        # 为了让每个分支 互不干扰. 不需要! 需要深度拷贝的是 global_state 不是你.
-                        # transaction = deepcopy(transaction)
+                # transaction = MessageCallTransaction(
+                #     world_state= global_state.world_state,
+                #     gas_price=environment.gasprice,
+                #     gas_limit=gas,
+                #     identifier=1,
+                #     origin=environment.origin,
+                #     caller=environment.active_account.address,
+                #     callee_account=callee_account_,
+                #     code=callee_account_.code,
+                #     call_data=call_data, # symbol
+                #     call_value=value,
+                #     static=environment.static,
+                #     txtype = "Internal_MessageCall",
+                #     )
+                transaction = {}
+                transaction["type"] = "MessageCallTransaction"              
+                transaction["call_data"]=call_data                
+                transaction["gas_limit"]=gas
+                transaction["call_value"]=value
+                transaction["callee_account"]=callee_account_
+                transaction["txtype"] = "Internal_MessageCall"
+                transaction["fork"]=False
+                print("callee_address is {}".format(callee_address))
                 newconstraints.append(callee_address == callee_account_.address)
                 transactions.append(transaction)
 
@@ -2435,20 +2419,20 @@ class Instruction:
             )
             return [global_state]
 
-        if environment.static:
-            if isinstance(value, int) and value > 0:
-                raise WriteProtection(
-                    "Cannot call with non zero value in a static call"
-                )
-            if isinstance(value, BitVec):
-                if value.symbolic:
-                    global_state.world_state.constraints.append(
-                        value == symbol_factory.BitVecVal(0, 256)
-                    )
-                elif value.value > 0:
-                    raise WriteProtection(
-                        "Cannot call with non zero value in a static call"
-                    )
+        # if environment.static:
+        #     if isinstance(value, int) and value > 0:
+        #         raise WriteProtection(
+        #             "Cannot call with non zero value in a static call"
+        #         )
+        #     if isinstance(value, BitVec):
+        #         if value.symbolic:
+        #             global_state.world_state.constraints.append(
+        #                 value == symbol_factory.BitVecVal(0, 256)
+        #             )
+        #         elif value.value > 0:
+        #             raise WriteProtection(
+        #                 "Cannot call with non zero value in a static call"
+        #             )
         
         # 情况三 调用提前编译好的那九个合约
         # 这个是 precompiled function 例如 sha3 这种                
@@ -2461,31 +2445,43 @@ class Instruction:
         
         # 情况四 callee_account 存在 并且包含代码
         print("------------------ call to a fixed or created target  -------------------------------")
+
         sender = environment.active_account.address
         receiver = callee_account.address
-        transfer_ether(global_state, sender, receiver, value)
-        if global_state.environment.active_function_name == "fallback":
-            print("call from fallback")
-            print("calldata id is {}".format(call_data.tx_id))
-            if call_data.__class__.__name__ != "ConcreteCalldata":
-                print("calldata size is {}".format(call_data._size))
-            else:
-                print("calldata size is {}".format(call_data.calldatasize))
-            print("calldata data is {}".format(call_data._calldata))
-        transaction = MessageCallTransaction(
-            world_state=global_state.world_state,
-            gas_price=environment.gasprice,
-            gas_limit=gas,
-            identifier=1,
-            origin=environment.origin,
-            caller=environment.active_account.address,
-            callee_account=callee_account,
-            code=callee_account.code,
-            call_data=call_data,
-            call_value=value,
-            static=environment.static,
-            txtype = "Internal_MessageCall",
-        )
+        if value.value is not None and value.value != 0:
+            transfer_ether(global_state, sender, receiver, value)
+
+        # if global_state.environment.active_function_name == "fallback":
+        #     print("call from fallback")
+        #     print("calldata id is {}".format(call_data.tx_id))
+        #     if call_data.__class__.__name__ != "ConcreteCalldata":
+        #         print("calldata size is {}".format(call_data._size))
+        #     else:
+        #         print("calldata size is {}".format(call_data.calldatasize))
+        #     print("calldata data is {}".format(call_data._calldata))
+
+        # transaction = MessageCallTransaction(
+        #     world_state=global_state.world_state,
+        #     gas_price=environment.gasprice,
+        #     gas_limit=gas,
+        #     identifier=1,
+        #     origin=environment.origin,
+        #     caller=environment.active_account.address,
+        #     callee_account=callee_account,
+        #     code=callee_account.code,
+        #     call_data=call_data,
+        #     call_value=value,
+        #     static=environment.static,
+        #     txtype = "Internal_MessageCall",
+        # )
+        transaction = {}
+        transaction["type"] = "MessageCallTransaction"              
+        transaction["call_data"]=call_data                
+        transaction["gas_limit"]=gas
+        transaction["call_value"]=value
+        transaction["callee_account"]=callee_account
+        transaction["txtype"] = "Internal_MessageCall"
+        transaction["fork"]=False
 
         raise TransactionStartSignal([transaction], self.op_code, global_state)
 
@@ -2557,19 +2553,28 @@ class Instruction:
         if native_result:
             return native_result
         # identifier = id 记得弄
-        transaction = MessageCallTransaction(
-            world_state=global_state.world_state,
-            gas_price=environment.gasprice,
-            gas_limit=gas,
-            idendifier = 1,
-            origin=environment.origin,
-            code=callee_account.code,
-            caller=environment.address,
-            callee_account=environment.active_account,
-            call_data=call_data,
-            call_value=value,
-            static=environment.static,
-        )
+        # transaction = MessageCallTransaction(
+        #     world_state=global_state.world_state,
+        #     gas_price=environment.gasprice,
+        #     gas_limit=gas,
+        #     idendifier = 1,
+        #     origin=environment.origin,
+        #     code=callee_account.code,
+        #     caller=environment.address,
+        #     callee_account=environment.active_account,
+        #     call_data=call_data,
+        #     call_value=value,
+        #     static=environment.static,
+        # )
+        transaction = {}
+        transaction["type"] = "MessageCallTransaction"              
+        transaction["call_data"]=call_data                
+        transaction["gas_limit"]=gas
+        transaction["call_value"]=value
+        transaction["callee_account"]=callee_account
+        transaction["txtype"] = "Internal_MessageCall"
+        transaction["fork"]=False
+
         raise TransactionStartSignal([transaction], self.op_code, global_state)
 
     @StateTransition()
@@ -2582,6 +2587,7 @@ class Instruction:
         instr = global_state.get_current_instruction()
         memory_out_offset = global_state.last_return_data.mem_out_off
         memory_out_size = global_state.last_return_data.mem_out_size
+        
         try:
             (
                 _,
@@ -2718,19 +2724,27 @@ class Instruction:
         if native_result:
             return native_result
 
-        transaction = MessageCallTransaction(
-            world_state=global_state.world_state,
-            gas_price=environment.gasprice,
-            gas_limit=gas,
-            identifier = 1,
-            origin=environment.origin,
-            code=callee_account.code,
-            caller=environment.sender,
-            callee_account=environment.active_account,
-            call_data=call_data,
-            call_value=environment.callvalue,
-            static=environment.static,
-        )
+        # transaction = MessageCallTransaction(
+        #     world_state=global_state.world_state,
+        #     gas_price=environment.gasprice,
+        #     gas_limit=gas,
+        #     identifier = 1,
+        #     origin=environment.origin,
+        #     code=callee_account.code,
+        #     caller=environment.sender,
+        #     callee_account=environment.active_account,
+        #     call_data=call_data,
+        #     call_value=environment.callvalue,
+        #     static=environment.static,
+        # )
+        transaction = {}
+        transaction["type"] = "MessageCallTransaction"              
+        transaction["call_data"]=call_data                
+        transaction["gas_limit"]=gas
+        transaction["call_value"]=value
+        transaction["callee_account"]=callee_account
+        transaction["txtype"] = "Internal_MessageCall"
+        transaction["fork"]=False
         raise TransactionStartSignal([transaction], self.op_code, global_state)
 
     @StateTransition()
@@ -2876,19 +2890,28 @@ class Instruction:
         if native_result:
             return native_result
 
-        transaction = MessageCallTransaction(
-            world_state=global_state.world_state,
-            gas_price=environment.gasprice,
-            gas_limit=gas,
-            identifier = 1,
-            origin=environment.origin,
-            code=callee_account.code,
-            caller=environment.address,
-            callee_account=callee_account,
-            call_data=call_data,
-            call_value=value,
-            static=True,
-        )
+        # transaction = MessageCallTransaction(
+        #     world_state=global_state.world_state,
+        #     gas_price=environment.gasprice,
+        #     gas_limit=gas,
+        #     identifier = 1,
+        #     origin=environment.origin,
+        #     code=callee_account.code,
+        #     caller=environment.address,
+        #     callee_account=callee_account,
+        #     call_data=call_data,
+        #     call_value=value,
+        #     static=True,
+        # )
+        transaction = {}
+        transaction["type"] = "MessageCallTransaction"              
+        transaction["call_data"]=call_data                
+        transaction["gas_limit"]=gas
+        transaction["call_value"]=value
+        transaction["callee_account"]=callee_account
+        transaction["txtype"] = "Internal_MessageCall"
+        transaction["fork"]=False
+
         raise TransactionStartSignal([transaction], self.op_code, global_state)
 
     @StateTransition()
@@ -2932,14 +2955,18 @@ class Instruction:
             self._write_symbolic_returndata(
                 global_state, memory_out_offset, memory_out_size
             )
-            global_state.mstate.stack.append(
-                global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
-            )
+            if end_type == "REVERT":
+                global_state.mstate.stack.append(symbol_factory.BitVecVal(0,256))
+            else:
+                global_state.mstate.stack.append(symbol_factory.BitVecVal(1,256))
+                # global_state.mstate.stack.append(
+                #     global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
+                # )
             return [global_state]
         
         #################
         # STOP 命令就会这样，没有返回值， 但是返回值希望是1 ，下面 return 有 return_data 我们也让他返回值1 
-        if global_state.last_return_data is None or global_state.last_return_data.return_data is None:
+        if global_state.last_return_data is None or global_state.last_return_data.return_data_size is None or global_state.last_return_data.return_data_size == symbol_factory.BitVecVal(0,256):
             # Put return value on stack
             # return_value = global_state.new_bitvec(
             #     "retval_" + str(instr["address"]) + "_" + str(global_state.current_transaction.id) , 256
@@ -2970,9 +2997,13 @@ class Instruction:
             )
         except TypeError:
             print("get concolic return mem value error")
-            global_state.mstate.stack.append(
-                global_state.new_bitvec("retval_" + str(instr["address"])+"_" + str(global_state.current_transaction.id), 256)
+            self._write_symbolic_returndata(
+                global_state, memory_out_offset, memory_out_size
             )
+            if end_type == "REVERT":
+                global_state.mstate.stack.append(symbol_factory.BitVecVal(0,256))
+            else:
+                global_state.mstate.stack.append(symbol_factory.BitVecVal(1,256))
             return [global_state]
 
         global_state.mstate.mem_extend(
@@ -2989,10 +3020,14 @@ class Instruction:
             ] = global_state.last_return_data[i]
 
         # Put return value on stack
-        return_value = global_state.new_bitvec(
-            "retval_" + str(global_state.get_current_instruction()["address"])+"_" + str(global_state.current_transaction.id), 256
-        )
-        global_state.mstate.stack.append(return_value)
-        global_state.world_state.constraints.append(return_value == 1)
+        # return_value = global_state.new_bitvec(
+        #     "retval_" + str(global_state.get_current_instruction()["address"])+"_" + str(global_state.current_transaction.id), 256
+        # )
 
+        # global_state.mstate.stack.append(return_value)
+        # global_state.world_state.constraints.append(return_value == 1)
+        if end_type == "REVERT":
+            global_state.mstate.stack.append(symbol_factory.BitVecVal(0,256))
+        else:
+            global_state.mstate.stack.append(symbol_factory.BitVecVal(1,256))
         return [global_state]

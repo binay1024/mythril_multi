@@ -38,6 +38,8 @@ from mythril.__version__ import __version__ as VERSION
 from myth import print_time
 
 
+from mythril.support.my_utils import generate_signature, extract_signature
+
 # Initialise core Mythril Component
 _ = MythrilPluginLoader()
 
@@ -718,6 +720,7 @@ def load_code(disassembler: MythrilDisassembler, args: Namespace, index: Optiona
     """
 
     address = None
+    signature = None
     if args.__dict__.get("code", False):
         # Load from bytecode
         code = args.code[2:] if args.code.startswith("0x") else args.code
@@ -733,6 +736,11 @@ def load_code(disassembler: MythrilDisassembler, args: Namespace, index: Optiona
         bytecode = "".join([l.strip() for l in args.multi_contract[index] if len(l.strip()) > 0])
         bytecode = bytecode[2:] if bytecode.startswith("0x") else bytecode
         address, _ = disassembler.load_from_bytecode(bytecode, args.bin_runtime)
+        # 设置 signature
+        source_file_path = args.multi_contract[index].name[:-3]+'sol'
+        abipath = generate_signature(source_file_path)
+        signature = extract_signature(abipath)
+        print("find signatures {}".format(signature))
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
@@ -757,7 +765,7 @@ def load_code(disassembler: MythrilDisassembler, args: Namespace, index: Optiona
             args.__dict__.get("outform", "text"),
             "No input bytecode. Please provide EVM code via -c BYTECODE, -a ADDRESS, -f BYTECODE_FILE or <SOLIDITY_FILE>",
         )
-    return address
+    return address,signature
 
 
 def print_function_report(myth_disassembler: MythrilDisassembler, report: Report):
@@ -789,6 +797,7 @@ def execute_command(
     parser: ArgumentParser,
     args: Namespace,
     sub: Optional[list[MythrilDisassembler]] = None,
+    sig = None,
 ):
     """
     Execute command
@@ -839,7 +848,7 @@ def execute_command(
 
     elif args.command in ANALYZE_LIST + FOUNDRY_LIST:
         analyzer = MythrilAnalyzer(
-            strategy=strategy, disassembler=disassembler, address=address, cmd_args=args, sub = sub
+            strategy=strategy, disassembler=disassembler, address=address, cmd_args=args, sub = sub, sig = sig
         )
 
         if not disassembler.contracts:
@@ -1010,7 +1019,7 @@ def parse_args_and_execute(parser: ArgumentParser, args: Namespace) -> None:
 
         disassembler = []
         address = []
-        
+        signatures = []
         if args.__dict__.get("multi_contract"):
             for i in range(len(args.__dict__.get("multi_contract"))):
                 disassembler.append(MythrilDisassembler(
@@ -1020,7 +1029,10 @@ def parse_args_and_execute(parser: ArgumentParser, args: Namespace) -> None:
                     enable_online_lookup=query_signature,
                     solc_args=solc_args,
                 ))
-                address.append(load_code(disassembler[i], args, i))
+                # address.append(load_code(disassembler[i], args, i))
+                address_, signature = load_code(disassembler[i], args, i)
+                address.append(address_)
+                signatures.append(signature)
         else:
             disassembler.append(MythrilDisassembler(
                     eth=config.eth,
@@ -1029,10 +1041,13 @@ def parse_args_and_execute(parser: ArgumentParser, args: Namespace) -> None:
                     enable_online_lookup=query_signature,
                     solc_args=solc_args,
             ))
-            address.append(load_code(disassembler[0], args))
+            # address.append(load_code(disassembler[0], args))
+            address_, signature = load_code(disassembler[0], args)
+            address.append(address_)
+            signatures.append(signature)
         
         execute_command(
-            disassembler=disassembler[0], address=address[0], parser=parser, args=args, sub = disassembler[1:]
+            disassembler=disassembler[0], address=address[0], parser=parser, args=args, sub = disassembler[1:], sig = signatures,
         )
     except CriticalError as ce:
         exit_with_error(args.__dict__.get("outform", "text"), str(ce))

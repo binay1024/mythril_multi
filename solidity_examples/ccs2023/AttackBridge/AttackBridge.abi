@@ -1,0 +1,1 @@
+[{"constant":false,"inputs":[{"name":"num_","type":"uint256"},{"name":"call_data_1","type":"bytes"}],"name":"attack","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"inputs":[{"name":"func_sig_","type":"bytes"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"payable":true,"stateMutability":"payable","type":"fallback"}]

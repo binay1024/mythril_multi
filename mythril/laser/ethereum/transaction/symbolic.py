@@ -8,7 +8,7 @@ from copy import deepcopy
 from mythril.disassembler.disassembly import Disassembly
 from mythril.laser.ethereum.cfg import Node, Edge, JumpType
 from mythril.laser.ethereum.state.account import Account
-from mythril.laser.ethereum.state.calldata import SymbolicCalldata
+from mythril.laser.ethereum.state.calldata import SymbolicCalldata,MixedSymbolicCalldata
 from mythril.laser.ethereum.state.constraints import Constraints
 from mythril.laser.ethereum.state.world_state import WorldState
 from mythril.laser.ethereum.transaction.transaction_models import (
@@ -22,7 +22,8 @@ from mythril.support.support_args import args as cmd_args
 
 # from mythril.mythril.mythril_disassembler import MythrilDisassembler
 from mythril.solidity.soliditycontract import EVMContract
-
+# from mythril.support.my_utils import build_calldata, build_mixed_symbolic_data, build_mixed_symbolic_data_for_msg
+from mythril.support.my_utils import *
 
 FUNCTION_HASH_BYTE_LENGTH = 4
 
@@ -132,7 +133,10 @@ def execute_message_call(
             "sender_{}".format(next_transaction_id), 256
         )
         
-        calldata = SymbolicCalldata(next_transaction_id)
+        # calldata = SymbolicCalldata(next_transaction_id)
+        attackBridge = "attack(uint256,bytes)"
+        init_calldata = build_calldata(attackBridge)
+        mixed_calldata = build_mixed_symbolic_data_for_msg(id=next_transaction_id, init_calldata=init_calldata)
         # 因为 在分支执行的时候我不希望两个 world_state 会互相影响 以及和 tx_sequence 里面存好的 world_state 互相影响
         # 如果说 world_state1, world_state2 -> execute_message_call 
         # 那么 在 执行 world_state1的路径上执行完毕之后 会在 open_state 里面放入 world_state1 下一次会接着执行, 而我们需要在 TX 里面放下的也是他 那么会最后影响 求值
@@ -147,6 +151,7 @@ def execute_message_call(
         # new_open_world_state.transaction_sequence[-1] = open_world_state.transaction_sequence[-1]
         # 这样就形成了 new_world_state.tx : [oldtx1, oldtx2, oldtx3] 一会儿加入 self 然后 他们的都是 old_world_state, 而最新的是 new_world_state
         acc_code = open_world_state._accounts[callee_address.value].code
+
         transaction = MessageCallTransaction(
             world_state=open_world_state,
             identifier=next_transaction_id,
@@ -157,7 +162,8 @@ def execute_message_call(
             origin=external_sender,
             caller=external_sender,
             callee_account=open_world_state._accounts[callee_address.value],
-            call_data=calldata,
+            # call_data=calldata,
+            call_data = mixed_calldata,
             code=acc_code,
             call_value=symbol_factory.BitVecSym(
                 "call_value{}".format(next_transaction_id), 256
@@ -165,13 +171,13 @@ def execute_message_call(
             txtype = "EOA_MessageCall",
         )
         constraints = (
-            generate_function_constraints(calldata, func_hashes)
+            generate_function_constraints(mixed_calldata, func_hashes)
             if func_hashes
             else None
         )
 
         _setup_global_state_for_execution(laser_evm, transaction, constraints)
-
+    
     laser_evm.exec()
 
 def execute_sub_contract_creation(
@@ -181,6 +187,7 @@ def execute_sub_contract_creation(
         origin=ACTORS["CREATOR"],
         caller=ACTORS["CREATOR"],
         sub_contracts: List[EVMContract] = None,
+        sig = None,
 ) -> Account:
     
     world_state = world_state or WorldState()
@@ -192,11 +199,24 @@ def execute_sub_contract_creation(
     sub_accounts = []
     for i in range(len(sub_contracts)):
         open_states = [world_state]
+        contract_sig_ = sig[i]
+        print("origin sig is {}".format(contract_sig_))
+        contract_sig = contract_sig_.get("constructor", None)
+        print("sig is {}".format(contract_sig))
+        print("print sig in creation main contract {}".format(contract_sig))
+
         for open_world_state in open_states:
             del laser_evm.open_states[:]
+            next_transaction_id = tx_id_manager.get_next_tx_id()
+            if contract_sig:
+                _init_calldata = build_calldata(contract_sig)
+                mixed_calldata = build_mixed_symbolic_data(id=next_transaction_id, init_calldata=_init_calldata)
+            else:
+                mixed_calldata = MixedSymbolicCalldata(tx_id=next_transaction_id)
+
             if i == 0:
                 print("setup AttackBridge")
-                next_transaction_id = tx_id_manager.get_next_tx_id()
+                
                 sub_transactions.append(
                     ContractCreationTransaction(
                         world_state=open_world_state,
@@ -206,18 +226,20 @@ def execute_sub_contract_creation(
                         ),
                         gas_limit=8000000,  # block gas limit
                         origin=ACTORS["ATTACKER"],
-                        code=Disassembly(sub_contracts[i].creation_code),
+                        code=Disassembly(sub_contracts[i].creation_code, sig=contract_sig_),
                         caller=ACTORS["ATTACKER"],
                         contract_name="AttackBridge",
                         contract_address=ACTORS["ATTACKER"],
-                        call_data=None,
-                        call_value=symbol_factory.BitVecSym(
-                            "call_value{}".format(next_transaction_id), 256
-                        ),
+                        # call_data=None,
+                        call_data=mixed_calldata,
+                        # call_value=symbol_factory.BitVecSym(
+                        #     "call_value{}".format(next_transaction_id), 256
+                        # ),
+                        call_value= symbol_factory.BitVecVal(0,256),
                     )
                 )
             else:
-                next_transaction_id = tx_id_manager.get_next_tx_id()
+                
                 print("setup Subcontract_{}".format(i-1))
                 sub_transactions.append(
                     ContractCreationTransaction(
@@ -228,13 +250,15 @@ def execute_sub_contract_creation(
                         ),
                         gas_limit=8000000,  # block gas limit
                         origin=origin,
-                        code=Disassembly(sub_contracts[i].creation_code),
+                        code=Disassembly(sub_contracts[i].creation_code, sig=contract_sig_),
                         caller=caller,
                         contract_name="SUB_"+str(i-1),
-                        call_data=None,
-                        call_value=symbol_factory.BitVecSym(
-                            "call_value{}".format(next_transaction_id), 256
-                        ),
+                        # call_data=None,
+                        call_data=mixed_calldata,
+                        # call_value=symbol_factory.BitVecSym(
+                        #     "call_value{}".format(next_transaction_id), 256
+                        # ),
+                        call_value= symbol_factory.BitVecVal(0,256),
                     )
                 )
 
@@ -255,6 +279,7 @@ def execute_contract_creation(
     world_state=None,
     origin=ACTORS["CREATOR"],
     caller=ACTORS["CREATOR"],
+    sig = None,
 ) -> Account:
     """Executes a contract creation transaction from all open states.
 
@@ -267,12 +292,21 @@ def execute_contract_creation(
     world_state = world_state or WorldState()
     open_states = [world_state]
     del laser_evm.open_states[:]
+    contract_sig = sig.get("constructor", None)
+    print("sig is {}".format(sig))
+    print("print sig in creation main contract {}".format(sig))
 
     new_account = None
     for open_world_state in open_states:
         next_transaction_id = tx_id_manager.get_next_tx_id()
         # call_data "should" be '[]', but it is easier to model the calldata symbolically
         # and add logic in codecopy/codesize/calldatacopy/calldatasize than to model code "correctly"
+        if contract_sig:
+            _init_calldata = build_calldata(contract_sig)
+            mixed_calldata = build_mixed_symbolic_data(id=next_transaction_id, init_calldata=_init_calldata)
+        else:
+            mixed_calldata = MixedSymbolicCalldata(tx_id=next_transaction_id)
+
         transaction = ContractCreationTransaction(
             world_state=open_world_state,
             identifier=next_transaction_id,
@@ -281,13 +315,15 @@ def execute_contract_creation(
             ),
             gas_limit=8000000,  # block gas limit
             origin=origin,
-            code=Disassembly(contract_initialization_code),
+            code=Disassembly(contract_initialization_code, sig=sig),
             caller=caller,
             contract_name=contract_name,
-            call_data=None,
-            call_value=symbol_factory.BitVecSym(
-                "call_value{}".format(next_transaction_id), 256
-            ),
+            # call_data=None,
+            call_data=mixed_calldata,
+            # call_value=symbol_factory.BitVecSym(
+            #     "call_value{}".format(next_transaction_id), 256
+            # ),
+            call_value= symbol_factory.BitVecVal(0,256),
         )
         # 这时候global_state 装有新的 worldstate 和 environment
         _setup_global_state_for_execution(laser_evm, transaction)

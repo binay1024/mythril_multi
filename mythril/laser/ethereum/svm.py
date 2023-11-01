@@ -21,7 +21,7 @@ from mythril.laser.ethereum.strategy.basic import DepthFirstSearchStrategy
 from mythril.laser.ethereum.strategy.constraint_strategy import DelayConstraintStrategy
 from abc import ABCMeta
 from mythril.laser.ethereum.time_handler import time_handler
-from mythril.laser.ethereum.state.calldata import ConcreteCalldata, SymbolicCalldata
+from mythril.laser.ethereum.state.calldata import ConcreteCalldata, SymbolicCalldata,MixedSymbolicCalldata
 from mythril.analysis import solver
 from mythril.exceptions import UnsatError, SolverTimeOutException
 
@@ -160,6 +160,7 @@ class LaserEVM:
         creation_code: str = None,
         contract_name: str = None,
         sub_contracts: Optional[List[EVMContract]] = None,
+        sig:list[dict] = None,
     ) -> None:
         """Starts symbolic execution
         There are two modes of execution.
@@ -201,19 +202,19 @@ class LaserEVM:
             if(len(self.open_states) != 0):
                 print("Multi analyze mode")
                 created_account = execute_contract_creation(
-                    self, creation_code, contract_name, world_state = self.open_states[0]
+                    self, creation_code, contract_name, world_state = self.open_states[0], sig = sig[0],
                 )
             else:
                 print("Single analyze mode")
                 created_account = execute_contract_creation(
-                    self, creation_code, contract_name, world_state = world_state
+                    self, creation_code, contract_name, world_state = world_state, sig = sig[0],
                 )
             if(len(self.open_states) > 1 or len(self.open_states) == 0):
                 print("Error, open_states more than 1 or is zero")
                 exit(0)
             if sub_contracts is not None:
                 sub_accounts = execute_sub_contract_creation(
-                    self, contract_name="SUB", world_state=self.open_states[0], sub_contracts = sub_contracts
+                    self, contract_name="SUB", world_state=self.open_states[0], sub_contracts = sub_contracts, sig = sig[1:]
                 )
             # 这个时候 worldstate 里面不是最新状态了已经, open_state 里面的 world_state 的 account 是有值的, 
             # 但是 这里的现在的 world_state 里面account 里面木有任何代码, 所以我们不可以相信这个捏
@@ -295,7 +296,11 @@ class LaserEVM:
                 break
             old_states_count = len(self.open_states)
             print("Now we have %d open states!!!"%old_states_count)
-
+            for addr, acc in self.open_states[0].accounts.items():
+                balance = acc.get_balance(addr)
+                if balance.value is not None:
+                    print("output acc {} balance: {}".format(addr, balance.value))
+                
             if self.use_reachability_check:
                 self.open_states = [
                     state
@@ -543,55 +548,57 @@ class LaserEVM:
                 # step 2: 深拷贝 旧 GlobalState 然后放入新的 global_stack 中
                 # 最后 再复制好 整个 Global_state 的情况下 给他 放入栈里
                 # 这是用于存储现在caller 的 global_state
-                if not start_signal.global_state.world_state.constraints.is_possible():
-                    print("warning give up this TX")
-                    continue
+                # if not start_signal.global_state.world_state.constraints.is_possible():
+                #     print("warning give up this TX")
+                #     continue
                 forked_caller_global_state = deepcopy(start_signal.global_state)
                 
                 #################下面是 进一步的处理, 我们希望 要提前为了 处理 revert 情况 做一些处理 ####   
                 # fork 一下 caller的 world_state 给 callee
                 forked_new_world_state = deepcopy(forked_caller_global_state.world_state)
                 # assert(tx.id is not None, "Warning !! tx.id is None")
-                if tx.__class__.__name__ == "ContractCreationTransaction":
+                next_transaction_id = tx_id_manager.get_next_tx_id()
+                calldata_ = tx.get("calldata")
+                calldata_total_length = calldata_.get("total_length") if calldata_ is not None else None
+                calldata_data = calldata_.get("calldata") if calldata_ is not None else None
+                constructor_arguments = MixedSymbolicCalldata(tx_id=next_transaction_id, calldata=calldata_data, total_length=calldata_total_length)
+
+
+                if tx.get("type") == "ContractCreationTransaction":
                     new_transaction = ContractCreationTransaction(
                         world_state=forked_new_world_state,
                         caller=forked_caller_global_state.environment.active_account.address,
-                        code=tx.code,
-                        identifier=tx.id,
-                        call_data=tx.call_data,
+                        code=tx.get("code"),
+                        identifier=next_transaction_id,
+                        call_data=constructor_arguments,
                         gas_price=forked_caller_global_state.environment.gasprice,
-                        gas_limit=tx.gas_limit,
+                        gas_limit=forked_caller_global_state.mstate.gas_limit,
                         origin=forked_caller_global_state.environment.origin,
-                        call_value=tx.call_value,
-                        contract_address=tx.contract_address,
+                        call_value=tx.get("call_value"),
+                        contract_address=tx.get("contract_address"),
                         txtype = "Internal_MessageCall",
+                        fork=False,
                     )
                 else:
-                    next_transaction_id = tx_id_manager.get_next_tx_id()
+                    # next_transaction_id = tx_id_manager.get_next_tx_id()
                     # 处于 某些 原因， 他在从 fallback出发调用 其他地方的时候 calldata 有些问题啊。。。。
                     # if forked_caller_global_state.environment.active_function_name == "fallback":
                     #     calldata = SymbolicCalldata(next_transaction_id+"_temp")
                     # else:
                     #     calldata = deepcopy(tx.call_data)
-                    if tx.call_data.__class__.__name__ == "SymbolicCalldata":
-                        calldata = SymbolicCalldata(next_transaction_id)
-                    else:
-                        tx.call_data.tx_id = next_transaction_id
-                        calldata = deepcopy(tx.call_data)
-
                     new_transaction = MessageCallTransaction(
                         world_state = forked_new_world_state,
                         gas_price = forked_caller_global_state.environment.gasprice,
-                        gas_limit = deepcopy(tx.gas_limit),
+                        gas_limit = tx.get("gas_limit"),
                         identifier = next_transaction_id,
                         origin = forked_caller_global_state.environment.origin,
                         caller = forked_caller_global_state.environment.active_account.address,
-                        callee_account = forked_new_world_state._accounts[tx.callee_account.address.value],
-                        code=forked_new_world_state._accounts[tx.callee_account.address.value].code,
+                        callee_account = forked_new_world_state._accounts[tx.get("callee_account").address.value],
+                        code=forked_new_world_state._accounts[tx.get("callee_account").address.value].code,
                         # call_data = deepcopy(tx.call_data), # symbol
                         # 我这种行为算强行给他一个call_data了。。。
-                        call_data = calldata,
-                        call_value = deepcopy(tx.call_value),
+                        call_data = constructor_arguments,
+                        call_value = tx.get("call_value"),
                         static = forked_caller_global_state.environment.static,
                         txtype = "Internal_MessageCall",
                         )
@@ -675,7 +682,7 @@ class LaserEVM:
                     except UnsatError:
                         print("global_state constraints solve failed!")
                         return 
-                    # print("[Good!!] global_state constraints get solved passed!")
+                    print("[Good!!] global_state constraints get solved passed!")
                     end_signal.global_state.world_state.node = global_state.node
                     # 加到 EVM open_states 里面
                     self._add_world_state(end_signal.global_state)

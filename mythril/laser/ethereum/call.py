@@ -62,7 +62,7 @@ def get_call_parameters(
     
     ## call case 
     gas, to = global_state.mstate.pop(2)
-    value = global_state.mstate.pop() if with_value else 0
+    value = global_state.mstate.pop() if with_value else symbol_factory.BitVecVal(0,256)
     (
         memory_input_offset,
         memory_input_size,
@@ -188,7 +188,7 @@ def get_call_data(
     """
     state = global_state.mstate
     # transaction_id = "{}_internalcall".format(global_state.current_transaction.id)
-    transaction_id = tx_id_manager._next_transaction_id
+    # transaction_id = tx_id_manager._next_transaction_id
     # if (global_state.current_transaction.id == "4"):
     #     print("okokokokokokokok get 4")
     #     exit(0)
@@ -221,19 +221,24 @@ def get_call_data(
     print("print origin memory size {}".format(memory_size))
     if memory_size.symbolic:
         memory_size = SYMBOLIC_CALLDATA_SIZE
-        print("memory size is symbolic, so is {}".format(memory_size))
-    # print("---------")
-    # print("whole memory is: ")
-    # print(global_state.mstate.memory)
+        print("memory size is symbolic, so set as {}".format(memory_size))
+        memory_size = symbol_factory.BitVecVal(memory_size, 256)
+    
+    calldata = {}
     try:
         calldata_from_mem = state.memory[
             util.get_concrete_int(memory_start) : util.get_concrete_int( memory_start + memory_size  )
         ]
-        return ConcreteCalldata(transaction_id, calldata_from_mem)
+        calldata["calldata"] = calldata_from_mem
+        calldata["total_length"] = memory_size.value
+        return calldata
+        # return ConcreteCalldata(transaction_id, calldata_from_mem)
     
     except TypeError:
         log.debug("Unsupported symbolic memory offset and size")
-        print("Error Unsupported symbolic memory offset and size")
+        print("[get_call_data] Error Unsupported symbolic memory offset and size")
+        calldata["symbol"] = True
+        return calldata
         # return SymbolicCalldata(transaction_id)
     
 
@@ -241,7 +246,7 @@ def get_call_data(
 def native_call(
     global_state: GlobalState,
     callee_address: Union[str, BitVec],
-    call_data: BaseCalldata,
+    call_data: dict,
     memory_out_offset: Union[int, Expression],
     memory_out_size: Union[int, Expression],
 ) -> Optional[List[GlobalState]]:
@@ -278,7 +283,7 @@ def native_call(
     global_state.mstate.min_gas_used += native_gas_min
     global_state.mstate.max_gas_used += native_gas_max
     global_state.mstate.mem_extend(mem_out_start, mem_out_sz)
-
+    
     try:
         data = natives.native_contracts(call_address_int, call_data)
     except natives.NativeContractException:
@@ -286,7 +291,7 @@ def native_call(
             global_state.mstate.memory[mem_out_start + i] = global_state.new_bitvec(
                 PRECOMPILE_FUNCTIONS[call_address_int - 1].__name__
                 + "("
-                + str(call_data)
+                + str("call_data")
                 + ")",
                 8,
             )

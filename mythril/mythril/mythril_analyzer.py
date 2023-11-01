@@ -37,6 +37,7 @@ class MythrilAnalyzer:
         strategy: str = "dfs",
         address: Optional[str] = None,
         sub: Optional[list[MythrilDisassembler]] = None,
+        sig : list[dict] = None,
     ):
         """
 
@@ -77,6 +78,7 @@ class MythrilAnalyzer:
         # self.sub_contracts = sub.contracts[0]
         for sub_disassembler in sub:
             self.sub_contracts.append(sub_disassembler.contracts[0])
+        self.sigs = sig
         # -------------------------------------------------------------------
         # -------------------------------------------------------------------
         # -------------------------------------------------------------------
@@ -166,7 +168,8 @@ class MythrilAnalyzer:
                     compulsory_statespace=False,
                     disable_dependency_pruning=self.disable_dependency_pruning,
                     custom_modules_directory=self.custom_modules_directory,
-                    sub_contracts = self.sub_contracts
+                    sub_contracts = self.sub_contracts,
+                    sig = self.sigs,
                 )
                 # 在这边分析漏洞吗?
                 issues = fire_lasers(sym, modules)

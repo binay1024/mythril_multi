@@ -21,8 +21,10 @@ from mythril.laser.smt import (
     simplify,
     symbol_factory,
     Solver,
+    And,
 )
 
+MAXCALLDATA = 320
 
 class BaseCalldata:
     """Base calldata class This represents the calldata provided when sending a
@@ -67,11 +69,25 @@ class BaseCalldata:
                 print("Error, out of read bound")
                 raise ValueError
             return self._load(item)
+        
+        if self.size.value is not None:
+            max = self.size
+        elif self.read_concrete_size() is not None:
+            print("warning, use read concrete size {}".format(self.read_concrete_size()))
+            max = symbol_factory.BitVecVal(self.read_concrete_size(), 256)
+        else:
+            print("warning, use maxcalldata 320 as calldata")
+            max = symbol_factory.BitVecVal(MAXCALLDATA, 256)
 
         if isinstance(item, slice):
             start = 0 if item.start is None else item.start
             step = 1 if item.step is None else item.step
-            stop = self.size if item.stop is None else item.stop
+            # stop = max if item.stop is None else item.stop
+            stop = max if item.stop is None else item.stop
+
+            if isinstance(stop,int):
+                stop = symbol_factory.BitVecVal(stop,256)
+                print("stop is {}".format(stop))
 
             try:
                 current_index = (
@@ -80,27 +96,44 @@ class BaseCalldata:
                     else symbol_factory.BitVecVal(start, 256)
                 )
                 parts = []
+                counter = 0
                 while True:
+                    if counter == max.value and stop.value is None:
+                        print("[Log] index get to max")
+                        break
                     s = Solver()
                     s.set_timeout(1000)
-                    s.add(current_index != stop)
-                    s.add(current_index != self.size)
+                    s.add(current_index < stop)
+                    
+                    if isinstance(stop,BitVec) and stop.value == None:
+                        # print("error add index < max constraint")
+                        s.add(current_index < max)
+                    
+                    # s.add(current_index != stop)
+                    # s.add(step < symbol_factory.BitVecVal(2048, 256))
                     result = s.check()
                     # 这是 退出条件 当 index == stop 俺么 check 就不满足了
                     if result in (unsat, unknown):
+                        print("[log] unsatis the constraint stop loop")
                         break
+
                     element = self._load(current_index)
                     if not isinstance(element, Expression):
                         element = symbol_factory.BitVecVal(element, 8)
 
                     parts.append(element)
                     current_index = simplify(current_index + step)
+                    counter +=1 
 
             except Z3Exception:
                 print("error Invalid calldata slice")
                 raise IndexError("Invalid Calldata Slice")
             return parts
-        print("unkown error in getitem")
+        
+        # 读取单个值的处理
+        else:
+            return self._load(item)
+        print("error v unkown error in getitem")
         raise ValueError
 
     def _load(self, item: Union[int, BitVec]) -> Any:
@@ -108,6 +141,15 @@ class BaseCalldata:
 
         :param item:
         """
+        print("BaseCalldata _load")
+        raise NotImplementedError()
+    
+    def assign_concrete_size(self, size:int):
+        print("BaseCalldata assign_concrete_size")
+        raise NotImplementedError()
+    
+    def read_concrete_size(self):
+        print("BaseCalldata read_concrete_size")
         raise NotImplementedError()
 
     @property
@@ -116,6 +158,7 @@ class BaseCalldata:
 
         :return: unnormalized call data size
         """
+        print("BaseCalldata size")
         raise NotImplementedError()
 
     def concrete(self, model: Model) -> list:
@@ -123,6 +166,10 @@ class BaseCalldata:
 
         :param model:
         """
+        print("BaseCalldata concrete")
+        raise NotImplementedError
+    def update_size(self, newsize):
+        print("BaseCalldata update_size")
         raise NotImplementedError
 
 
@@ -330,6 +377,7 @@ class MixedSymbolicCalldata(BaseCalldata):
     """ A class for representing mixed symbolic call data.
         size is concrete 
     """
+    # 由于 calldata只会 生成 并不会 增加自己的长度这种 所以还行还行。
 
     def __init__(self, tx_id: str, calldata:list = None ,total_length = None) -> None:
         """Initializes the SymbolicCalldata object.
@@ -337,29 +385,71 @@ class MixedSymbolicCalldata(BaseCalldata):
         :param tx_id: Id of the transaction that the calldata is for.
         :_size: 我们让他 是一个 int 类型的整数
         """
+        self.concrete_size = None
+        print("#### init create calldata_{}".format(tx_id))
         if type(total_length) == int:
+            print("calldata 1")
+            self._size = symbol_factory.BitVecVal(total_length, 256)
+            self._calldata = Array("{}_calldata".format(tx_id), 256, 8)
+            self.concrete_size = total_length
+            self.type = 1
+        elif type(total_length) == BitVec:
+            print("calldata 2")
             self._size = total_length
             self._calldata = Array("{}_calldata".format(tx_id), 256, 8)
-        elif type(total_length) == BitVec:
-            self._size = total_length.value
-            self._calldata = Array("{}_calldata".format(tx_id), 256, 8)
+            self.type = 2
         else:
-            print("waring!, mixedSymbolicCalldata size is symbolic")
+            print("calldata 3")
+            print("warning!, mixedSymbolicCalldata size is symbolic")
             self._size = symbol_factory.BitVecSym(str(tx_id) + "_calldatasize", 256)
             self._calldata = Array("{}_calldata".format(tx_id), 256, 8)
+            self.type = 3
 
         # 这里 期望的 calldata是 byte单位的数字 组成的 list
-        if calldata != None and type(self._size) == int:
+        # 或者由 公式元素 组成的 list
+        if calldata != None:
+            print("calldata 4")
             for i, element in enumerate(calldata, 0):
                 element = (
                     symbol_factory.BitVecVal(element, 8)
                     if isinstance(element, int)
                     else element
                 )
-                self._calldata[symbol_factory.BitVecVal(i, 256)] = element
+                # self._calldata[symbol_factory.BitVecVal(i, 256)] = element
+                self.assign_value_at_index(i,element)
 
         # self.solver = Solver()
         super().__init__(tx_id)
+    
+    def update_size(self, newsize):
+        print("update calldata size to {}".format(newsize))
+        self._size = newsize
+        if isinstance(newsize, int):
+            self.type = 1
+            self._size = symbol_factory.BitVecVal(newsize, 256)
+        elif type(newsize) == BitVec and newsize.value is not None:
+            self.type = 1
+            self._size = symbol_factory.BitVecVal(newsize.value, 256)
+        else:
+            pass
+
+    def assign_concrete_size(self, size:int):
+        self.concrete_size = size
+        size = symbol_factory.BitVecVal(size,256)
+        datasize = self._size
+        self._calldata.substitute(datasize, size)
+        # print("print substituted calldata")
+        # print(self._calldata)
+    
+    def read_concrete_size(self):
+        return self.concrete_size
+
+    # def new_self(self, new_id:str):
+    #     # 先说size的问题 
+    #     new_size = None
+    #   首先检测 
+        
+    
 
     # 写入 byte
     def assign_value_at_index(self, index:Union[int, BitVec], value:Union[int, BitVec]):
@@ -369,27 +459,76 @@ class MixedSymbolicCalldata(BaseCalldata):
         value = symbol_factory.BitVecVal(value, 8) if isinstance(value, int) else value
         index = symbol_factory.BitVecVal(index, 256) if isinstance(index, int) else index
         # 用到了 BasicCalldata的 setitem
-        self._calldata[index] = value 
+        # self._calldata[index] = value
+        # self._calldata[index] = simplify(
+        #         If(
+        #             index < self._size,
+        #             # 可能是一个表达式 也可能是一个具体值, 用到了 BasicCalldata的 getitem
+        #             simplify(self._calldata[cast(BitVec, index)]), 
+        #             symbol_factory.BitVecVal(0, 8),
+        #         )
+        # )
+
+        if self.read_concrete_size() is not None:
+            
+            concrete_size = symbol_factory.BitVecVal(self.read_concrete_size(), 256)
+            # newcondi = [self._size,concrete_size]
+            
+            result =  simplify(
+                If(
+                    index < concrete_size,
+                    # 可能是一个表达式 也可能是一个具体值, 用到了 BasicCalldata的 getitem
+                    value, 
+                    self._load(index)
+                )
+            )
+        else:
+            result =  simplify(
+                    If(
+                        index < self._size,
+                        # 可能是一个表达式 也可能是一个具体值, 用到了 BasicCalldata的 getitem
+                        value, 
+                        self._load(index)
+                    )
+            )
+        # print("result is {}".format(result))
+        self._calldata[index] = result
         # self._calldata.raw = z3.Store(self.raw, index.raw, value.raw)
         # print("[TEST] print calldata {}".format(self._calldata[index]))
 
     # 读取 byte
-    def _load(self, index: Union[int, BitVec]) -> Any:
+    def _load(self, index: Union[int, BitVec], upgrade=None) -> Any:
         """
 
         :param item: item表示 第几个 byte 的 index
         :return:
         """
+        
         index = symbol_factory.BitVecVal(index, 256) if isinstance(index, int) else index
-        result =  simplify(
-                If(
-                    index < self._size,
-                    # 可能是一个表达式 也可能是一个具体值, 用到了 BasicCalldata的 getitem
-                    simplify(self._calldata[cast(BitVec, index)]), 
-                    symbol_factory.BitVecVal(0, 8),
+
+        # if self._calldata[index].value != None:
+        #     return symbol_factory.BitVecVal(self._calldata[index].value, 8)
+        if self.read_concrete_size() is not None:
+            max_ = symbol_factory.BitVecVal(self.read_concrete_size(), 256)
+        else:
+            max_ = self._size
+        # print("max and index is {}, {}".format(max_, index.value))
+        if (index.value > max_):
+            print("warning! index biger than max bound in calldata load")
+
+        
+        condi = If(
+                        index < max_,
+                        # 可能是一个表达式 也可能是一个具体值, 用到了 BasicCalldata的 getitem
+                        simplify(self._calldata[cast(BitVec, index)]), 
+                        symbol_factory.BitVecVal(0, 8),
                 )
-        )
-        return result
+        
+        return simplify(condi)
+        
+
+        
+
 
 
     def concrete(self, model: Model) -> list:
@@ -400,10 +539,14 @@ class MixedSymbolicCalldata(BaseCalldata):
         """
         concrete_length = model.eval(self.size.raw, model_completion=True).as_long()
         result = []
-        for i in range(concrete_length):
-            value = self._load(i)
-            c_value = model.eval(value.raw, model_completion=True).as_long()
-            result.append(c_value)
+        try:
+            for i in range(concrete_length):
+                value = self._load(i)
+                c_value = model.eval(value.raw, model_completion=True).as_long()
+                result.append(c_value)
+        except:
+            print("concrete calldata error")
+            raise TypeError
 
         return result
 

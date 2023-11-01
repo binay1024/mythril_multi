@@ -267,7 +267,26 @@ PRECOMPILE_FUNCTIONS = (
 PRECOMPILE_COUNT = len(PRECOMPILE_FUNCTIONS)
 
 
-def native_contracts(address: int, data: BaseCalldata) -> List[int]:
+# def concrete(self, model: Model) -> list:
+#         """
+
+#         :param model:
+#         :return:
+#         """
+#         concrete_length = model.eval(self.size.raw, model_completion=True).as_long()
+#         result = []
+#         try:
+#             for i in range(concrete_length):
+#                 value = self._load(i)
+#                 c_value = model.eval(value.raw, model_completion=True).as_long()
+#                 result.append(c_value)
+#         except:
+#             print("concrete calldata error")
+#             raise TypeError
+
+#         return result
+
+def native_contracts(address: int, data: dict) -> List[int]:
     """Takes integer address 1, 2, 3, 4.
 
     :param address:
@@ -275,9 +294,18 @@ def native_contracts(address: int, data: BaseCalldata) -> List[int]:
     :return:
     """
 
-    if not isinstance(data, ConcreteCalldata):
+    # if not isinstance(data, ConcreteCalldata):
+    #     raise NativeContractException
+    if data.get("calldata",False):
         raise NativeContractException
-    concrete_data = data.concrete(None)
+    
+    newdata = data.get("calldata")
+    concrete_data = []
+    for i in newdata:
+        if i.value is not None:
+            concrete_data.append(i.value)
+        else:
+            break
     try:
         return PRECOMPILE_FUNCTIONS[address - 1](concrete_data)
     except TypeError:

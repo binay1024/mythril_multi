@@ -1,35 +1,276 @@
 import logging
-
+import re
 from copy import copy, deepcopy
 from typing import cast, Callable, List, Union, Tuple
+from mythril.laser.ethereum.state.calldata import MixedSymbolicCalldata
+# from mythril.laser.smt import (
+#     Extract,
+#     Expression,
+#     UDiv,
+#     simplify,
+#     Concat,
+#     ULT,
+#     UGT,
+#     BitVec,
+#     is_false,
+#     URem,
+#     SRem,
+#     If,
+#     Bool,
+#     Not,
+#     LShR,
+#     UGE,
+# )
+# from mythril.laser.smt import symbol_factory
 
-from mythril.laser.smt import (
-    Extract,
-    Expression,
-    UDiv,
-    simplify,
-    Concat,
-    ULT,
-    UGT,
-    BitVec,
-    is_false,
-    URem,
-    SRem,
-    If,
-    Bool,
-    Not,
-    LShR,
-    UGE,
-)
-from mythril.laser.smt import symbol_factory
+
+# from mythril.laser.ethereum.state.global_state import GlobalState
+
+# from mythril.disassembler import asm
+# from mythril.laser.ethereum.state.account import Account
+# from mythril.laser.ethereum.state.world_state import WorldState
 
 
-from mythril.laser.ethereum.state.global_state import GlobalState
 
-from mythril.disassembler import asm
-from mythril.laser.ethereum.state.account import Account
-from mythril.laser.ethereum.state.world_state import WorldState
+import json 
+import subprocess
 
+TYPE_LIST = {  
+    "bool": "static", 
+    "int": "static", 
+    "uint": "static", 
+    # "fixed",
+    # "ufixed",
+    "address": "static",
+    "bytesM": "static",
+     "bytes": "dynamic",
+    "string":"dynamic",
+    # "function", 
+}
+
+
+TYPE_SIZE = {
+    "bool": 32,     # 静态
+    "int": 32,      # 静态
+    "uint": 32,     # 静态
+    "bytes": 64,    # 动态
+    "bytesM": 32,   # 静态
+    "string":64,    # 动态
+    # "fixed",
+    # "ufixed",
+    "address": 32,  # 静态
+    # "function", 
+}
+
+################################################
+
+class Paramet:
+    def __init__(self) -> None:
+        self.offset = 0
+        self.length = None
+        self.size = 0
+        self.data = "data"
+        self.type = None
+
+def signature_parsing(sig_:str) -> list:
+    # 首先 去掉空白字符
+    sig_ = sig_.strip()
+
+    # 找到 左括号和右括号的位置
+    left_pare = sig_.find('(')
+    righ_pare = sig_.find(')')
+
+    if left_pare == -1 or righ_pare == -1:
+        return []
+    
+    # 找到括号之后, 提取括号之间的内容
+    parameters = sig_[left_pare+1:righ_pare]
+
+    # 根据逗号分割参数并返回 
+    return [para.strip() for para in parameters.split(',')]
+
+
+def pure_sigs(para_list:list[str]) -> list:
+    return [ pure_sig(para) for para in para_list]
+
+def pure_sig(para:str):
+    number = r'\d'
+    return "bytesM" if 'bytes' in para and len(para) > 5 else re.sub(number, '',para)
+
+def calcu_paras_size (pure_para_list:list[str]) -> list:
+    # return [TYPE_SIZE.get(typ, 0) for typ in pure_para_list]
+    return [ calcu_para_size(typ) for typ in pure_para_list]
+
+def calcu_para_size (pure_para:str) -> int:
+    return TYPE_SIZE.get(pure_para, 0)
+
+def build_calldata(sig_:str):
+    signature = signature_parsing(sig_)
+    pure_paras = pure_sigs(signature)
+    static_para_list = []
+    dynamic_para_list = []
+    for para in pure_paras:
+        p = Paramet()
+        p.type = TYPE_LIST.get(para, "unknown")
+        p.size = TYPE_SIZE.get(para, 0)
+        if p.size == 0:
+            print("Error, data size is 0 in build_calldata")
+            continue
+        if p.type == "static":
+            p.length = 0
+            static_para_list.append(p)
+        if p.type == "dynamic":
+            # p.length = "length"
+            p.length = 32
+            dynamic_para_list.append(p)
+    # static_para_list = [para for para in para_object_list if para.type == "static"]
+    # dynamic_para_list = [para for para in para_object_list if para.type == "dynamic"]
+        
+    # 这样的话整理出来每一个 calldata的 类型啥的都整理好了
+    calldata_ = []
+    
+    # 先处理 Static parameter
+    for para in static_para_list:
+        calldata_.append(para.data)
+    
+    # 后处理 Dynamic parameter
+    staticOffset = 0x20 * len(static_para_list)
+    dynamicOffset = 0x20 * len(dynamic_para_list)
+    basicOffset = staticOffset + dynamicOffset
+    # print("basicOffset is {}".format(basicOffset))
+    for para in dynamic_para_list:
+        para.offset = basicOffset
+        calldata_.append(para.offset)
+        basicOffset += p.size
+    
+    # 然后按照para顺序 添加每一个 para 长度和数据
+    for para in dynamic_para_list:
+        calldata_.append(para.length)
+        calldata_.append(para.data)
+    
+    return calldata_   
+
+def build_calldata_test():
+    sig1 = "foo(uint256)"
+    print("Test sig1 {}".format(sig1))
+    print("Pure Parasize1: {}".format(calcu_paras_size(pure_sigs(signature_parsing(sig1)))))
+    print("calldata is {}".format(build_calldata(sig1)))
+    print()
+    
+    sig2 = "foo(bytes)"
+    print("Test sig2 {}".format(sig2))
+    print("Pure Parasize2: {}".format(calcu_paras_size(pure_sigs(signature_parsing(sig2)))))
+    print("calldata is {}".format(build_calldata(sig2)))
+    print()
+    
+    sig3 = "foo(uint256,bytes)"
+    print("Test sig3 {}".format(sig3))
+    print("Pure ParaSize3: {}".format(calcu_paras_size(pure_sigs(signature_parsing(sig3)))))
+    print("calldata is {}".format(build_calldata(sig3)))
+    print()
+    
+    sig4 = "attack(uint256,bytes)"
+    print("Test sig4 {}".format(sig4))
+    print("Pure ParaSize4: {}".format(calcu_paras_size(pure_sigs(signature_parsing(sig4)))))
+    print("calldata is {}".format(build_calldata(sig4)))
+    print()
+
+    sig5 = "foo(uint256,bytes,address,string)"
+    print("Test sig5 {}".format(sig5))
+    print("Pure ParaSize5: {}".format(calcu_paras_size(pure_sigs(signature_parsing(sig5)))))
+    print("calldata is {}".format(build_calldata(sig5)))
+    print()
+
+def build_mixed_symbolic_data(init_calldata, id,):
+    total_size = len(init_calldata) * 32
+    calldata = MixedSymbolicCalldata(tx_id=id, total_length=total_size)
+    for (index, data) in enumerate(init_calldata,0):
+        index = index * 32
+        if type(data) == str:
+            continue
+        # data = f"{data:064x}"
+        byte_list = [(data >> (8 *i)) & 0xff for i in range(31, -1, -1)]
+        print("Data is {}".format(byte_list))
+        for i in range(index, index+32):
+            ind = i - index
+            calldata.assign_value_at_index(index= i, value=byte_list[ind])
+    return calldata
+
+def build_mixed_symbolic_data_for_msg(init_calldata, id,):
+    
+    total_size = len(init_calldata) * 32 + 4
+    init_calldata = ["sig"] + init_calldata
+
+    calldata = MixedSymbolicCalldata(tx_id=id, total_length=total_size)
+    print("size is {}".format(calldata.size))
+    for (index, data) in enumerate(init_calldata, 0):
+        if index == 0:
+            pass
+        elif index == 1:
+            index = 4
+        else:
+            index = (index-1) * 32 +4
+        if type(data) == str:
+            continue
+        # data = f"{data:064x}"
+        byte_list = [(data >> (8 *i)) & 0xff for i in range(31, -1, -1)]
+        print("Data is {}".format(byte_list))
+        for i in range(index, index+32):
+            ind = i - index
+            calldata.assign_value_at_index(index= i, value=byte_list[ind])
+    return calldata
+
+def mixed_calldata_init(initdata, id, length):
+    calldata = MixedSymbolicCalldata(tx_id=id, calldata=initdata, total_length=length)
+    return calldata
+
+def generate_signature(filepath:str):
+    # solc --abi ./mythril/solidity_examples/ccs2023/AttackBridge/AttackBridgeV10.sol -o ./ast.json/AttackBridgeV10.json
+    outpath = "/".join(filepath.split('/')[:-1])
+    contractName = filepath.split('/')[-2]
+    outfilepath = outpath+'/'+contractName+'.abi'
+    print("outfilepath is {}".format(outfilepath))
+    cmd = [
+        'solc', 
+        '--abi', 
+        filepath,
+        '-o',
+        outpath
+    ]
+
+    result = subprocess.run(
+        cmd,
+        text = True,
+        stdout = subprocess.PIPE,
+        stderr = subprocess.PIPE
+        )
+
+    if result.returncode == 0:
+        print("Signature get successful.")
+    else:
+        print("Signature get failed.")
+    return outfilepath
+
+def extract_signature(ast_json_path):
+    
+    signatures = {}
+    with open(ast_json_path, 'r') as file:
+        ast = json.load(file)
+        # function level
+        for function in ast:
+            if "inputs" not in function:
+                continue
+
+            paras = [ para["type"] for para in function["inputs"] ]
+
+            if function['type'] == 'function':
+                signature = function["name"] + "(" + ",".join(paras) + ")"
+                signatures[function["name"]] = signature
+            else:
+                signature = function["type"] + "(" + ",".join(paras) + ")"
+                signatures[function["type"]] = signature
+
+    return signatures
 
 # def get_callable_sc_list(global_state: GlobalState):    
 #     callable_sc = []

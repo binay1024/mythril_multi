@@ -7,7 +7,7 @@ from typing import Union, Optional
 from mythril.support.support_utils import Singleton
 from mythril.laser.ethereum.state.calldata import ConcreteCalldata
 from mythril.laser.ethereum.state.account import Account
-from mythril.laser.ethereum.state.calldata import BaseCalldata, SymbolicCalldata
+from mythril.laser.ethereum.state.calldata import BaseCalldata, SymbolicCalldata, MixedSymbolicCalldata
 from mythril.laser.ethereum.state.return_data import ReturnData
 from mythril.laser.ethereum.state.environment import Environment
 from mythril.laser.ethereum.state.global_state import GlobalState
@@ -123,15 +123,18 @@ class BaseTransaction:
 
         self.caller = caller
         self.callee_account = callee_account
+        
         if call_data is None and init_call_data:
-            self.call_data = SymbolicCalldata(self.id)  # type: BaseCalldata
+            # self.call_data = SymbolicCalldata(self.id)  # type: BaseCalldata
+            print("create init calldata")
+            self.call_data = MixedSymbolicCalldata(tx_id=self.id)
         else:
-            self.call_data = (
-                call_data
-                if isinstance(call_data, BaseCalldata)
-                else ConcreteCalldata(self.id, [])
-            )
-
+            print("get calldata ")
+            if isinstance(call_data, BaseCalldata):
+                self.call_data = call_data
+            else:
+                self.call_data = MixedSymbolicCalldata(self.id)
+            
         self.call_value = (
             call_value
             if call_value is not None
@@ -486,7 +489,7 @@ class ContractCreationTransaction(BaseTransaction):
         global_state.environment.active_account.code.assign_bytecode(
             tuple(return_data.return_data)
         )
-        # global_state.environment.active_account.code.func_to_parasize = global_state.current_transaction.code.func_to_parasize
+        global_state.environment.active_account.code.func_to_parasize = global_state.current_transaction.code.func_to_parasize
         # global_state.environment.active_account.code.func_to_parasize = global_state.current_transaction.code.func_to_parasize
         # print("print creation end info")
         # print(global_state.environment.active_account.code.function_name_to_address)

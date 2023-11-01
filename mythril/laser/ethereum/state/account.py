@@ -73,6 +73,13 @@ class Storage:
                 print("Error: Couldn't read storage at %s: %s", item, e)
                 log.debug("Couldn't read storage at %s: %s", item, e)
 
+        # if item.symbolic is False and (not item in self.printable_storage) and (not item.value in self.printable_storage):
+
+        if (item.value is not None) and (not item.value in self.storage_keys_loaded) :
+            
+            print("return 0 in storage")
+            return symbol_factory.BitVecVal(0,256)
+
         return simplify(storage[item])
 
     def __setitem__(self, key, value: Any) -> None:

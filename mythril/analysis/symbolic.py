@@ -63,6 +63,7 @@ class SymExecWrapper:
         run_analysis_modules: bool = True,
         custom_modules_directory: str = "",
         sub_contracts: Optional[List[EVMContract]] = None,
+        sig: list[dict] = None,
     ):
         """
 
@@ -185,6 +186,7 @@ class SymExecWrapper:
                 contract_name=contract.name,
                 world_state=world_state,
                 sub_contracts = sub_contracts,
+                sig=sig,
             )
         else:
             account = Account(

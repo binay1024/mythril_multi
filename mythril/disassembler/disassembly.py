@@ -5,6 +5,7 @@ from mythril.support.signatures import SignatureDB
 # from mythril.laser.ethereum.state.global_state import GlobalState
 from typing import Dict, List, Tuple
 from mythril.laser.ethereum import util
+from mythril.support.my_utils import build_calldata
 
 class Disassembly(object):
     """Disassembly class.
@@ -16,7 +17,7 @@ class Disassembly(object):
     - function entry point to function name mapping
     """
 
-    def __init__(self, code: str, enable_online_lookup: bool = False) -> None:
+    def __init__(self, code: str, enable_online_lookup: bool = False, sig:dict = None) -> None:
         """
 
         :param code:
@@ -31,12 +32,14 @@ class Disassembly(object):
         self.function_name_to_address = {}  # type: Dict[str, int]
         self.address_to_function_name = {}  # type: Dict[int, str]
         self.hash_to_function_name = {}     # type: Dict[int, str]
-        # self.func_to_parasize = {}          # type: Dict[str, int]
+        self.func_to_parasize = {}          # type: Dict[str, int]
         self.enable_online_lookup = enable_online_lookup
+        self.sig = sig
+        print("sig is {}, type is {}".format(sig, type(sig)))
         self.assign_bytecode(bytecode=code)
-        # self.assign_func_parasize()
-        # print("print func_to_parasize")
-        # print(self.func_to_parasize)
+        self.assign_func_parasize()
+        print("print func_sig {}".format(self.func_to_parasize))
+        
 
 
 
@@ -70,28 +73,28 @@ class Disassembly(object):
         """
         return asm.instruction_list_to_easm(self.instruction_list)
     
-    # # 用来 通过 heuristic 判断 codesize 
-    # def get_init_para_size(self, pattern, offset):
+    # 用来 通过 heuristic 判断 codesize 
+    def get_init_para_size(self, pattern, offset):
 
-    #     instruction_list = self.instruction_list
+        instruction_list = self.instruction_list
         
-    #     jump_table_indices = asm.find_op_code_sequence(pattern, instruction_list)
+        jump_table_indices = asm.find_op_code_sequence(pattern, instruction_list)
         
-    #     return_list = []
-    #     # 每个 index 都是 pattern的 起始位置, 不过不是在 bytecode中的 index 而是在 isntructionlist中的 index
-    #     for index in jump_table_indices:
+        return_list = []
+        # 每个 index 都是 pattern的 起始位置, 不过不是在 bytecode中的 index 而是在 isntructionlist中的 index
+        for index in jump_table_indices:
 
-    #         try:
-    #             para_size = instruction_list[index+offset]["argument"]
+            try:
+                para_size = instruction_list[index+offset]["argument"]
                 
-    #             if type(para_size) == tuple:
-    #                 para_size = bytes(para_size).hex()
-    #             para_size = int(para_size, 16)
-    #             return_list.append((index,para_size))
-    #         except(KeyError, IndexError):
-    #             print("error, find codesize problem")
-    #             return return_list
-    #     return return_list
+                if type(para_size) == tuple:
+                    para_size = bytes(para_size).hex()
+                para_size = int(para_size, 16)
+                return_list.append((index,para_size))
+            except(KeyError, IndexError):
+                print("error, find codesize problem")
+                return return_list
+        return return_list
         
     
 
@@ -99,14 +102,20 @@ class Disassembly(object):
     # # 不同于 constructor， 函数 会有好几个， 参数大小也是多种多样， 不过 EVM 仅仅判断了是否 小于 固定值， 所以我们可以取 多个函数中需要的函数参数中的最大值。 
     # # 或者 根据函数签名 提供对应的 参数大小也可以呢。 
            
-    # def assign_func_parasize(self):
-    #     init_pattern = [("CODESIZE"),("SUB"),("DUP1"),("PUSH1", "PUSH2", "PUSH3", "PUSH4"),("DUP4"),("CODECOPY"),("DUP2"),("DUP2"),("ADD"),("PUSH1", "PUSH2", "PUSH3", "PUSH4"),("MSTORE"),
-    #             ("PUSH1", "PUSH2", "PUSH3", "PUSH4"),("DUP2"),("LT"),("ISZERO"),("PUSH1", "PUSH2", "PUSH3", "PUSH4"),("JUMPI")]
-    #     init_para_size = self.get_init_para_size(init_pattern, 11)
-    #     if init_para_size != []:
-    #         # print("assign constructor para size {}".format(init_para_size[0][1]))
-    #         self.func_to_parasize["constructor"] = init_para_size[0][1]
-
+    def assign_func_parasize(self):
+        # init_pattern = [("CODESIZE"),("SUB"),("DUP1"),("PUSH1", "PUSH2", "PUSH3", "PUSH4"),("DUP4"),("CODECOPY"),("DUP2"),("DUP2"),("ADD"),("PUSH1", "PUSH2", "PUSH3", "PUSH4"),("MSTORE"),
+        #         ("PUSH1", "PUSH2", "PUSH3", "PUSH4"),("DUP2"),("LT"),("ISZERO"),("PUSH1", "PUSH2", "PUSH3", "PUSH4"),("JUMPI")]
+        # init_para_size = self.get_init_para_size(init_pattern, 11)
+        # if init_para_size != [] and self.sig is not None:
+        #     print("assign constructor para size {}".format(init_para_size[0][1]))
+        #     print("sig is {}".format(self.sig))
+        print("[assign_func_parasize] sig is {}, type is {}".format(self.sig, type(self.sig)))
+        
+        if self.sig is not None:
+            for function, sig in self.sig.items():
+                len_ = len(build_calldata(sig))*32
+                print("calldata size match success {}".format(len_))
+                self.func_to_parasize[function] = len_
         
     # def assign_func_parasize_post(self):
     #     ### constructor 结束 开始看 各大 函数 
