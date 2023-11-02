@@ -25,11 +25,20 @@ class BasicSearchStrategy(ABC):
 
     def __next__(self):
         try:
+            # 这个实际上就是pop 但是为什么没有 pop上捏？ 
             global_state = self.get_strategic_global_state()
             if global_state.mstate.depth >= self.max_depth:
+                print("mstate.depth overthan maxdepth error")
                 return self.__next__()
+            
             return global_state
-        except (IndexError, StopIteration):
+        
+        except (IndexError):
+            # print("IndexError in BasicSearchStrategy")
+            raise StopIteration
+        
+        except (StopIteration):
+            # print("stop signal in BasicSearchStrategy")
             raise StopIteration
 
 
@@ -44,10 +53,12 @@ class CriterionSearchStrategy(BasicSearchStrategy):
 
     def get_strategic_global_state(self):
         if self._satisfied_criterion:
+            # print("IndexError in CriterionSearchStrategy")
             raise StopIteration
         try:
             return self.get_strategic_global_state()
         except StopIteration:
+            # print("IndexError in CriterionSearchStrategy")
             raise StopIteration
 
     def set_criterion_satisfied(self):

@@ -24,7 +24,7 @@ from mythril.laser.smt import (
     And,
 )
 
-MAXCALLDATA = 320
+MAXCALLDATA = 448
 
 class BaseCalldata:
     """Base calldata class This represents the calldata provided when sending a
@@ -76,7 +76,7 @@ class BaseCalldata:
             print("warning, use read concrete size {}".format(self.read_concrete_size()))
             max = symbol_factory.BitVecVal(self.read_concrete_size(), 256)
         else:
-            print("warning, use maxcalldata 320 as calldata")
+            print("warning, use maxcalldata 1024 as calldata")
             max = symbol_factory.BitVecVal(MAXCALLDATA, 256)
 
         if isinstance(item, slice):

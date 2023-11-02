@@ -231,6 +231,7 @@ class SymExecWrapper:
             self.laser.sym_exec(world_state=world_state, target_address=address.value)
 
         if not requires_statespace:
+        #     print("whats this? error")
             return
 
         self.nodes = self.laser.nodes

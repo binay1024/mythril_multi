@@ -18,7 +18,9 @@ class DepthFirstSearchStrategy(BasicSearchStrategy):
 
         :return:
         """
-        return self.work_list.pop()
+        # print("len of work_list is {}".format(len(self.work_list)))
+        item = self.work_list.pop()
+        return item
 
     def view_strategic_global_state(self) -> GlobalState:
         """
@@ -39,7 +41,10 @@ class BreadthFirstSearchStrategy(BasicSearchStrategy):
 
         :return:
         """
-        return self.work_list.pop(0)
+        # print("len of work_list is {}".format(len(self.work_list)))
+        item = self.work_list.pop(0)
+        return item
+        # return self.work_list.pop(0)
 
     def view_strategic_global_state(self) -> GlobalState:
         """

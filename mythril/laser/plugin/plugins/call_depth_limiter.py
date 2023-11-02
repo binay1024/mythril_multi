@@ -9,7 +9,8 @@ class CallDepthLimitBuilder(PluginBuilder):
     name = "call-depth-limit"
 
     def __call__(self, *args, **kwargs):
-        return CallDepthLimit(kwargs["call_depth_limit"])
+        # return CallDepthLimit(kwargs["call_depth_limit"])
+        return CallDepthLimit(call_depth_limit = 100)
 
 
 class CallDepthLimit(LaserPlugin):
@@ -27,4 +28,6 @@ class CallDepthLimit(LaserPlugin):
         @symbolic_vm.pre_hook("CALL")
         def sstore_mutator_hook(global_state: GlobalState):
             if len(global_state.transaction_stack) - 1 == self.call_depth_limit:
+                print("call depth limit error")
+                print("call depth limit is {}".format(self.call_depth_limit))
                 raise PluginSkipState

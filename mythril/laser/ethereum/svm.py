@@ -219,7 +219,7 @@ class LaserEVM:
             # 这个时候 worldstate 里面不是最新状态了已经, open_state 里面的 world_state 的 account 是有值的, 
             # 但是 这里的现在的 world_state 里面account 里面木有任何代码, 所以我们不可以相信这个捏
             
-            print("main: ", created_account.code.bytecode)
+            # print("main: ", created_account.code.bytecode)
             # print("sub: ", sub_accounts[0].code.bytecode if (sub_accounts is not None and sub_accounts!= []) else "Empty Sub Contract" ) 
             # exit(1)
             log.info(
@@ -397,27 +397,39 @@ class LaserEVM:
             # except SolverTimeOutException:
             #     print("Warning !!!world_state Timeout")
             #     continue
-            if not (global_state.world_state.constraints.is_possible()):
-                print("Warning !!!world_state unsatisfied")
-                continue
+            # if not (global_state.world_state.constraints.is_possible()):
+            #     print("Warning !!!world_state unsatisfied")
+            #     continue
 
             if len(self.work_list)!= temp:
                 print("now we have {} global state (path)!".format(len(self.work_list)+1))
                 temp = len(self.work_list)
+
             if create and self._check_create_termination():
                 log.debug("Hit create timeout, returning.")
+                print("Hit create timeout, returning.")
                 return final_states + [global_state] if track_gas else None
 
             if not create and self._check_execution_termination():
                 log.debug("Hit execution timeout, returning.")
+                print("Hit create timeout, returning.")
                 return final_states + [global_state] if track_gas else None
             try:
                 new_states, op_code = self.execute_state(global_state)
-                # print("op code is {}".format(op_code))
+                print("op code is {}".format(op_code))
             except NotImplementedError:
                 log.debug("Encountered unimplemented instruction")
                 print("Error Encountered unimplemented instruction")
                 continue
+            except:
+                print("unkown error in svm")
+
+            if op_code == "JUMP":
+                print(op_code)
+                print("new_state is {}".format(len(new_states)))
+                print("")
+            if type(new_states) != list:
+                print("error found")
 
             if self.strategy.run_check() and (
                 len(new_states) > 1 and random.uniform(0, 1) < args.pruning_factor
@@ -429,12 +441,17 @@ class LaserEVM:
                 ]
                 if len(new_states) >1:
                     print("{} worklist added! now the worklist num is {}".format(len(new_states), len(self.work_list)+len(new_states)))
+                
             self.manage_cfg(op_code, new_states)  # TODO: What about op_code is None?
+
             if new_states:
                 self.work_list += new_states
             
             elif track_gas:
                 final_states.append(global_state)
+            else:
+                pass
+                # print("no new_states error")
             # 证明当我在某一个 work_list 里面修改 call_chain 的时候 其他的 worklist 路径中的值也会被改动
             # if len(self.work_list)>1:
                 # self.work_list[0].world_state.transaction_sequence[0].call_chain.append("TESTEST")    
@@ -492,6 +509,7 @@ class LaserEVM:
             for hook in self._execute_state_hooks:
                 hook(global_state)
         except PluginSkipState:
+            print("error, return empty")
             return [], None
 
         instructions = global_state.environment.code.instruction_list
@@ -519,6 +537,7 @@ class LaserEVM:
         try:
             self._execute_pre_hook(op_code, global_state)
         except PluginSkipState:
+            print("[execute prehook Error]  ********************************")
             return [], None
 
         try:
@@ -558,7 +577,7 @@ class LaserEVM:
                 forked_new_world_state = deepcopy(forked_caller_global_state.world_state)
                 # assert(tx.id is not None, "Warning !! tx.id is None")
                 next_transaction_id = tx_id_manager.get_next_tx_id()
-                calldata_ = tx.get("calldata")
+                calldata_ = tx.get("call_data")
                 calldata_total_length = calldata_.get("total_length") if calldata_ is not None else None
                 calldata_data = calldata_.get("calldata") if calldata_ is not None else None
                 constructor_arguments = MixedSymbolicCalldata(tx_id=next_transaction_id, calldata=calldata_data, total_length=calldata_total_length)
@@ -681,7 +700,7 @@ class LaserEVM:
                             )
                     except UnsatError:
                         print("global_state constraints solve failed!")
-                        return 
+                        return [], None
                     print("[Good!!] global_state constraints get solved passed!")
                     end_signal.global_state.world_state.node = global_state.node
                     # 加到 EVM open_states 里面
@@ -712,7 +731,7 @@ class LaserEVM:
                 temp = end_signal.call_chain.split("-") if end_signal.call_chain!=None else None
                 if temp is None:
                     print("call chain process error")
-                    exit(0)
+                    return [], None
                 function_name_ = temp[-1] if temp[-1] != "revert" else temp[-2]+"_"+temp[-1]
                 contract_name_ = temp[-2] if temp[-1] != "revert" else temp[-3]
                 callee_record = [contract_name_,function_name_]
@@ -893,6 +912,7 @@ class LaserEVM:
                 "address"
             ]
         except IndexError:
+            print("error in new_node_state")
             return
         new_node = Node(state.environment.active_account.contract_name)
         old_node = state.node

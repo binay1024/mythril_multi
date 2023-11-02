@@ -113,9 +113,9 @@ class Disassembly(object):
         
         if self.sig is not None:
             for function, sig in self.sig.items():
-                len_ = len(build_calldata(sig))*32
-                print("calldata size match success {}".format(len_))
-                self.func_to_parasize[function] = len_
+                init_calldata, length = build_calldata(sig)
+                print("calldata size match success {}".format(length))
+                self.func_to_parasize[function] = length
         
     # def assign_func_parasize_post(self):
     #     ### constructor 结束 开始看 各大 函数 

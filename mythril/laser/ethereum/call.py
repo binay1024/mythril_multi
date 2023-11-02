@@ -33,7 +33,7 @@ to get the necessary elements from the stack and determine the parameters for th
 """
 
 log = logging.getLogger(__name__)
-SYMBOLIC_CALLDATA_SIZE = 320  # Used when copying symbolic calldata
+SYMBOLIC_CALLDATA_SIZE = 1024  # Used when copying symbolic calldata
 
 # stack 弹出操作
 def get_call_parameters(

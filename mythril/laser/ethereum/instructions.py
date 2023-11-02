@@ -161,6 +161,7 @@ class StateTransition(object):
         if isinstance(global_state.current_transaction.gas_limit, BitVec):
             value = global_state.current_transaction.gas_limit.value
             if value is None:
+                print("[check_gas_usage_limit]value is None")
                 return
             global_state.current_transaction.gas_limit = value
         if (
@@ -253,6 +254,7 @@ class Instruction:
         """
         # Generalize some ops
         log.debug("Evaluating %s at %i", self.op_code, global_state.mstate.pc)
+        print("Evaluating %s at %i", self.op_code, global_state.mstate.pc)
 
         op = self.op_code.lower()
         if self.op_code.startswith("PUSH"):
@@ -1635,22 +1637,32 @@ class Instruction:
         state = global_state.mstate
         disassembly = global_state.environment.code
         try:
-            jump_addr = util.get_concrete_int(state.stack.pop())
+            stackp = state.stack.pop()
+            jump_addr = util.get_concrete_int(stackp)
         except TypeError:
             print("Invalid jump argument (symbolic address)")
             raise InvalidJumpDestination("Invalid jump argument (symbolic address)")
         except IndexError:
+            print("Invalid jump index (symbolic address)")
             raise StackUnderflowException()
+        except:
+            print("unkown error")
 
-        index = util.get_instruction_index(disassembly.instruction_list, jump_addr)
+        try:
+            index = util.get_instruction_index(disassembly.instruction_list, jump_addr)
+        except:
+            print("unkown error jump p1")
+        
         if index is None:
             print("Invalid jump argument (symbolic address)")
             raise InvalidJumpDestination("JUMP to invalid address")
-
-        op_code = disassembly.instruction_list[index]["opcode"]
+        try:
+            op_code = disassembly.instruction_list[index]["opcode"]
+        except:
+            print("unkown error jump p2")
 
         if op_code != "JUMPDEST":
-            print("Invalid jump argument (symbolic address)")
+            print("error Invalid jump argument (symbolic address)")
             raise InvalidJumpDestination(
                 "Skipping JUMP to invalid destination (not JUMPDEST): " + str(jump_addr)
             )
@@ -1738,7 +1750,7 @@ class Instruction:
         else:
             log.debug("Pruned unreachable states. in false case")
             print("unreached path")
-            print(negated_cond)
+            print(negated)
             print("------")
             # print(neg_constraints)
             print("--- end -----")
@@ -2308,14 +2320,14 @@ class Instruction:
                     callee_account_ = sc
 
                 if main_addr is None:
-                    print("cannot catch MAIN")
+                    print("error cannot catch MAIN")
                     exit(0)
                 if type(main_addr) is str:
                     main_addr = int(main_addr, 16)
                 elif type(main_addr) is int:
                     pass
                 else:
-                    print("main addr type error ")
+                    print("error main addr type error ")
                     exit(0)            
     
                 

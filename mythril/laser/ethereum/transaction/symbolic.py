@@ -135,8 +135,8 @@ def execute_message_call(
         
         # calldata = SymbolicCalldata(next_transaction_id)
         attackBridge = "attack(uint256,bytes)"
-        init_calldata = build_calldata(attackBridge)
-        mixed_calldata = build_mixed_symbolic_data_for_msg(id=next_transaction_id, init_calldata=init_calldata)
+        init_calldata, length = build_calldata(attackBridge)
+        mixed_calldata = build_mixed_symbolic_data_for_msg(id=next_transaction_id, init_calldata=init_calldata, length=length)
         # 因为 在分支执行的时候我不希望两个 world_state 会互相影响 以及和 tx_sequence 里面存好的 world_state 互相影响
         # 如果说 world_state1, world_state2 -> execute_message_call 
         # 那么 在 执行 world_state1的路径上执行完毕之后 会在 open_state 里面放入 world_state1 下一次会接着执行, 而我们需要在 TX 里面放下的也是他 那么会最后影响 求值
@@ -209,8 +209,8 @@ def execute_sub_contract_creation(
             del laser_evm.open_states[:]
             next_transaction_id = tx_id_manager.get_next_tx_id()
             if contract_sig:
-                _init_calldata = build_calldata(contract_sig)
-                mixed_calldata = build_mixed_symbolic_data(id=next_transaction_id, init_calldata=_init_calldata)
+                _init_calldata, length = build_calldata(contract_sig)
+                mixed_calldata = build_mixed_symbolic_data(id=next_transaction_id, init_calldata=_init_calldata, length=length)
             else:
                 mixed_calldata = MixedSymbolicCalldata(tx_id=next_transaction_id)
 
@@ -302,8 +302,8 @@ def execute_contract_creation(
         # call_data "should" be '[]', but it is easier to model the calldata symbolically
         # and add logic in codecopy/codesize/calldatacopy/calldatasize than to model code "correctly"
         if contract_sig:
-            _init_calldata = build_calldata(contract_sig)
-            mixed_calldata = build_mixed_symbolic_data(id=next_transaction_id, init_calldata=_init_calldata)
+            _init_calldata, length = build_calldata(contract_sig)
+            mixed_calldata = build_mixed_symbolic_data(id=next_transaction_id, init_calldata=_init_calldata, length=length)
         else:
             mixed_calldata = MixedSymbolicCalldata(tx_id=next_transaction_id)
 

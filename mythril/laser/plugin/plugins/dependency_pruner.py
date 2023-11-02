@@ -210,6 +210,7 @@ class DependencyPruner(LaserPlugin):
             try:
                 address = state.get_current_instruction()["address"]
             except IndexError:
+                print("jump error in initialize post hook")
                 raise PluginSkipState
             annotation = get_dependency_annotation(state)
             annotation.path.append(address)
@@ -221,6 +222,7 @@ class DependencyPruner(LaserPlugin):
             try:
                 address = state.get_current_instruction()["address"]
             except IndexError:
+                print("jumpi error in initialize post hook")
                 raise PluginSkipState
             annotation = get_dependency_annotation(state)
             annotation.path.append(address)
@@ -314,7 +316,7 @@ class DependencyPruner(LaserPlugin):
                         annotation.get_storage_write_cache(self.iteration - 1), address
                     )
                 )
-
+                print("_check_basic_block error in initialize post hook")
                 raise PluginSkipState
 
         @symbolic_vm.laser_hook("add_world_state")

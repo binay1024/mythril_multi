@@ -290,16 +290,18 @@ def test_symbolic_calldata_equal_indices():
 def mixed_calldata_test():
     # _init_calldata = ['data', 'data', 128, 192, 'length', 'data', 'length', 'data']
     sig5 = "attack(uint256,bytes)"
-    _init_calldata =  build_calldata(sig5)
+    _init_calldata, total_lenth =  build_calldata(sig5)
+    print("initial calldata is {}, total length is {}".format(_init_calldata, total_lenth))
+    
     id = 1
-    calldata = build_mixed_symbolic_data_for_msg(_init_calldata, id)
+    calldata = build_mixed_symbolic_data_for_msg(_init_calldata, id, total_lenth)
     # _init_calldata = [0x11, 0x12, 0x13, 0x14]
     # calldata = mixed_calldata_init(_init_calldata, id, 8)
     
     # 输出出来看看
     # for i in range(256):
         # print("output calldata[{}] {}".format(i, calldata[i]))
-    print("output calldata:\n {}".format(calldata[36:68]))
+    print("output calldata:\n {}".format(calldata[0:1024]))
     print("output {}".format(calldata.get_word_at(36)))
 
 if __name__ == "__main__":

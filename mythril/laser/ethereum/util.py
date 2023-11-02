@@ -117,11 +117,13 @@ def get_concrete_int(item: Union[int, Expression]) -> int:
         return item
     elif isinstance(item, BitVec):
         if item.symbolic:
+            print("Got a symbolic BitVecRef")
             raise TypeError("Got a symbolic BitVecRef")
         return item.value
     elif isinstance(item, Bool):
         value = item.value
         if value is None:
+            print("Symbolic boolref encountered")
             raise TypeError("Symbolic boolref encountered")
         return value
 

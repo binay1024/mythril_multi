@@ -133,6 +133,7 @@ class BaseTransaction:
             if isinstance(call_data, BaseCalldata):
                 self.call_data = call_data
             else:
+                print("create init calldata")
                 self.call_data = MixedSymbolicCalldata(self.id)
             
         self.call_value = (

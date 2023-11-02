@@ -33,7 +33,8 @@ class BoundedLoopsStrategy(BasicSearchStrategy):
         """"""
 
         self.super_strategy = super_strategy
-        self.bound = kwargs["loop_bound"]
+        # self.bound = kwargs["loop_bound"]
+        self.bound = 10
 
         log.info(
             "Loaded search strategy extension: Loop bounds (limit = {})".format(
@@ -140,6 +141,7 @@ class BoundedLoopsStrategy(BasicSearchStrategy):
 
             elif count > self.bound:
                 log.debug("Loop bound reached, skipping state")
+                print("warning, Loop bound reached, skipping state")
                 continue
 
             return state

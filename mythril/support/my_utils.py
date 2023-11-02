@@ -48,15 +48,16 @@ TYPE_LIST = {
     # "function", 
 }
 
+bytesMAX = 128
 
 TYPE_SIZE = {
     "bool": 32,     # 静态
     "int": 32,      # 静态
     "uint": 32,     # 静态
-    "bytes": 64,    # 动态
+    "bytes": bytesMAX,    # 动态
     "bytesM": 32,   # 静态
-    "string":64,    # 动态
-    # "fixed",
+    "string":bytesMAX,    # 动态
+    # "fixed",0
     # "ufixed",
     "address": 32,  # 静态
     # "function", 
@@ -121,34 +122,42 @@ def build_calldata(sig_:str):
             static_para_list.append(p)
         if p.type == "dynamic":
             # p.length = "length"
-            p.length = 32
+            p.data = "dy_data"
+            p.length = p.size-32 # 288
             dynamic_para_list.append(p)
     # static_para_list = [para for para in para_object_list if para.type == "static"]
     # dynamic_para_list = [para for para in para_object_list if para.type == "dynamic"]
         
     # 这样的话整理出来每一个 calldata的 类型啥的都整理好了
     calldata_ = []
-    
+    total_length = 0
+
     # 先处理 Static parameter
     for para in static_para_list:
         calldata_.append(para.data)
-    
+        
     # 后处理 Dynamic parameter
     staticOffset = 0x20 * len(static_para_list)
     dynamicOffset = 0x20 * len(dynamic_para_list)
     basicOffset = staticOffset + dynamicOffset
     # print("basicOffset is {}".format(basicOffset))
+    
+    # 这是  处理 offset 部分
     for para in dynamic_para_list:
         para.offset = basicOffset
         calldata_.append(para.offset)
-        basicOffset += p.size
+        basicOffset += para.size
+
+    print("basicoffset is {}".format(basicOffset))
+
     
     # 然后按照para顺序 添加每一个 para 长度和数据
     for para in dynamic_para_list:
         calldata_.append(para.length)
         calldata_.append(para.data)
     
-    return calldata_   
+    
+    return calldata_, basicOffset
 
 def build_calldata_test():
     sig1 = "foo(uint256)"
@@ -181,8 +190,8 @@ def build_calldata_test():
     print("calldata is {}".format(build_calldata(sig5)))
     print()
 
-def build_mixed_symbolic_data(init_calldata, id,):
-    total_size = len(init_calldata) * 32
+def build_mixed_symbolic_data(init_calldata, id, length):
+    total_size = length
     calldata = MixedSymbolicCalldata(tx_id=id, total_length=total_size)
     for (index, data) in enumerate(init_calldata,0):
         index = index * 32
@@ -196,24 +205,32 @@ def build_mixed_symbolic_data(init_calldata, id,):
             calldata.assign_value_at_index(index= i, value=byte_list[ind])
     return calldata
 
-def build_mixed_symbolic_data_for_msg(init_calldata, id,):
+def build_mixed_symbolic_data_for_msg(init_calldata, id, length):
     
-    total_size = len(init_calldata) * 32 + 4
+    total_size = length + 4
     init_calldata = ["sig"] + init_calldata
 
     calldata = MixedSymbolicCalldata(tx_id=id, total_length=total_size)
     print("size is {}".format(calldata.size))
+    temp = 0
     for (index, data) in enumerate(init_calldata, 0):
+
         if index == 0:
             pass
         elif index == 1:
-            index = 4
+            index = temp + 4
+
+        elif data == "dy_data":
+            index = temp + (bytesMAX - 32)
         else:
-            index = (index-1) * 32 +4
+            index = temp + 32
+
+        temp = index
         if type(data) == str:
             continue
         # data = f"{data:064x}"
         byte_list = [(data >> (8 *i)) & 0xff for i in range(31, -1, -1)]
+
         print("Data is {}".format(byte_list))
         for i in range(index, index+32):
             ind = i - index
