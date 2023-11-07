@@ -288,7 +288,7 @@ class LaserEVM:
         """
         self.time = datetime.now()
         # 记得删除
-        self.transaction_count = 1
+        self.transaction_count = 4
         for i in range(self.transaction_count):
             print("\n=========== Excute %d TX Loop!!!==========\n"%i)
             # 这句话决定了 如果你的 open_states 为空 那么不执行剩下的语句
@@ -345,6 +345,8 @@ class LaserEVM:
 
 
         self.executed_transactions = True
+
+
 
     def _check_create_termination(self) -> bool:
         if len(self.open_states) != 0:
@@ -830,8 +832,9 @@ class LaserEVM:
 
         # Set execution result in the return_state of callee_global_state
         if return_global_state.last_return_data is None:
-            print("error! last_return_data.mem_out_off and size may be none")
+            print("warning! last_return_data.mem_out_off and size may be none")
             return_global_state.last_return_data = return_data
+            print("assign return data {}".format(return_data))
 
         elif return_data is None:
             print("warning, tx.returndata is None")

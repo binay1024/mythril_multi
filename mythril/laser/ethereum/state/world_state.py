@@ -357,3 +357,7 @@ class WorldState:
         """
         self._accounts[account.address.value] = account
         account._balances = self.balances
+
+    def output_storage(self) -> None:
+        for addr, acc in self.accounts.items():
+            storage_ = acc.storage

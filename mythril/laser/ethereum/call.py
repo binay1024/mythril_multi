@@ -229,8 +229,10 @@ def get_call_data(
         calldata_from_mem = state.memory[
             util.get_concrete_int(memory_start) : util.get_concrete_int( memory_start + memory_size  )
         ]
+        print("[get_call_data] get concolic memory offset and size")
         calldata["calldata"] = calldata_from_mem
         calldata["total_length"] = memory_size.value
+        calldata["symbol"] = False
         return calldata
         # return ConcreteCalldata(transaction_id, calldata_from_mem)
     

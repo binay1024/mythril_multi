@@ -81,8 +81,8 @@ class DependencyPruner(LaserPlugin):
     """Dependency Pruner Plugin
 
     For every basic block, this plugin keeps a list of storage locations that
-    are accessed (read) in the execution path containing that block. This map
-    is built up over the whole symbolic execution run.
+    are accessed (read) in the execution path containing that block. 
+    This map　is built up over the whole symbolic execution run.
 
     After the initial build up of the map in the first transaction, blocks are
     executed only if any of the storage locations written to in the previous
@@ -154,9 +154,11 @@ class DependencyPruner(LaserPlugin):
         # Skip "pure" paths that don't have any dependencies.
 
         if address not in self.sloads_on_path:
+            print("address not in self.sloads on path")
             return False
 
         # Execute the path if there are state modifications along it that *could* be relevant
+        # 如果路径上 有*可能*相关的状态修改，就执行该路径。
 
         if address in self.storage_accessed_global:
             for location in self.sstores_on_path:
@@ -166,6 +168,7 @@ class DependencyPruner(LaserPlugin):
 
                 except UnsatError:
                     continue
+        print("sstores_on_path in storage_accessed_Global")
 
         dependencies = self.sloads_on_path[address]
 
@@ -182,7 +185,7 @@ class DependencyPruner(LaserPlugin):
 
                 except UnsatError:
                     continue
-
+            print("no storage_write_cache location in sloads_on_path dependencies")
             # Has the *currently executed* path been influenced by a write operation in the previous transaction?
 
             for dependency in annotation.storage_loaded:
@@ -191,7 +194,8 @@ class DependencyPruner(LaserPlugin):
                     return True
                 except UnsatError:
                     continue
-
+            print("no storage_loaded location in sloads_on_path dependencies")
+        print("other cases error")
         return False
 
     def initialize(self, symbolic_vm: LaserEVM) -> None:
@@ -300,7 +304,7 @@ class DependencyPruner(LaserPlugin):
             """
 
             # Don't skip any blocks in the contract creation transaction
-            if self.iteration < 2:
+            if self.iteration < 20:
                 return
 
             # Don't skip newly discovered blocks
@@ -317,6 +321,9 @@ class DependencyPruner(LaserPlugin):
                     )
                 )
                 print("_check_basic_block error in initialize post hook")
+                print("Skipping state: Storage slots {} not read in block at address {}, function".format(
+                        annotation.get_storage_write_cache(self.iteration - 1), address
+                    ))
                 raise PluginSkipState
 
         @symbolic_vm.laser_hook("add_world_state")

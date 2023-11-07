@@ -96,7 +96,7 @@ def transfer_ether(
     global_state.world_state.constraints.append(
         UGE(global_state.world_state.balances[sender], value)
     )
-    print("balances is {}".format(global_state.world_state.balances[sender]))
+    print("balances is {}".format(global_state.world_state.balances[sender].value))
     global_state.world_state.balances[receiver] += value
     global_state.world_state.balances[sender] -= value
 
@@ -164,6 +164,7 @@ class StateTransition(object):
                 print("[check_gas_usage_limit]value is None")
                 return
             global_state.current_transaction.gas_limit = value
+
         if (
             global_state.mstate.min_gas_used
             >= global_state.current_transaction.gas_limit
@@ -1037,9 +1038,11 @@ class Instruction:
         if isinstance(global_state.current_transaction, ContractCreationTransaction):
             # Hacky way to ensure constructor arguments work - Pick some reasonably large size.
             no_of_bytes = len(disassembly.bytecode) // 2
-            if isinstance(calldata, ConcreteCalldata):
-                print("codesize_ case1")
-                no_of_bytes += calldata.size
+            # if isinstance(calldata, ConcreteCalldata):
+            #     print("codesize_ case1")
+            #     no_of_bytes += calldata.size
+            if calldata._size.value!=None:
+                no_of_bytes += calldata.size.value
             else:
                 if 'constructor' in environment.code.func_to_parasize:
                     no_of_bytes += environment.code.func_to_parasize['constructor']
@@ -1887,7 +1890,7 @@ class Instruction:
 
         call_data = get_call_data(global_state, mem_offset, mem_offset + mem_size)
         # call_data is a dict key is "calldata", "total_length", "symbol"
-        if not call_data.get("symbol", False):
+        if call_data.get("symbol", False):
             print("[_create_transaction_helper] error, cannot process symbolic calldata")
             return [global_state]
         
@@ -1907,6 +1910,10 @@ class Instruction:
         # 从0 开始 一直到读取到 符号类型的变量 开始 退出， code_end是 符号类型变量的开始 index
         # code_raw读到的 要么是 整个size 里的 所有数据， 要么就是 单纯的 code 两个都有可能感觉
         for i in range(size):
+            if isinstance(calldata_[i], int):
+                code_raw.append(calldata_[i])
+                continue
+
             if calldata_[i].symbolic:
                 code_end = i
                 break
@@ -1979,10 +1986,11 @@ class Instruction:
         #     contract_address=contract_address,
         #     fork=True,
         # )
+
         transaction = {}
         transaction["code"] = code
         transaction["contract_address"] = contract_address
-        transaction["calldata"] = call_data
+        transaction["call_data"] = call_data
         transaction["call_value"] = call_value
         transaction["type"] = "ContractCreationTransaction"
         
@@ -2027,12 +2035,14 @@ class Instruction:
         #     global_state.mstate.pop(4)
         # else:
         #     global_state.mstate.pop(3)
+        
         if global_state.last_return_data and global_state.last_return_data.return_data:
             return_val = symbol_factory.BitVecVal(
                 int(global_state.last_return_data.return_data, 16), 256
             )
         else:
             return_val = symbol_factory.BitVecVal(0, 256)
+
         global_state.mstate.stack.append(return_val)
         return [global_state]
 
@@ -2112,6 +2122,7 @@ class Instruction:
             return_data = state.memory[
                 util.get_concrete_int(offset) : util.get_concrete_int(offset + length)
             ]
+            
             # 如果 length是 0 就返回 0 0 revert
             if util.get_concrete_int(length) == 0:
                 length = symbol_factory.BitVecVal(0, 256)         
@@ -2121,6 +2132,7 @@ class Instruction:
             log.debug("Return with symbolic length or offset. Not supported")
             print("[revert] Error: Return with symbolic length or offset. Not supported")
 
+        
         
 
         global_state.current_transaction.end(
@@ -2265,7 +2277,7 @@ class Instruction:
                     continue
                 temp.append(global_state_.environment.active_account.contract_name)
 
-            if (callee_account is not None and callee_account.code.bytecode == "") or (temp.count("MAIN") > 4):
+            if (callee_account is not None and callee_account.code.bytecode == "") or (temp.count("MAIN") > 6):
                 print("------------------call to EOA-------------------------------")
                 log.debug("The call is related to ether transfer between accounts")
                 sender = environment.active_account.address
@@ -2280,6 +2292,7 @@ class Instruction:
                 global_state.mstate.stack.append(
                     global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
                 )
+
                 return [global_state]
             
             # 情况三  callee account 存在 并且 含有代码 但是 callable 为空 证明已经呼叫过了.

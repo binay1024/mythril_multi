@@ -1,21 +1,21 @@
 pragma solidity 0.5.0;
 
 contract TokenInterface {
- mapping (address => uint256) public balances;
- mapping (address => mapping (address => uint256)) public allowed;
+    mapping (address => uint256) public balances;
+    mapping (address => mapping (address => uint256)) public allowed;
 
  /// Total amount of tokens
- uint256 public totalSupply;
+    uint256 public totalSupply;
 
  /// @param _owner The address from which the balance will be retrieved
  /// @return The balance
- function balanceOf(address _owner) public view returns (uint256 balance);
+    function balanceOf(address _owner) public view returns (uint256 balance);
 
  /// @notice Send `_amount` tokens to `_to` from `msg.sender`
  /// @param _to The address of the recipient
  /// @param _amount The amount of tokens to be transferred
  /// @return Whether the transfer was successful or not
- function transfer(address _to, uint256 _amount) public returns (bool success);
+    function transfer(address _to, uint256 _amount) public returns (bool success);
 
  /// @notice Send `_amount` tokens to `_to` from `_from` on the condition it
  /// is approved by `_from`
@@ -23,189 +23,188 @@ contract TokenInterface {
  /// @param _to The address of the recipient
  /// @param _amount The amount of tokens to be transferred
  /// @return Whether the transfer was successful or not
- function transferFrom(address _from, address _to, uint256 _amount) public returns (bool success);
+    function transferFrom(address _from, address _to, uint256 _amount) public returns (bool success);
 
  /// @notice `msg.sender` approves `_spender` to spend `_amount` tokens on
  /// its behalf
  /// @param _spender The address of the account able to transfer the tokens
  /// @param _amount The amount of tokens to be approved for transfer
  /// @return Whether the approval was successful or not
- function approve(address _spender, uint256 _amount) public returns (bool success);
+    function approve(address _spender, uint256 _amount) public returns (bool success);
 
  /// @param _owner The address of the account owning tokens
  /// @param _spender The address of the account able to transfer the tokens
  /// @return Amount of remaining tokens of _owner that _spender is allowed
  /// to spend
- function allowance(address _owner, address _spender) public view returns (uint256 remaining);
+    function allowance(address _owner, address _spender) public view returns (uint256 remaining);
 
- event Transfer(address indexed _from, address indexed _to, uint256 _amount);
- event Approval(address indexed _owner, address indexed _spender, uint256 _amount);
+    event Transfer(address indexed _from, address indexed _to, uint256 _amount);
+    event Approval(address indexed _owner, address indexed _spender, uint256 _amount);
 }
 
 contract Token is TokenInterface {
- mapping(address => uint256) private balances;
- mapping(address => mapping(address => uint256)) private allowed;
+    mapping(address => uint256) private balances;
+    mapping(address => mapping(address => uint256)) private allowed;
 
- function balanceOf(address _owner) public view returns (uint256 balance) {
- return balances[_owner];
- }
+    function balanceOf(address _owner) public view returns (uint256 balance) {
+        return balances[_owner];
+    }
 
- function transfer(address _to, uint256 _amount) public returns (bool success) {
- require(balances[msg.sender] >= _amount && _amount > 0, "Insufficient balance or invalid amount");
+    function transfer(address _to, uint256 _amount) public returns (bool success) {
+        require(balances[msg.sender] >= _amount && _amount > 0, "Insufficient balance or invalid amount");
 
- balances[msg.sender] -= _amount;
- balances[_to] += _amount;
- emit Transfer(msg.sender, _to, _amount);
- return true;
- }
+        balances[msg.sender] -= _amount;
+        balances[_to] += _amount;
+        emit Transfer(msg.sender, _to, _amount);
+        return true;
+    }
 
- function transferFrom(
- address _from,
- address _to,
- uint256 _amount
- ) public returns (bool success) {
- require(
- balances[_from] >= _amount && allowed[_from][msg.sender] >= _amount && _amount > 0,
- "Insufficient balance or invalid amount or allowance"
- );
+    function transferFrom(  address _from,
+                            address _to,
+                            uint256 _amount ) public returns (bool success) {
+        require( balances[_from] >= _amount && allowed[_from][msg.sender] >= _amount && _amount > 0,
+        "Insufficient balance or invalid amount or allowance" );
+        balances[_to] += _amount;
+        balances[_from] -= _amount;
+        allowed[_from][msg.sender] -= _amount;
+        emit Transfer(_from, _to, _amount);
+        return true;
+    }
 
- balances[_to] += _amount;
- balances[_from] -= _amount;
- allowed[_from][msg.sender] -= _amount;
- emit Transfer(_from, _to, _amount);
- return true;
- }
+    function approve(address _spender, uint256 _amount) public returns (bool success) {
+        allowed[msg.sender][_spender] = _amount;
+        emit Approval(msg.sender, _spender, _amount);
+        return true;
+    }
 
- function approve(address _spender, uint256 _amount) public returns (bool success) {
- allowed[msg.sender][_spender] = _amount;
- emit Approval(msg.sender, _spender, _amount);
- return true;
- }
-
- function allowance(address _owner, address _spender) public view returns (uint256 remaining) {
- return allowed[_owner][_spender];
- }
+    function allowance(address _owner, address _spender) public view returns (uint256 remaining) {
+        return allowed[_owner][_spender];
+    }
 }
 
 
 contract ManagedAccountInterface {
  // The only address with permission to withdraw from this account
- address public owner;
+    address public owner;
  // If true, only the owner of the account can receive ether from it
- bool public payOwnerOnly;
+    bool public payOwnerOnly;
  // The sum of ether (in wei) which has been sent to this contract
- uint public accumulatedInput;
+    uint public accumulatedInput;
 
  /// @notice Sends `_amount` of wei to `_recipient`
  /// @param _amount The amount of wei to send to `_recipient`
  /// @param _recipient The address to receive `_amount` of wei
  /// @return True if the send completed
- function payOut(address payable _recipient, uint _amount) public payable returns (bool);
+    function payOut(address payable _recipient, uint _amount) public payable returns (bool);
 
- event PayOut(address indexed _recipient, uint _amount);
+    event PayOut(address indexed _recipient, uint _amount);
 }
 
 
 contract TokenCreationInterface {
 
  // End of token creation, in Unix time
- uint256 public closingTime;
+    uint256 public closingTime;
  // Minimum fueling goal of the token creation, denominated in tokens to
  // be created
- uint256 public minTokensToCreate;
+    uint256 public minTokensToCreate;
  // True if the DAO reached its minimum fueling goal, false otherwise
- bool public isFueled;
+    bool public isFueled;
  // For DAO splits - if privateCreation is 0, then it is a public token
  // creation, otherwise only the address stored in privateCreation is
  // allowed to create tokens
- address public privateCreation;
+    address public privateCreation;
  // Hold extra ether which has been sent after the DAO token
  // creation rate has increased
  
  // Tracks the amount of wei given from each contributor (used for refund)
- mapping(address => uint256) public weiGiven;
+    mapping(address => uint256) public weiGiven;
 
- function createTokenProxy(address _tokenHolder) public payable returns (bool success);
+    function createTokenProxy(address _tokenHolder) public payable returns (bool success);
 
  /// @notice Refund `msg.sender` in the case the Token Creation did
  /// not reach its minimum fueling goal
- function refund() public payable;
+    function refund() public payable;
 
  /// @return The divisor used to calculate the token creation rate during
  /// the creation phase
- function divisor() public view returns (uint256);
+    function divisor() public view returns (uint256);
 
- event FuelingToDate(uint256 value);
- event CreatedToken(address indexed to, uint256 amount);
- event Refund(address indexed to, uint256 value);
+    event FuelingToDate(uint256 value);
+    event CreatedToken(address indexed to, uint256 amount);
+    event Refund(address indexed to, uint256 value);
 }
 
 
 contract ManagedAccount is ManagedAccountInterface {
 
 
- constructor(address _owner, bool _payOwnerOnly) public {
- owner = _owner;
- payOwnerOnly = _payOwnerOnly;
- }
- function() external payable {
- accumulatedInput += msg.value;
- }
- function payOut(address payable _recipient, uint _amount) public payable returns (bool) {
- require(msg.sender == owner && msg.value > 0 && (payOwnerOnly && _recipient != owner), "Invalid condition");
- (bool success, ) = _recipient.call.value(_amount).gas(2300)("");
- if (success) {
- emit PayOut(_recipient, _amount);
- return true;
- } else {
- return false;
- }
- }
+    constructor(address _owner, bool _payOwnerOnly) public {
+        owner = _owner;
+        payOwnerOnly = _payOwnerOnly;
+    }
+
+    function() external payable {
+        accumulatedInput += msg.value;
+    }
+ 
+    function payOut(address payable _recipient, uint _amount) public payable returns (bool) {
+        require(msg.sender == owner && msg.value > 0 && (payOwnerOnly && _recipient != owner), "Invalid condition");
+        (bool success, ) = _recipient.call.value(_amount).gas(2300)("");
+        if (success) {
+            emit PayOut(_recipient, _amount);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 contract TokenCreation is TokenCreationInterface, Token {
- ManagedAccount public extraBalance;
+    ManagedAccount public extraBalance;
 
- constructor(uint _minTokensToCreate, uint _closingTime, address _privateCreation) public {
- closingTime = _closingTime;
- minTokensToCreate = _minTokensToCreate;
- privateCreation = _privateCreation;
- extraBalance = new ManagedAccount(address(this), true);
- //address a = address(0x5B38Da6a701c568545dCfcB03FcB875f56beddC4);
- }
- function createTokenProxy(address _tokenHolder) public payable returns (bool success){
- if(now < closingTime && msg.value > 0
- && (privateCreation == address(0)|| privateCreation == msg.sender)){
- uint token = (msg.value * 20) / divisor();
- address(extraBalance).call.value(msg.value - token)("");
- balances[_tokenHolder] += token;
- totalSupply += token;
- weiGiven[_tokenHolder] += msg.value;
- emit CreatedToken(_tokenHolder, token);
- if (totalSupply >= minTokensToCreate && !isFueled) {
- isFueled = true;
- emit FuelingToDate(totalSupply);
- }
- return true;
- }
- revert();
- }
- function refund() public payable {
- if (now > closingTime && !isFueled) {
- // Get extraBalance - will only succeed when called for the first time
- if (address(extraBalance).balance >= extraBalance.accumulatedInput())
- extraBalance.payOut(address(uint160(address(this))), extraBalance.accumulatedInput());
+    constructor(uint _minTokensToCreate, uint _closingTime, address _privateCreation) public {
+        closingTime = _closingTime;
+        minTokensToCreate = _minTokensToCreate;
+        privateCreation = _privateCreation;
+        extraBalance = new ManagedAccount(address(this), true);
+        //address a = address(0x5B38Da6a701c568545dCfcB03FcB875f56beddC4);
+    }
 
- // Execute refund
- (bool success, ) = msg.sender.call.value(weiGiven[msg.sender])("");
- if (success) {
- emit Refund(msg.sender, weiGiven[msg.sender]);
- totalSupply -= balances[msg.sender];
- balances[msg.sender] = 0;
- weiGiven[msg.sender] = 0;
- }
- }
- }
+    function createTokenProxy(address _tokenHolder) public payable returns (bool success){
+        if(now < closingTime && msg.value > 0 && (privateCreation == address(0)|| privateCreation == msg.sender)){
+            uint token = (msg.value * 20) / divisor();
+            address(extraBalance).call.value(msg.value - token)("");
+            balances[_tokenHolder] += token;
+            totalSupply += token;
+            weiGiven[_tokenHolder] += msg.value;
+            emit CreatedToken(_tokenHolder, token);
+            if (totalSupply >= minTokensToCreate && !isFueled) {
+                isFueled = true;
+                emit FuelingToDate(totalSupply);
+            }
+            return true;
+        }
+        revert();
+    }
+    
+    function refund() public payable {
+        if (now > closingTime && !isFueled) {
+        // Get extraBalance - will only succeed when called for the first time
+            if (address(extraBalance).balance >= extraBalance.accumulatedInput()){
+                extraBalance.payOut(address(uint160(address(this))), extraBalance.accumulatedInput());
+            }
+
+            // Execute refund
+            (bool success, ) = msg.sender.call.value(weiGiven[msg.sender])("");
+            if (success) {
+                emit Refund(msg.sender, weiGiven[msg.sender]);
+                totalSupply -= balances[msg.sender];
+                balances[msg.sender] = 0;
+                weiGiven[msg.sender] = 0;
+            }
+        }
+    }
 
 
  function divisor() public view returns (uint256) {
@@ -716,10 +715,13 @@ contract DAO is DAOInterface, Token, TokenCreation {
 //  if ((balanceOf(_account) * rewardAccount.accumulatedInput()) / totalSupply < paidOut[_account])
 //  revert();
 
- uint reward = 1 ether;
+ uint reward = 0.000001 ether;
 //  (balanceOf(_account) * rewardAccount.accumulatedInput()) / totalSupply - paidOut[_account];
-  if (!rewardAccount.payOut(address(uint160(address(_account))), reward))
-  revert();
+    bool a = rewardAccount.payOut(address(uint160(address(_account))), reward);
+  if (!a){
+    revert();
+  }
+  
  paidOut[_account] += reward;
  return true;
  }

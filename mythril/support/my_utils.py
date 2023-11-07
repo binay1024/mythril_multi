@@ -108,14 +108,19 @@ def calcu_para_size (pure_para:str) -> int:
 def build_calldata(sig_:str):
     signature = signature_parsing(sig_)
     pure_paras = pure_sigs(signature)
+    # 对于 没有参数的函数，他的 calldata应该是 0
     static_para_list = []
     dynamic_para_list = []
+    if pure_paras == ['']:
+        print("function para is empty {}".format(sig_))
+        return [], 0
+    # 这个是处理每一个参数的东西
     for para in pure_paras:
         p = Paramet()
         p.type = TYPE_LIST.get(para, "unknown")
         p.size = TYPE_SIZE.get(para, 0)
         if p.size == 0:
-            print("Error, data size is 0 in build_calldata")
+            print("warning, data size is 0 in build_calldata {}".format(para))
             continue
         if p.type == "static":
             p.length = 0

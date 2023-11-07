@@ -210,6 +210,8 @@ def execute_sub_contract_creation(
             next_transaction_id = tx_id_manager.get_next_tx_id()
             if contract_sig:
                 _init_calldata, length = build_calldata(contract_sig)
+                if _init_calldata == []:
+                    _init_calldata = None
                 mixed_calldata = build_mixed_symbolic_data(id=next_transaction_id, init_calldata=_init_calldata, length=length)
             else:
                 mixed_calldata = MixedSymbolicCalldata(tx_id=next_transaction_id)
@@ -303,6 +305,8 @@ def execute_contract_creation(
         # and add logic in codecopy/codesize/calldatacopy/calldatasize than to model code "correctly"
         if contract_sig:
             _init_calldata, length = build_calldata(contract_sig)
+            if _init_calldata == []:
+                _init_calldata = None
             mixed_calldata = build_mixed_symbolic_data(id=next_transaction_id, init_calldata=_init_calldata, length=length)
         else:
             mixed_calldata = MixedSymbolicCalldata(tx_id=next_transaction_id)

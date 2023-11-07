@@ -25,7 +25,7 @@ class Constraints(list):
         constraint_list = self._get_smt_bool_list(constraint_list)
         super(Constraints, self).__init__(constraint_list)
 
-    def is_possible(self, solver_timeout=None) -> bool:
+    def is_possible(self, solver_timeout=60000) -> bool:
         """
         :param solver_timeout: The default timeout uses analysis timeout from args.solver_timeout
         :return: True/False based on the existence of solution of constraints

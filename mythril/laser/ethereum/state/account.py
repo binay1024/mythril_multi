@@ -77,7 +77,7 @@ class Storage:
 
         if (item.value is not None) and (not item.value in self.storage_keys_loaded) :
             
-            print("return 0 in storage")
+            print("warning return 0 in storage")
             return symbol_factory.BitVecVal(0,256)
 
         return simplify(storage[item])
