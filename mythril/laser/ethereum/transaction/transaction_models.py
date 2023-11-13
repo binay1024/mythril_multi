@@ -288,7 +288,7 @@ class MessageCallTransaction(BaseTransaction):
         :param revert:
         """
         revert = False
-        print("now in msTX end, the activate_function is: {}".format(global_state.environment.active_function_name))
+        # print("now in msTX end, the activate_function is: {}".format(global_state.environment.active_function_name))
         # memory return value 
         self.return_data = return_data
 
@@ -474,7 +474,7 @@ class ContractCreationTransaction(BaseTransaction):
         :param revert:
         """
         revert = False
-        print("now in creation end, the activate_function is: {}".format(global_state.environment.active_function_name))
+        # print("now in creation end, the activate_function is: {}".format(global_state.environment.active_function_name))
         function_name = global_state.environment.active_function_name
         if end_type == "REVERT":
             revert = True

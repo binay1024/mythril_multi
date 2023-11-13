@@ -41,7 +41,7 @@ for subdir in os.listdir(data_dir):
             # 执行命令并捕获输出
             time_start = time.time()
             try:
-                result = subprocess.run(command, shell=True, check=True, text=True, capture_output=True)
+                result = subprocess.run(command, shell=True, text=True, capture_output=True)
                 output = result.stdout
 
                 # 将文件名和输出添加到结果列表
@@ -50,7 +50,9 @@ for subdir in os.listdir(data_dir):
                 results.append([os.path.basename(subdir_path), output, time_cost])
                 counter += 1
             except subprocess.CalledProcessError as e:
-                print(f"命令执行失败: {e}")
+                # print(f"命令执行失败: {e}")
+                print(results)
+                break
         else:
             print("file not exist")
         

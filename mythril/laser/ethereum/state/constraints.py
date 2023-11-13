@@ -42,7 +42,7 @@ class Constraints(list):
             # If it uses a short custom solver timeout
             return True
         except UnsatError:
-            print("[log] is_possible solver unsat")
+            # print("[log] is_possible solver unsat")
             return False
         return True
 

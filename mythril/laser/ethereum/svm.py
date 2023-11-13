@@ -734,7 +734,7 @@ class LaserEVM:
                 # 不论是不是 revert 结束的情况 那么 因为状态回滚 返回的新世界状态为 0
                 new_global_states = []
                 if not end_signal.revert:
-                    print("End Transaction with EOA TX:  {}".format(global_state.current_transaction))
+                    # print("End Transaction with EOA TX:  {}".format(global_state.current_transaction))
                     # print("call_chain is {}".format(global_state.world_state.transaction_sequence[-1].call_chain))
                     pass
                     
@@ -802,7 +802,7 @@ class LaserEVM:
                     return_global_state.add_annotations(new_annotations)
                     # 更新 world_state, 尤其是 constraint
                     return_global_state.update_world_state(end_signal.global_state)
-                    print("End Transaction with MessageTX Normally: {}".format(end_signal.global_state.current_transaction))
+                    # print("End Transaction with MessageTX Normally: {}".format(end_signal.global_state.current_transaction))
                     # print("call_chain is {}".format(end_signal.global_state.world_state.transaction_sequence[-1].call_chain))
 
                 # 如果是 revert 要不要给 revert的那个 constraint 一个 Not 公式 然后 还回去。
