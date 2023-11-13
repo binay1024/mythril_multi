@@ -35,10 +35,10 @@ class Disassembly(object):
         self.func_to_parasize = {}          # type: Dict[str, int]
         self.enable_online_lookup = enable_online_lookup
         self.sig = sig
-        print("sig is {}, type is {}".format(sig, type(sig)))
+        # print("sig is {}, type is {}".format(sig, type(sig)))
         self.assign_bytecode(bytecode=code)
         self.assign_func_parasize()
-        print("print func_sig {}".format(self.func_to_parasize))
+        # print("print func_sig {}".format(self.func_to_parasize))
         
 
 
@@ -62,7 +62,7 @@ class Disassembly(object):
             
             if jump_target is not None and function_name is not None:
                 self.function_name_to_address[function_name] = jump_target
-                print("Function : {} with hash {} , address {} found".format(function_name, function_hash, jump_target))
+                # print("Function : {} with hash {} , address {} found".format(function_name, function_hash, jump_target))
                 self.address_to_function_name[jump_target] = function_name
                 self.hash_to_function_name[function_hash] = function_name
 
@@ -109,12 +109,12 @@ class Disassembly(object):
         # if init_para_size != [] and self.sig is not None:
         #     print("assign constructor para size {}".format(init_para_size[0][1]))
         #     print("sig is {}".format(self.sig))
-        print("[assign_func_parasize] sig is {}, type is {}".format(self.sig, type(self.sig)))
+        # print("[assign_func_parasize] sig is {}, type is {}".format(self.sig, type(self.sig)))
         
         if self.sig is not None:
             for function, sig in self.sig.items():
                 init_calldata, length = build_calldata(sig)
-                print("calldata size match success {}".format(length))
+                # print("calldata size match success {}".format(length))
                 self.func_to_parasize[function] = length
         
     # def assign_func_parasize_post(self):

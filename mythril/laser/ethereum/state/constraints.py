@@ -25,7 +25,8 @@ class Constraints(list):
         constraint_list = self._get_smt_bool_list(constraint_list)
         super(Constraints, self).__init__(constraint_list)
 
-    def is_possible(self, solver_timeout=60000) -> bool:
+    # 1000ms = 1s, 60000 = 1 min, 
+    def is_possible(self, solver_timeout=600000) -> bool:
         """
         :param solver_timeout: The default timeout uses analysis timeout from args.solver_timeout
         :return: True/False based on the existence of solution of constraints
@@ -41,11 +42,11 @@ class Constraints(list):
             # If it uses a short custom solver timeout
             return True
         except UnsatError:
-            print("is_possible solver error")
+            print("[log] is_possible solver unsat")
             return False
         return True
 
-    def get_model(self, solver_timeout=None) -> bool:
+    def get_model(self, solver_timeout=600000) -> bool:
         """
         :param solver_timeout: The default timeout uses analysis timeout from args.solver_timeout
         :return: True/False based on the existence of solution of constraints

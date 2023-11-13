@@ -65,7 +65,7 @@ class LaserEVM:
         self,
         dynamic_loader=None,
         max_depth=float("inf"),
-        execution_timeout=60,
+        execution_timeout=120,
         create_timeout=10,
         strategy=DepthFirstSearchStrategy,
         transaction_count=2,
@@ -210,8 +210,8 @@ class LaserEVM:
                     self, creation_code, contract_name, world_state = world_state, sig = sig[0],
                 )
             if(len(self.open_states) > 1 or len(self.open_states) == 0):
-                print("Error, open_states more than 1 or is zero")
-                exit(0)
+                print("Warning, open_states more than 1 or is zero")
+                
             if sub_contracts is not None:
                 sub_accounts = execute_sub_contract_creation(
                     self, contract_name="SUB", world_state=self.open_states[0], sub_contracts = sub_contracts, sig = sig[1:]
@@ -288,7 +288,7 @@ class LaserEVM:
         """
         self.time = datetime.now()
         # 记得删除
-        self.transaction_count = 4
+        self.transaction_count = 2
         for i in range(self.transaction_count):
             print("\n=========== Excute %d TX Loop!!!==========\n"%i)
             # 这句话决定了 如果你的 open_states 为空 那么不执行剩下的语句
@@ -328,6 +328,19 @@ class LaserEVM:
                     else:
                         func_hashes[itr] = bytes.fromhex(hex(func_hash)[2:].zfill(8))
 
+            # # 打钱轮
+            # if i == 0:
+            #     for hook in self._start_sym_trans_hooks:
+            #         hook()
+                
+            #     main_addr = symbol_factory.BitVecVal(0x0901d12ebE1b195E5AA8748E62Bd7734aE19B51F, 256)
+            #     print("Starting message call initial round transaction to: {}".format(main_addr.value))
+            #     execute_message_call(self, main_addr, func_hashes=func_hashes, initial="init")
+
+            #     for hook in self._stop_sym_trans_hooks:
+            #         hook()
+            # else:
+                # 正常调用轮
             for hook in self._start_sym_trans_hooks:
                 hook()
             print("Starting message call transaction to: {}".format(address.value))
@@ -335,6 +348,7 @@ class LaserEVM:
 
             for hook in self._stop_sym_trans_hooks:
                 hook()
+
             print("Excute %d TX Loop finish!!!\noutput the call_chain"%i)
             for i in range(len(self.open_states)):
                 print("++++++++++++++++++++ In {}th open_state ++++++++++++++++++++".format(i))
@@ -342,7 +356,11 @@ class LaserEVM:
                     TX = self.open_states[i].transaction_sequence[j]
                     print("    -------- output {}th TX --------".format(j))
                     print(TX.call_chain)
-
+                    fallback_record = ['AttackBridge', 'fallback']
+                    count = sum(1 for item in TX.call_chain if item == fallback_record)
+                    print("fallback num is {}".format(count))
+                    if count >= 3:
+                        print("********************** Reentrancy Vulnerability found ***********************") 
 
         self.executed_transactions = True
 
@@ -376,9 +394,11 @@ class LaserEVM:
         for global_state in self.strategy:
             
             if(len(self.work_list)>=1):
-                print("+++++++++++++ change to execute next path +++++++++++++++++")
-            print("=========================")
-            print("current opcode is {}".format(global_state.environment.code.instruction_list[global_state.mstate.pc]))
+                # print("+++++++++++++ change to execute next path +++++++++++++++++")
+                pass
+            # print("=========================")
+            # print("current opcode is {}".format(global_state.environment.code.instruction_list[global_state.mstate.pc]))
+            # print("current tx id is {}".format(global_state.current_transaction.id))
             # print("Print stack states ")
             # print(global_state.mstate.stack)
             # print("print memory")
@@ -404,21 +424,21 @@ class LaserEVM:
             #     continue
 
             if len(self.work_list)!= temp:
-                print("now we have {} global state (path)!".format(len(self.work_list)+1))
+                # print("now we have {} global state (path)!".format(len(self.work_list)+1))
                 temp = len(self.work_list)
 
-            if create and self._check_create_termination():
-                log.debug("Hit create timeout, returning.")
-                print("Hit create timeout, returning.")
-                return final_states + [global_state] if track_gas else None
+            # if create and self._check_create_termination():
+            #     log.debug("Hit create timeout, returning.")
+            #     print("Hit create timeout, returning.")
+            #     return final_states + [global_state] if track_gas else None
 
-            if not create and self._check_execution_termination():
-                log.debug("Hit execution timeout, returning.")
-                print("Hit create timeout, returning.")
-                return final_states + [global_state] if track_gas else None
+            # if not create and self._check_execution_termination():
+            #     log.debug("Hit execution timeout, returning.")
+            #     print("Hit create timeout, returning.")
+            #     return final_states + [global_state] if track_gas else None
             try:
                 new_states, op_code = self.execute_state(global_state)
-                print("op code is {}".format(op_code))
+                # print("op code is {}".format(op_code))
             except NotImplementedError:
                 log.debug("Encountered unimplemented instruction")
                 print("Error Encountered unimplemented instruction")
@@ -427,9 +447,10 @@ class LaserEVM:
                 print("unkown error in svm")
 
             if op_code == "JUMP":
-                print(op_code)
-                print("new_state is {}".format(len(new_states)))
-                print("")
+                # print(op_code)
+                # print("new_state is {}".format(len(new_states)))
+                # print("")
+                pass
             if type(new_states) != list:
                 print("error found")
 
@@ -441,11 +462,11 @@ class LaserEVM:
                     for state in new_states
                     if state.world_state.constraints.is_possible()
                 ]
-                if len(new_states) >1:
-                    print("{} worklist added! now the worklist num is {}".format(len(new_states), len(self.work_list)+len(new_states)))
+                # if len(new_states) >1:
+                    # print("{} worklist added! now the worklist num is {}".format(len(new_states), len(self.work_list)+len(new_states)))
                 
             self.manage_cfg(op_code, new_states)  # TODO: What about op_code is None?
-
+            
             if new_states:
                 self.work_list += new_states
             
@@ -483,7 +504,7 @@ class LaserEVM:
         self, global_state: GlobalState, op_code: str, error_msg: str
     ) -> List[GlobalState]:
         _, return_global_state = global_state.transaction_stack.pop()
-        print(" In handle_vm_exception in svm.py")
+        print(" warning, In handle_vm_exception in svm.py")
         if return_global_state is None:
             # In this case we don't put an unmodified world state in the open_states list Since in the case of an
             #  exceptional halt all changes should be discarded, and this world state would not provide us with a
@@ -518,7 +539,7 @@ class LaserEVM:
         try:
             op_code = instructions[global_state.mstate.pc]["opcode"]
         except IndexError:
-            self._add_world_state(global_state)
+            # self._add_world_state(global_state)
             print("[IndexError] opcode indexError ********************************")
             return [], None
 
@@ -673,7 +694,7 @@ class LaserEVM:
             # 情况一 结束 creation TX
             # from an EOA send a TX to a smartcontract case
             if return_global_state is None:
-                print("END with EOA TX CASE: {} ***********".format(transaction))
+                # print("END with EOA TX CASE: {} ***********".format(transaction))
                 
 
                 temp = end_signal.call_chain.split("-") if end_signal.call_chain!=None else None
@@ -693,7 +714,7 @@ class LaserEVM:
                     not isinstance(transaction, ContractCreationTransaction)
                     or transaction.return_data
                 ) and not end_signal.revert:
-                    print("output EOA case global_state: {}".format(end_signal.global_state.world_state.transaction_sequence[-1].call_chain))
+                    # print("output EOA case global_state: {}".format(end_signal.global_state.world_state.transaction_sequence[-1].call_chain))
                     # 先执行一下当前路径是否存在 issue 这种
                     # check_potential_issues(end_signal.global_state)
                     try:
@@ -701,9 +722,9 @@ class LaserEVM:
                             end_signal.global_state, end_signal.global_state.world_state.constraints
                             )
                     except UnsatError:
-                        print("global_state constraints solve failed!")
+                        # print("global_state constraints solve failed!")
                         return [], None
-                    print("[Good!!] global_state constraints get solved passed!")
+                    # print("[Good!!] global_state constraints get solved passed!")
                     end_signal.global_state.world_state.node = global_state.node
                     # 加到 EVM open_states 里面
                     self._add_world_state(end_signal.global_state)
@@ -713,19 +734,20 @@ class LaserEVM:
                 # 不论是不是 revert 结束的情况 那么 因为状态回滚 返回的新世界状态为 0
                 new_global_states = []
                 if not end_signal.revert:
-                    print("End Transaction with EOA TX:  [%s]".format(global_state.current_transaction))
-                    print("call_chain is {}".format(global_state.world_state.transaction_sequence[-1].call_chain))
+                    print("End Transaction with EOA TX:  {}".format(global_state.current_transaction))
+                    # print("call_chain is {}".format(global_state.world_state.transaction_sequence[-1].call_chain))
+                    pass
                     
                 else:
-                    print("End Transaction with messagecall Revert: [%s]".format(global_state.current_transaction))
-                    print("call_chain is {}".format(global_state.world_state.transaction_sequence[-1].call_chain))
-                    
+                    # print("End Transaction with messagecall Revert: {}".format(global_state.current_transaction))
+                    # print("call_chain is {}".format(global_state.world_state.transaction_sequence[-1].call_chain))
+                    pass                    
                 
             # 情况二 结束 MessageCall TX
             # from an smartcontract send a TX to a smartcontract case, end internal messageTX
             # 这里 应该传回 annotations 
             else:
-                print("END WITH Internal MessageCALLTX: {} **************************".format(transaction))
+                # print("END WITH Internal MessageCALLTX: {} **************************".format(transaction))
                 
                 # First execute the post hook for the transaction ending instruction
                 self._execute_post_hook(op_code, [end_signal.global_state])
@@ -781,12 +803,13 @@ class LaserEVM:
                     # 更新 world_state, 尤其是 constraint
                     return_global_state.update_world_state(end_signal.global_state)
                     print("End Transaction with MessageTX Normally: {}".format(end_signal.global_state.current_transaction))
-                    print("call_chain is {}".format(end_signal.global_state.world_state.transaction_sequence[-1].call_chain))
+                    # print("call_chain is {}".format(end_signal.global_state.world_state.transaction_sequence[-1].call_chain))
 
                 # 如果是 revert 要不要给 revert的那个 constraint 一个 Not 公式 然后 还回去。
                 else:
-                    print("End Transaction with Revert: {}".format(end_signal.global_state.current_transaction))
-                    print("call_chain is {}\n".format(end_signal.global_state.world_state.transaction_sequence[-1].call_chain))
+                    pass
+                    # print("End Transaction with Revert: {}".format(end_signal.global_state.current_transaction))
+                    # print("call_chain is {}\n".format(end_signal.global_state.world_state.transaction_sequence[-1].call_chain))
 
                 revert_changes = end_signal.end_type
                 
@@ -834,7 +857,7 @@ class LaserEVM:
         if return_global_state.last_return_data is None:
             print("warning! last_return_data.mem_out_off and size may be none")
             return_global_state.last_return_data = return_data
-            print("assign return data {}".format(return_data))
+            # print("assign return data {}".format(return_data))
 
         elif return_data is None:
             print("warning, tx.returndata is None")

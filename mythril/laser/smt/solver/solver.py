@@ -62,6 +62,7 @@ class BaseSolver(Generic[T]):
                 # Some requests crash the solver
                 evaluate = z3.unknown
                 log.info(f"Encountered Z3 exception when checking the constraints: {e}")
+                print(f"Encountered Z3 exception when checking the constraints: {e}")
         sys.stdout = old_stdout
         return evaluate
 

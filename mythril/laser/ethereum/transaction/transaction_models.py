@@ -126,14 +126,14 @@ class BaseTransaction:
         
         if call_data is None and init_call_data:
             # self.call_data = SymbolicCalldata(self.id)  # type: BaseCalldata
-            print("create init calldata")
+            # print("create init calldata")
             self.call_data = MixedSymbolicCalldata(tx_id=self.id)
         else:
-            print("get calldata ")
+            # print("get calldata ")
             if isinstance(call_data, BaseCalldata):
                 self.call_data = call_data
             else:
-                print("create init calldata")
+                # print("create init calldata")
                 self.call_data = MixedSymbolicCalldata(self.id)
             
         self.call_value = (

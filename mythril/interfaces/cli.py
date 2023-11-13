@@ -98,7 +98,7 @@ def exit_with_error(format_, message):
         ]
         print(json.dumps(result))
     print_time()
-    sys.exit()
+    sys.exit(0)
 
 
 def get_runtime_input_parser() -> ArgumentParser:
@@ -738,8 +738,8 @@ def load_code(disassembler: MythrilDisassembler, args: Namespace, index: Optiona
         address, _ = disassembler.load_from_bytecode(bytecode, args.bin_runtime)
         # 设置 signature
         source_file_path = args.multi_contract[index].name[:-3]+'sol'
-        abipath = generate_signature(source_file_path)
-        signature = extract_signature(abipath)
+        signature = generate_signature(source_file_path)
+        # signature = extract_signature(abipath)
         print("find signatures {}".format(signature))
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
@@ -922,7 +922,7 @@ def execute_command(
                     exit(1)
                 else:
                     print_time()
-                    exit(0)
+                    exit(1)
             except DetectorNotFoundError as e:
                 exit_with_error(args.outform, format(e))
             except CriticalError as e:
@@ -942,7 +942,7 @@ def contract_hash_to_address(args: Namespace):
     """
     print(MythrilDisassembler.hash_for_function_signature(args.func_name))
     print_time()
-    sys.exit()
+    sys.exit(1)
 
 
 def parse_args_and_execute(parser: ArgumentParser, args: Namespace) -> None:
@@ -963,12 +963,12 @@ def parse_args_and_execute(parser: ArgumentParser, args: Namespace) -> None:
         sys.argv.remove("--epic")
         os.system(" ".join(sys.argv) + " | python3 " + path + "/epic.py")
         print_time()
-        sys.exit()
+        sys.exit(1)
 
     if args.command not in COMMAND_LIST or args.command is None:
         parser.print_help()
         print_time()
-        sys.exit()
+        sys.exit(1)
 
     if args.command == VERSION_COMMAND:
         if args.outform == "json":
@@ -976,7 +976,7 @@ def parse_args_and_execute(parser: ArgumentParser, args: Namespace) -> None:
         else:
             print("Mythril version {}".format(VERSION))
         print_time()
-        sys.exit()
+        sys.exit(1)
 
     if args.command == LIST_DETECTORS_COMMAND:
         modules = []
@@ -988,12 +988,12 @@ def parse_args_and_execute(parser: ArgumentParser, args: Namespace) -> None:
             for module_data in modules:
                 print("{}: {}".format(module_data["classname"], module_data["title"]))
         print_time()
-        sys.exit()
+        sys.exit(1)
 
     if args.command == HELP_COMMAND:
         parser.print_help()
         print_time()
-        sys.exit()
+        sys.exit(1)
 
     if args.command in CONCOLIC_LIST:
         _ = MythrilConfig.init_mythril_dir()
@@ -1004,7 +1004,7 @@ def parse_args_and_execute(parser: ArgumentParser, args: Namespace) -> None:
         )
         json.dump(output_list, sys.stdout, indent=4)
         print_time()
-        sys.exit()
+        sys.exit(1)
 
     # Parse cmdline args
     validate_args(args)

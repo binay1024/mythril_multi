@@ -202,7 +202,7 @@ class WorldState:
             addr_bitvec = addr
 
         if addr_bitvec.value in self.accounts:
-            print("get the account from address")
+            # print("get the account from address")
             return self.accounts[addr_bitvec.value]
         
         if dynamic_loader is None:

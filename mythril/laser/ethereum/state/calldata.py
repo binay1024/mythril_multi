@@ -73,10 +73,10 @@ class BaseCalldata:
         if self.size.value is not None:
             max = self.size
         elif self.read_concrete_size() is not None:
-            print("warning, use read concrete size {}".format(self.read_concrete_size()))
+            # print("warning, use read concrete size {}".format(self.read_concrete_size()))
             max = symbol_factory.BitVecVal(self.read_concrete_size(), 256)
         else:
-            print("warning, use maxcalldata 1024 as calldata")
+            # print("warning, use maxcalldata 1024 as calldata")
             max = symbol_factory.BitVecVal(MAXCALLDATA, 256)
 
         if isinstance(item, slice):
@@ -87,7 +87,7 @@ class BaseCalldata:
 
             if isinstance(stop,int):
                 stop = symbol_factory.BitVecVal(stop,256)
-                print("stop is {}".format(stop))
+                # print("stop is {}".format(stop))
 
             try:
                 current_index = (
@@ -97,12 +97,17 @@ class BaseCalldata:
                 )
                 parts = []
                 counter = 0
+                distance = simplify(stop - start)
                 while True:
                     if counter == max.value and stop.value is None:
-                        print("[Log] index get to max")
+                        # print("[Log] index get to max")
                         break
+
+                    if distance.value is not None and counter == distance.value:
+                        break
+
                     s = Solver()
-                    s.set_timeout(1000)
+                    s.set_timeout(10000)
                     s.add(current_index < stop)
                     
                     if isinstance(stop,BitVec) and stop.value == None:
@@ -114,11 +119,11 @@ class BaseCalldata:
                     result = s.check()
                     # 这是 退出条件 当 index == stop 俺么 check 就不满足了
                     if result in (unsat, unknown):
-                        print("[log] unsatis the constraint stop loop")
+                        # print("[log] unsatis the constraint stop loop")
                         break
 
                     element = self._load(current_index)
-                    if not isinstance(element, Expression):
+                    if isinstance(element, int):
                         element = symbol_factory.BitVecVal(element, 8)
 
                     parts.append(element)
@@ -141,15 +146,15 @@ class BaseCalldata:
 
         :param item:
         """
-        print("BaseCalldata _load")
+        # print("BaseCalldata _load")
         raise NotImplementedError()
     
     def assign_concrete_size(self, size:int):
-        print("BaseCalldata assign_concrete_size")
+        # print("BaseCalldata assign_concrete_size")
         raise NotImplementedError()
     
     def read_concrete_size(self):
-        print("BaseCalldata read_concrete_size")
+        # print("BaseCalldata read_concrete_size")
         raise NotImplementedError()
 
     @property
@@ -158,7 +163,7 @@ class BaseCalldata:
 
         :return: unnormalized call data size
         """
-        print("BaseCalldata size")
+        # print("BaseCalldata size")
         raise NotImplementedError()
 
     def concrete(self, model: Model) -> list:
@@ -166,10 +171,10 @@ class BaseCalldata:
 
         :param model:
         """
-        print("BaseCalldata concrete")
+        # print("BaseCalldata concrete")
         raise NotImplementedError
     def update_size(self, newsize):
-        print("BaseCalldata update_size")
+        # print("BaseCalldata update_size")
         raise NotImplementedError
 
 
@@ -386,21 +391,21 @@ class MixedSymbolicCalldata(BaseCalldata):
         :_size: 我们让他 是一个 int 类型的整数
         """
         self.concrete_size = None
-        print("#### init create calldata_{}".format(tx_id))
+        # print("#### init create calldata_{}".format(tx_id))
         if type(total_length) == int:
-            print("calldata 1")
+            # print("calldata 1")
             self._size = symbol_factory.BitVecVal(total_length, 256)
             self._calldata = Array("{}_calldata".format(tx_id), 256, 8)
             self.concrete_size = total_length
             self.type = 1
         elif type(total_length) == BitVec:
-            print("calldata 2")
+            # print("calldata 2")
             self._size = total_length
             self._calldata = Array("{}_calldata".format(tx_id), 256, 8)
             self.type = 2
         else:
-            print("calldata 3")
-            print("warning!, mixedSymbolicCalldata size is symbolic")
+            # print("calldata 3")
+            # print("warning!, mixedSymbolicCalldata size is symbolic")
             self._size = symbol_factory.BitVecSym(str(tx_id) + "_calldatasize", 256)
             self._calldata = Array("{}_calldata".format(tx_id), 256, 8)
             self.type = 3
@@ -408,7 +413,7 @@ class MixedSymbolicCalldata(BaseCalldata):
         # 这里 期望的 calldata是 byte单位的数字 组成的 list
         # 或者由 公式元素 组成的 list
         if calldata != None:
-            print("calldata 4")
+            # print("calldata 4")
             for i, element in enumerate(calldata, 0):
                 element = (
                     symbol_factory.BitVecVal(element, 8)
@@ -422,7 +427,7 @@ class MixedSymbolicCalldata(BaseCalldata):
         super().__init__(tx_id)
     
     def update_size(self, newsize):
-        print("update calldata size to {}".format(newsize))
+        # print("update calldata size to {}".format(newsize))
         self._size = newsize
         if isinstance(newsize, int):
             self.type = 1
@@ -513,7 +518,7 @@ class MixedSymbolicCalldata(BaseCalldata):
         else:
             max_ = self._size
         # print("max and index is {}, {}".format(max_, index.value))
-        if (index.value > max_):
+        if index.value is not None and (index.value > max_):
             print("warning! index biger than max bound in calldata load")
 
         

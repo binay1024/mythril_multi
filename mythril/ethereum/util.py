@@ -211,9 +211,9 @@ def extract_version(file: typing.Optional[str]):
 
     for version in all_versions:
         if version in version_constraint:
-            if "0.5.17" in str(version):
-                # Solidity 0.5.17 Does not compile in a lot of cases.
-                continue
+            # if "0.5.17" in str(version):
+            print("warning, Solidity 0.5.17 Does not compile in a lot of cases.")
+            #     continue
             return str(version)
 
     else:

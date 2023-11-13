@@ -108,7 +108,7 @@ def generate_function_constraints(
 
 
 def execute_message_call(
-    laser_evm, callee_address: BitVec, func_hashes: List[List[int]] = None
+    laser_evm, callee_address: BitVec, func_hashes: List[List[int]] = None, initial=None,
 ) -> None:
     """Executes a message call transaction from all open states.
 
@@ -132,11 +132,22 @@ def execute_message_call(
         external_sender = symbol_factory.BitVecSym(
             "sender_{}".format(next_transaction_id), 256
         )
-        
-        # calldata = SymbolicCalldata(next_transaction_id)
+        # if initial is not None:
+        #     fallback = "fallback()"
+        #     init_calldata, length = build_calldata(fallback)
+        #     print("init calldata is {} and length is {}".format(init_calldata, length))
+        #     mixed_calldata = build_mixed_symbolic_data_for_msg(id=next_transaction_id, init_calldata=init_calldata, length=length)
+        #     call_value_ = symbol_factory.BitVecVal(
+        #         10000000000000000, 256
+        #     )
+        # else:
+            # calldata = SymbolicCalldata(next_transaction_id)
         attackBridge = "attack(uint256,bytes)"
         init_calldata, length = build_calldata(attackBridge)
         mixed_calldata = build_mixed_symbolic_data_for_msg(id=next_transaction_id, init_calldata=init_calldata, length=length)
+        call_value_ = symbol_factory.BitVecSym(
+            "call_value{}".format(next_transaction_id), 256
+        )
         # 因为 在分支执行的时候我不希望两个 world_state 会互相影响 以及和 tx_sequence 里面存好的 world_state 互相影响
         # 如果说 world_state1, world_state2 -> execute_message_call 
         # 那么 在 执行 world_state1的路径上执行完毕之后 会在 open_state 里面放入 world_state1 下一次会接着执行, 而我们需要在 TX 里面放下的也是他 那么会最后影响 求值
@@ -165,9 +176,7 @@ def execute_message_call(
             # call_data=calldata,
             call_data = mixed_calldata,
             code=acc_code,
-            call_value=symbol_factory.BitVecSym(
-                "call_value{}".format(next_transaction_id), 256
-            ),
+            call_value=call_value_,
             txtype = "EOA_MessageCall",
         )
         constraints = (
@@ -200,10 +209,10 @@ def execute_sub_contract_creation(
     for i in range(len(sub_contracts)):
         open_states = [world_state]
         contract_sig_ = sig[i]
-        print("origin sig is {}".format(contract_sig_))
+        # print("origin sig is {}".format(contract_sig_))
         contract_sig = contract_sig_.get("constructor", None)
-        print("sig is {}".format(contract_sig))
-        print("print sig in creation main contract {}".format(contract_sig))
+        # print("sig is {}".format(contract_sig))
+        # print("print sig in creation main contract {}".format(contract_sig))
 
         for open_world_state in open_states:
             del laser_evm.open_states[:]
@@ -295,8 +304,8 @@ def execute_contract_creation(
     open_states = [world_state]
     del laser_evm.open_states[:]
     contract_sig = sig.get("constructor", None)
-    print("sig is {}".format(sig))
-    print("print sig in creation main contract {}".format(sig))
+    # print("sig is {}".format(sig))
+    # print("print sig in creation main contract {}".format(sig))
 
     new_account = None
     for open_world_state in open_states:

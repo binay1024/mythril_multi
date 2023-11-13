@@ -94,11 +94,11 @@ class Memory:
                     newlist.append(b)
                 else:
                     newlist.append(symbol_factory.BitVecVal(b, 8))
-            print("new list is {}".format(newlist))
+            # print("new list is {}".format(newlist))
             exp = Concat(newlist)
-            print("new exp is {}".format(exp))
+            # print("new exp is {}".format(exp))
             result = simplify(exp)
-            print("simplifyied exp is {}".format(result))
+            # print("simplifyied exp is {}".format(result))
             assert result.size() == 256
             return result
 

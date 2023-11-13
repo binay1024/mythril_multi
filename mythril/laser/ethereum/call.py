@@ -218,10 +218,10 @@ def get_call_data(
     )
 
     # 320 的 意义是 1个 0x20 变量大小是 32 byte, 如果 能放10个左右的变量 大概就是 320个 byte
-    print("print origin memory size {}".format(memory_size))
+    # print("print origin memory size {}".format(memory_size))
     if memory_size.symbolic:
         memory_size = SYMBOLIC_CALLDATA_SIZE
-        print("memory size is symbolic, so set as {}".format(memory_size))
+        # print("memory size is symbolic, so set as {}".format(memory_size))
         memory_size = symbol_factory.BitVecVal(memory_size, 256)
     
     calldata = {}
@@ -229,7 +229,7 @@ def get_call_data(
         calldata_from_mem = state.memory[
             util.get_concrete_int(memory_start) : util.get_concrete_int( memory_start + memory_size  )
         ]
-        print("[get_call_data] get concolic memory offset and size")
+        # print("[get_call_data] get concolic memory offset and size")
         calldata["calldata"] = calldata_from_mem
         calldata["total_length"] = memory_size.value
         calldata["symbol"] = False
@@ -259,7 +259,7 @@ def native_call(
     ):
         return None
     if hevm_cheat_code.is_cheat_address(callee_address):
-        print("triger cheat code")
+        # print("triger cheat code")
         return None
         # log.info("HEVM cheat code address triggered")
         # handle_cheat_codes(

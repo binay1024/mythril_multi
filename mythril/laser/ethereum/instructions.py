@@ -96,7 +96,7 @@ def transfer_ether(
     global_state.world_state.constraints.append(
         UGE(global_state.world_state.balances[sender], value)
     )
-    print("balances is {}".format(global_state.world_state.balances[sender].value))
+    # print("balances is {}".format(global_state.world_state.balances[sender].value))
     global_state.world_state.balances[receiver] += value
     global_state.world_state.balances[sender] -= value
 
@@ -161,7 +161,7 @@ class StateTransition(object):
         if isinstance(global_state.current_transaction.gas_limit, BitVec):
             value = global_state.current_transaction.gas_limit.value
             if value is None:
-                print("[check_gas_usage_limit]value is None")
+                # print("[check_gas_usage_limit]value is None")
                 return
             global_state.current_transaction.gas_limit = value
 
@@ -255,7 +255,7 @@ class Instruction:
         """
         # Generalize some ops
         log.debug("Evaluating %s at %i", self.op_code, global_state.mstate.pc)
-        print("Evaluating %s at %i", self.op_code, global_state.mstate.pc)
+        # print("Evaluating %s at %i", self.op_code, global_state.mstate.pc)
 
         op = self.op_code.lower()
         if self.op_code.startswith("PUSH"):
@@ -845,7 +845,7 @@ class Instruction:
         try:
             size = util.get_concrete_int(size)  # type: Union[int, BitVec]
             if size == 0:
-                print("[log] calldatacopy size is zero, return")
+                # print("[log] calldatacopy size is zero, return")
                 return [global_state]
         except TypeError:
             pass
@@ -861,14 +861,14 @@ class Instruction:
             dstart = util.get_concrete_int(dstart)  # type: Union[int, BitVec]
         except TypeError:
             log.debug("Unsupported symbolic calldata offset in CALLDATACOPY")
-            print("error Unsupported symbolic calldata offset in CALLDATACOPY")
+            # print("error Unsupported symbolic calldata offset in CALLDATACOPY")
             dstart = simplify(dstart)
 
         try:
             size = util.get_concrete_int(size)  # type: Union[int, BitVec]
         except TypeError:
             log.debug("Unsupported symbolic size in CALLDATACOPY")
-            print("error Unsupported symbolic size in CALLDATACOPY, use 320 (0x140?)")
+            # print("error Unsupported symbolic size in CALLDATACOPY, use 320 (0x140?)")
             size = SYMBOLIC_CALLDATA_SIZE  # The excess size will get overwritten
 
         size = cast(int, size)
@@ -1048,17 +1048,17 @@ class Instruction:
                     no_of_bytes += environment.code.func_to_parasize['constructor']
                     calldata_size = symbol_factory.BitVecVal(environment.code.func_to_parasize['constructor'], 256)
                     calldata.update_size(calldata_size)
-                    print("codesize_ case2")
+                    # print("codesize_ case2")
                 else:
-                    print("warning!, can not find constructor para size, defaulty set 0x200")
-                    print("codesize_ case3")
+                    # print("warning!, can not find constructor para size, defaulty set 0x200")
+                    # print("codesize_ case3")
                     no_of_bytes += 0x200  # space for 16 32-byte arguments 320
                     global_state.world_state.constraints.append(
                         global_state.environment.calldata.size <= no_of_bytes
                     )
         else:
             no_of_bytes = len(disassembly.bytecode) // 2
-            print("codesize_ case4")
+            # print("codesize_ case4")
 
         state.stack.append(no_of_bytes)
         return [global_state]
@@ -1277,7 +1277,7 @@ class Instruction:
             concrete_size = helper.get_concrete_int(size)
             # concrete_memory_offset = helper.get_concrete_int(memory_offset)
             if concrete_size == 0:
-                print("[log] codecopy size is 0, return")
+                # print("[log] codecopy size is 0, return")
                 return [global_state]
         except TypeError:
             # except both attribute error and Exception
@@ -1431,7 +1431,7 @@ class Instruction:
         except TypeError:
             log.debug("Unsupported symbolic memory offset in RETURNDATACOPY")
             print("Warning! Unsupported symbolic memory offset in RETURNDATACOPY " )
-            print(memory_offset)
+            # print(memory_offset)
             return [global_state]
 
         try:
@@ -1439,7 +1439,7 @@ class Instruction:
         except TypeError:
             log.debug("Unsupported symbolic return offset in RETURNDATACOPY")
             print(" Warning! Unsupported symbolic return offset in RETURNDATACOPY")
-            print(return_offset)
+            # print(return_offset)
             return [global_state]
 
         try:
@@ -1447,7 +1447,7 @@ class Instruction:
         except TypeError:
             log.debug("Unsupported symbolic max_length offset in RETURNDATACOPY")
             print("Warning! Unsupported symbolic max_length offset in RETURNDATACOPY")
-            print(size)
+            # print(size)
             return [global_state]
 
         if global_state.last_return_data is None or global_state.last_return_data.return_data is None or concrete_size == 0:
@@ -1646,7 +1646,7 @@ class Instruction:
             print("Invalid jump argument (symbolic address)")
             raise InvalidJumpDestination("Invalid jump argument (symbolic address)")
         except IndexError:
-            print("Invalid jump index (symbolic address)")
+            print("error Invalid jump index (symbolic address)")
             raise StackUnderflowException()
         except:
             print("unkown error")
@@ -1665,7 +1665,7 @@ class Instruction:
             print("unkown error jump p2")
 
         if op_code != "JUMPDEST":
-            print("error Invalid jump argument (symbolic address)")
+            print("Invalid jump argument (symbolic address)")
             raise InvalidJumpDestination(
                 "Skipping JUMP to invalid destination (not JUMPDEST): " + str(jump_addr)
             )
@@ -1733,7 +1733,7 @@ class Instruction:
         # neg_constraints = global_state.world_state.constraints + [negated]
         # if negated_cond and neg_constraints.is_possible():
         if negated_cond:
-            print("false path satisify")
+            # print("false path satisify")
             # States have to be deep copied during a fork as summaries assume independence across states.
             # 分叉的时候会 深度拷贝 但是 TX_stack 却又 浅拷贝 ! 为什么呢? 
             new_state = deepcopy(global_state, memo=None)
@@ -1752,11 +1752,11 @@ class Instruction:
             states.append(new_state)
         else:
             log.debug("Pruned unreachable states. in false case")
-            print("unreached path")
-            print(negated)
-            print("------")
+            # print("unreached path")
+            # print(negated)
+            # print("------")
             # print(neg_constraints)
-            print("--- end -----")
+            # print("--- end -----")
 
         # 根据跳转地址(从栈里面读出来的) 得到 要跳转的pc 地址
         index = util.get_instruction_index(disassembly.instruction_list, jump_addr)
@@ -1772,8 +1772,8 @@ class Instruction:
             # post_constraints = global_state.world_state.constraints + [condi]
             # if positive_cond and post_constraints.is_possible():
             if positive_cond:
-                print("true case satisify")
-                print("Now in function: %s in contract: %s"%(global_state.environment.active_function_name, global_state.environment.active_account.contract_name))
+                # print("true case satisify")
+                # print("Now in function: %s in contract: %s"%(global_state.environment.active_function_name, global_state.environment.active_account.contract_name))
                 # 一个分叉深拷贝, 一个 接着走
                 new_state2 = deepcopy(global_state, memo=None)
                 
@@ -1788,8 +1788,8 @@ class Instruction:
                 states.append(new_state2)
 
             else:
-                print("Pruned unreachable states. in true case")
-                print(condi)
+                # print("Pruned unreachable states. in true case")
+                # print(condi)
                 log.debug("Pruned unreachable states.")
         return states
 
@@ -1903,7 +1903,7 @@ class Instruction:
         if isinstance(size, BitVec):
             # Other size restriction checks handle this
             if size.symbolic:
-                print("[_create_transaction_helper] warning, calldatasize is symbolic")
+                # print("[_create_transaction_helper] warning, calldatasize is symbolic")
                 size = 10**5
             else:
                 size = size.value
@@ -1922,7 +1922,7 @@ class Instruction:
         if len(code_raw) < 1:
             global_state.mstate.stack.append(1)
             log.debug("No code found for trying to execute a create type instruction.")
-            print("warning, No code found for trying to execute a create type instruction.")
+            # print("warning, No code found for trying to execute a create type instruction.")
             return [global_state]
 
         code_str = bytes.hex(bytes(code_raw))
@@ -2122,19 +2122,22 @@ class Instruction:
             return_data = state.memory[
                 util.get_concrete_int(offset) : util.get_concrete_int(offset + length)
             ]
-            
-            # 如果 length是 0 就返回 0 0 revert
-            if util.get_concrete_int(length) == 0:
-                length = symbol_factory.BitVecVal(0, 256)         
-                return_data = [length]
 
         except TypeError:
             log.debug("Return with symbolic length or offset. Not supported")
             print("[revert] Error: Return with symbolic length or offset. Not supported")
+        
+        # 如果 这个 offset和 length 可以解开成 int ， 那么就 覆盖之前的 符号类型的 return data 否则就用 符号类型的 return data 
+        try:
+            # 如果 length是 0 就返回 0 0 revert
+            if util.get_concrete_int(length) == 0:
+                length = symbol_factory.BitVecVal(0, 256)         
+                return_data = [length]
+        except TypeError:
+            log.debug("Return with symbolic length or offset. Not supported")
+            print("[revert] Error: Return with symbolic length. Not supported")
 
         
-        
-
         global_state.current_transaction.end(
             global_state, return_data=ReturnData(return_data = return_data, return_data_size = length, ), end_type = "REVERT",
         )
@@ -2158,7 +2161,7 @@ class Instruction:
 
         :param global_state:
         """
-        print("Error, Invalid opcode ***************************")
+        # print("Error, Invalid opcode ***************************")
         # 按照 revert 取执行吗？
         # raise InvalidInstruction
         zero = symbol_factory.BitVecVal(0, 256)
@@ -2220,7 +2223,7 @@ class Instruction:
             )
         # 其实这个在 Transaction_End的时候会做， 然后 有些 返回的情况不会raise Transaction_end的时候 在这里处理。
         if global_state.last_return_data is None:
-            print("add return Data to global_state")
+            # print("add return Data to global_state")
             global_state.last_return_data = ReturnData(
                 return_data=return_data, return_data_size=return_data_size
             )
@@ -2235,7 +2238,7 @@ class Instruction:
         :param global_state:
         :return:
         """
-        print("=============Call Instruction!! print stack states=============")
+        # print("=============Call Instruction!! print stack states=============")
         # print(global_state.mstate.stack)
         instr = global_state.get_current_instruction()
         environment = global_state.environment
@@ -2270,14 +2273,15 @@ class Instruction:
             
             # 情况一: callee account 以符号的形式存在 并且 不含有代码, 
             # if callee_account is not None and callee_account.code.bytecode == "" and global_state.environment.active_account.address.value != int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16):
-            Tx_stack = global_state.transaction_stack
-            temp = []
-            for (tx, global_state_) in Tx_stack:
-                if global_state_ is None:
-                    continue
-                temp.append(global_state_.environment.active_account.contract_name)
+            # Tx_stack = global_state.transaction_stack
+            # temp = []
+            # for (tx, global_state_) in Tx_stack:
+            #     if global_state_ is None:
+            #         continue
+            #     temp.append(global_state_.environment.active_account.contract_name)
+                          
 
-            if (callee_account is not None and callee_account.code.bytecode == "") or (temp.count("MAIN") > 6):
+            if (callee_account is not None and callee_account.code.bytecode == ""):
                 print("------------------call to EOA-------------------------------")
                 log.debug("The call is related to ether transfer between accounts")
                 sender = environment.active_account.address
@@ -2328,20 +2332,20 @@ class Instruction:
                     # print(sc.contract_name)
                     if sc.contract_name != "MAIN":
                         continue
-                    print("catch main account{}".format(addr))
+                    # print("catch main account{}".format(addr))
                     main_addr = addr
                     callee_account_ = sc
 
                 if main_addr is None:
                     print("error cannot catch MAIN")
-                    exit(0)
+                    exit(1)
                 if type(main_addr) is str:
                     main_addr = int(main_addr, 16)
                 elif type(main_addr) is int:
                     pass
                 else:
                     print("error main addr type error ")
-                    exit(0)            
+                    exit(1)            
     
                 
                 sender = environment.active_account.address
@@ -2372,7 +2376,7 @@ class Instruction:
                 transaction["callee_account"]=callee_account_
                 transaction["txtype"] = "Internal_MessageCall"
                 transaction["fork"]=False
-                print("callee_address is {}".format(callee_address))
+                # print("callee_address is {}".format(callee_address))
                 newconstraints.append(callee_address == callee_account_.address)
                 transactions.append(transaction)
 

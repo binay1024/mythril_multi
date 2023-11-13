@@ -1,5 +1,6 @@
 import logging
 import re
+import os
 from copy import copy, deepcopy
 from typing import cast, Callable, List, Union, Tuple
 from mythril.laser.ethereum.state.calldata import MixedSymbolicCalldata
@@ -30,8 +31,9 @@ from mythril.laser.ethereum.state.calldata import MixedSymbolicCalldata
 # from mythril.laser.ethereum.state.account import Account
 # from mythril.laser.ethereum.state.world_state import WorldState
 
-
-
+from mythril.ethereum.util import extract_version 
+import platform
+import solcx
 import json 
 import subprocess
 
@@ -112,7 +114,7 @@ def build_calldata(sig_:str):
     static_para_list = []
     dynamic_para_list = []
     if pure_paras == ['']:
-        print("function para is empty {}".format(sig_))
+        # print("function para is empty {}".format(sig_))
         return [], 0
     # 这个是处理每一个参数的东西
     for para in pure_paras:
@@ -120,7 +122,7 @@ def build_calldata(sig_:str):
         p.type = TYPE_LIST.get(para, "unknown")
         p.size = TYPE_SIZE.get(para, 0)
         if p.size == 0:
-            print("warning, data size is 0 in build_calldata {}".format(para))
+            # print("warning, data size is 0 in build_calldata {}".format(para))
             continue
         if p.type == "static":
             p.length = 0
@@ -153,7 +155,7 @@ def build_calldata(sig_:str):
         calldata_.append(para.offset)
         basicOffset += para.size
 
-    print("basicoffset is {}".format(basicOffset))
+    # print("basicoffset is {}".format(basicOffset))
 
     
     # 然后按照para顺序 添加每一个 para 长度和数据
@@ -198,13 +200,16 @@ def build_calldata_test():
 def build_mixed_symbolic_data(init_calldata, id, length):
     total_size = length
     calldata = MixedSymbolicCalldata(tx_id=id, total_length=total_size)
+    # print("size is {}".format(calldata.size))
+    if init_calldata is None:
+        return calldata
     for (index, data) in enumerate(init_calldata,0):
         index = index * 32
         if type(data) == str:
             continue
         # data = f"{data:064x}"
         byte_list = [(data >> (8 *i)) & 0xff for i in range(31, -1, -1)]
-        print("Data is {}".format(byte_list))
+        # print("Data is {}".format(byte_list))
         for i in range(index, index+32):
             ind = i - index
             calldata.assign_value_at_index(index= i, value=byte_list[ind])
@@ -216,7 +221,9 @@ def build_mixed_symbolic_data_for_msg(init_calldata, id, length):
     init_calldata = ["sig"] + init_calldata
 
     calldata = MixedSymbolicCalldata(tx_id=id, total_length=total_size)
-    print("size is {}".format(calldata.size))
+    # print("size is {}".format(calldata.size))
+    if init_calldata is None:
+        return calldata
     temp = 0
     for (index, data) in enumerate(init_calldata, 0):
 
@@ -236,7 +243,7 @@ def build_mixed_symbolic_data_for_msg(init_calldata, id, length):
         # data = f"{data:064x}"
         byte_list = [(data >> (8 *i)) & 0xff for i in range(31, -1, -1)]
 
-        print("Data is {}".format(byte_list))
+        # print("Data is {}".format(byte_list))
         for i in range(index, index+32):
             ind = i - index
             calldata.assign_value_at_index(index= i, value=byte_list[ind])
@@ -246,32 +253,81 @@ def mixed_calldata_init(initdata, id, length):
     calldata = MixedSymbolicCalldata(tx_id=id, calldata=initdata, total_length=length)
     return calldata
 
+def get_version(file: str) -> str:
+    file_data = None
+    with open(file) as f:
+        file_data = f.read()
+
+    version = extract_version(file_data)
+    if version is None:
+        return os.environ.get("SOLC") or "solc"
+    
+    return version
+
+
 def generate_signature(filepath:str):
     # solc --abi ./mythril/solidity_examples/ccs2023/AttackBridge/AttackBridgeV10.sol -o ./ast.json/AttackBridgeV10.json
+    version = get_version(filepath)
     outpath = "/".join(filepath.split('/')[:-1])
     contractName = filepath.split('/')[-2]
     outfilepath = outpath+'/'+contractName+'.abi'
-    print("outfilepath is {}".format(outfilepath))
-    cmd = [
-        'solc', 
-        '--abi', 
-        filepath,
-        '-o',
-        outpath
-    ]
+    # print("outfilepath is {}".format(outfilepath))
 
-    result = subprocess.run(
-        cmd,
-        text = True,
-        stdout = subprocess.PIPE,
-        stderr = subprocess.PIPE
-        )
+    if platform.system() == "Darwin":
+        solcx.import_installed_solc()
+    solcx.install_solc("v" + version)
+    solcx.set_solc_version("v" + version)
+    solc_abi = solcx.compile_files([filepath],output_values=["abi"], solc_version=version)
+    # print(solc_abi)
+    signatures = {}
+    
+    for contract, abi in solc_abi.items():
+        # function level
+        for function in abi["abi"]:
+            if "inputs" not in function:
+                continue
 
-    if result.returncode == 0:
-        print("Signature get successful.")
-    else:
-        print("Signature get failed.")
-    return outfilepath
+            paras = [ para["type"] for para in function["inputs"] ]
+
+            if function['type'] == 'function':
+                signature = function["name"] + "(" + ",".join(paras) + ")"
+                signatures[function["name"]] = signature
+            else:# 不是function 就是 construc or event 
+                signature = function["type"] + "(" + ",".join(paras) + ")"
+                # coma_new = len(signature.split(','))
+                
+                if function["type"] in signatures and signature == signatures[function["type"]]:
+                    continue
+                elif function["type"] in signatures:
+                    signatures[signature] = signature
+                else:
+                    signatures[function["type"]] = signature
+
+    # print("print sig")
+    # print(signatures)
+    # exit(0)
+    return signatures    
+
+    # cmd = [
+    #     'solc', 
+    #     '--abi', 
+    #     filepath,
+    #     '-o',
+    #     outpath
+    # ]
+
+    # result = subprocess.run(
+    #     cmd,
+    #     text = True,
+    #     stdout = subprocess.PIPE,
+    #     stderr = subprocess.PIPE
+    #     )
+
+    # if result.returncode == 0:
+    #     print("Signature get successful.")
+    # else:
+    #     print("Signature get failed.")
+    # return outfilepath
 
 def extract_signature(ast_json_path):
     

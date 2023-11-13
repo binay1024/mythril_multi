@@ -16,5 +16,5 @@ def print_time():
  
 if __name__ == "__main__":
     mythril.interfaces.cli.main()
-    exit()
+    exit(1)
 

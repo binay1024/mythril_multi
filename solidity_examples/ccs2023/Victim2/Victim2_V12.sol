@@ -62,6 +62,7 @@ contract Victim2{
         //     revert();
         
         bool sucess = rewardAccount.payOut(msg.sender, reward);
+
         if(!sucess){
             revert();
         }
@@ -92,9 +93,11 @@ contract Victim2_support{
         }
 
         (bool sucess, bytes memory data) = address(_recipient).call.value(_amount)("");
+        
         if (!sucess){
             revert();
         }
+
         return sucess;
     }
 

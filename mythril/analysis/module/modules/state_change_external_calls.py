@@ -92,7 +92,7 @@ class StateChangeCallsAnnotation(StateAnnotation):
                 global_state, constraints + global_state.world_state.constraints
             )
         except UnsatError:
-            print("State_change_call_get_issue constraint unsatisifiy")
+            print("error State_change_call_get_issue constraint unsatisifiy")
             return None
 
         severity = "Medium" if self.user_defined_address else "Low"
