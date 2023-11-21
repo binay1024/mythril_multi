@@ -3,7 +3,7 @@ import glob
 
 # base_dir
 # data_dir = "/opt/test"
-data_dir = "/opt/paper_byte&sol"
+data_dir = "/opt/cross-reentrancy"
 
 # 遍历目录中 .rt.hex 文件
 

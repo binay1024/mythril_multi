@@ -97,6 +97,7 @@ def transfer_ether(
         UGE(global_state.world_state.balances[sender], value)
     )
     # print("balances is {}".format(global_state.world_state.balances[sender].value))
+    print("call transfer_ether")
     global_state.world_state.balances[receiver] += value
     global_state.world_state.balances[sender] -= value
 
@@ -1449,7 +1450,7 @@ class Instruction:
             print("Warning! Unsupported symbolic max_length offset in RETURNDATACOPY")
             # print(size)
             return [global_state]
-
+    
         if global_state.last_return_data is None or global_state.last_return_data.return_data is None or concrete_size == 0:
             print("Warning!! global_state.last_return_data is None, but value exits, just return...")
             return [global_state]
@@ -2299,6 +2300,12 @@ class Instruction:
 
                 return [global_state]
             
+            if global_state.environment.active_account.address.value == int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16) and global_state.environment.active_function_name == "fallback":
+                print("current in attackBridge contract's fallback function, assign new calldata to")
+                call_data = {}
+                call_data["symbol"] = True
+
+
             # 情况三  callee account 存在 并且 含有代码 但是 callable 为空 证明已经呼叫过了.
             # if callee_account is not None and callee_account.code.bytecode != "":
             #     print("Error Second callee account case")
@@ -2377,7 +2384,7 @@ class Instruction:
                 transaction["txtype"] = "Internal_MessageCall"
                 transaction["fork"]=False
                 # print("callee_address is {}".format(callee_address))
-                newconstraints.append(callee_address == callee_account_.address)
+                newconstraints.append((callee_address, callee_account_.address))
                 transactions.append(transaction)
 
 
@@ -2424,8 +2431,8 @@ class Instruction:
                 # global_state.world_state.constraints.append( to.__eq__(sc.address))
                 # 或者 删除 原有的 issue 
 
-                print("[callable tx created] =============")
-                print(transaction.callee_account.contract_name.__str__())
+                # print("[callable tx created] =============")
+                # print(transaction.callee_account.contract_name.__str__())
                 # print()
                 raise TransactionStartSignal(transactions, self.op_code, global_state, newconstraints)             
         

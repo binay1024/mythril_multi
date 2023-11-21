@@ -10,7 +10,7 @@ class CallDepthLimitBuilder(PluginBuilder):
 
     def __call__(self, *args, **kwargs):
         # return CallDepthLimit(kwargs["call_depth_limit"])
-        return CallDepthLimit(call_depth_limit = 100)
+        return CallDepthLimit(call_depth_limit = 1000)
 
 
 class CallDepthLimit(LaserPlugin):

@@ -206,15 +206,24 @@ class LaserEVM:
                 )
             else:
                 print("Single analyze mode")
+                if sig is None:
+                    sigs = None
+                else:
+                    sigs = sig[0]
                 created_account = execute_contract_creation(
-                    self, creation_code, contract_name, world_state = world_state, sig = sig[0],
+                    self, creation_code, contract_name, world_state = world_state, sig = sigs,
                 )
-            if(len(self.open_states) > 1 or len(self.open_states) == 0):
-                print("Warning, open_states more than 1 or is zero")
+            # if(len(self.open_states) > 1 or len(self.open_states) == 0):
+                # print("Warning, open_states more than 1 or is zero")
+                # 因为我们实际上不用这个 worldstate了。。。
                 
             if sub_contracts is not None:
+                if sig is None:
+                    sigs = None
+                else:
+                    sigs = sig[1:]
                 sub_accounts = execute_sub_contract_creation(
-                    self, contract_name="SUB", world_state=self.open_states[0], sub_contracts = sub_contracts, sig = sig[1:]
+                    self, contract_name="SUB", world_state=None, sub_contracts = sub_contracts, sig = sigs
                 )
             # 这个时候 worldstate 里面不是最新状态了已经, open_state 里面的 world_state 的 account 是有值的, 
             # 但是 这里的现在的 world_state 里面account 里面木有任何代码, 所以我们不可以相信这个捏
@@ -288,7 +297,7 @@ class LaserEVM:
         """
         self.time = datetime.now()
         # 记得删除
-        self.transaction_count = 2
+        self.transaction_count = 3
         for i in range(self.transaction_count):
             print("\n=========== Excute %d TX Loop!!!==========\n"%i)
             # 这句话决定了 如果你的 open_states 为空 那么不执行剩下的语句
@@ -353,11 +362,11 @@ class LaserEVM:
             for i in range(len(self.open_states)):
                 print("++++++++++++++++++++ In {}th open_state ++++++++++++++++++++".format(i))
                 for j in range(len(self.open_states[i].transaction_sequence)):
-                    TX = self.open_states[i].transaction_sequence[j]
+                    tx = self.open_states[i].transaction_sequence[j]
                     print("    -------- output {}th TX --------".format(j))
-                    print(TX.call_chain)
+                    print(tx.call_chain)
                     fallback_record = ['AttackBridge', 'fallback']
-                    count = sum(1 for item in TX.call_chain if item == fallback_record)
+                    count = sum(1 for item in tx.call_chain if item == fallback_record)
                     print("fallback num is {}".format(count))
                     if count >= 3:
                         print("********************** Reentrancy Vulnerability found ***********************") 
@@ -650,12 +659,16 @@ class LaserEVM:
                 if new_global_state.current_transaction.call_chain[1][0] == "":
                     new_global_state.current_transaction.call_chain[1][0] = forked_caller_global_state.environment.active_account.contract_name
                 new_global_state.node = forked_caller_global_state.node
-                # 要加上 call 对象的 匹配这个 constraint
+                # 要加上 call 对象的 匹配这个 constraint 就会导致 下一句 无法求解， 好奇怪哦。 回头再看
                 if start_signal.constraints is not None and tx.__class__.__name__ != "ContractCreationTransaction":
                     new_constraint = start_signal.constraints[index]
-                    new_global_state.world_state.constraints.append(new_constraint)
+
+                    a = new_constraint[0]
+                    b = new_constraint[1]
+                    new_global_state.world_state.constraints.append(a == b)
                 if not new_global_state.world_state.constraints.is_possible():
                     print("warning ! after the global_state inint, constraint unsolveable !!")
+                    index +=1
                     continue
                 # print("\n======= Print forked caller stack ========== {}\n".format(forked_caller_global_state.mstate.stack))
                 log.debug("Setup new transaction %s", new_transaction)
@@ -818,7 +831,7 @@ class LaserEVM:
                     return_global_state,
                     global_state,
                     revert_changes=revert_changes,
-                    return_data=transaction.return_data,
+                    return_data= end_signal.global_state.current_transaction.return_data,
                 )
 
         # 不论哪种结束情况 都会执行 这个句子

@@ -50,7 +50,7 @@ TYPE_LIST = {
     # "function", 
 }
 
-bytesMAX = 128
+bytesMAX = 320
 
 TYPE_SIZE = {
     "bool": 32,     # 静态

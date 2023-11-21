@@ -207,7 +207,7 @@ def execute_sub_contract_creation(
     sub_transactions = []
     sub_accounts = []
     for i in range(len(sub_contracts)):
-        open_states = [world_state]
+        open_states = laser_evm.open_states
         contract_sig_ = sig[i]
         # print("origin sig is {}".format(contract_sig_))
         contract_sig = contract_sig_.get("constructor", None)
@@ -303,7 +303,10 @@ def execute_contract_creation(
     world_state = world_state or WorldState()
     open_states = [world_state]
     del laser_evm.open_states[:]
-    contract_sig = sig.get("constructor", None)
+    if sig is None:
+        contract_sig = None
+    else:    
+        contract_sig = sig.get("constructor", None)
     # print("sig is {}".format(sig))
     # print("print sig in creation main contract {}".format(sig))
 
