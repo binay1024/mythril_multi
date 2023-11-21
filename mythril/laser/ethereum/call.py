@@ -126,6 +126,7 @@ def get_callee_address(
     except TypeError:
         log.debug("Symbolic call encountered")
         print("Symbolic call encountered")
+        # print(symbolic_to_address)
         match = re.search(r"Storage\[(\d+)\]", str(simplify(symbolic_to_address)))
 
         if match is None or dynamic_loader is None:

@@ -68,7 +68,7 @@ from mythril.support.loader import DynLoader
 from mythril.laser.ethereum.state.account import Account
 from mythril.laser.ethereum.state.world_state import WorldState
 
-# from mythril.support.my_utils import get_callable_sc_list
+from mythril.support.my_utils import get_callable_sc_list
 
 log = logging.getLogger(__name__)
 
@@ -1048,7 +1048,7 @@ class Instruction:
                     no_of_bytes += environment.code.func_to_parasize['constructor']
                     calldata_size = symbol_factory.BitVecVal(environment.code.func_to_parasize['constructor'], 256)
                     calldata.update_size(calldata_size)
-                    # print("codesize_ case2")
+                    print("codesize_ case2")
                 else:
                     # print("warning!, can not find constructor para size, defaulty set 0x200")
                     # print("codesize_ case3")
@@ -1733,7 +1733,7 @@ class Instruction:
         # neg_constraints = global_state.world_state.constraints + [negated]
         # if negated_cond and neg_constraints.is_possible():
         if negated_cond:
-            # print("false path satisify")
+            print("false path satisify")
             # States have to be deep copied during a fork as summaries assume independence across states.
             # 分叉的时候会 深度拷贝 但是 TX_stack 却又 浅拷贝 ! 为什么呢? 
             new_state = deepcopy(global_state, memo=None)
@@ -1751,7 +1751,7 @@ class Instruction:
             new_state.world_state.constraints.append(negated)
             states.append(new_state)
         else:
-            log.debug("Pruned unreachable states. in false case")
+            print("Pruned unreachable states. in false case")
             # print("unreached path")
             # print(negated)
             # print("------")
@@ -1772,7 +1772,7 @@ class Instruction:
             # post_constraints = global_state.world_state.constraints + [condi]
             # if positive_cond and post_constraints.is_possible():
             if positive_cond:
-                # print("true case satisify")
+                print("true case satisify")
                 # print("Now in function: %s in contract: %s"%(global_state.environment.active_function_name, global_state.environment.active_account.contract_name))
                 # 一个分叉深拷贝, 一个 接着走
                 new_state2 = deepcopy(global_state, memo=None)
@@ -1788,9 +1788,11 @@ class Instruction:
                 states.append(new_state2)
 
             else:
-                # print("Pruned unreachable states. in true case")
+                print("Pruned unreachable states. in true case")
                 # print(condi)
                 log.debug("Pruned unreachable states.")
+        else:
+            print("instr[code] is not jumpdest")
         return states
 
     @StateTransition()
@@ -2250,10 +2252,11 @@ class Instruction:
         
         recursive_call = False
         # just for test, can be removed 
-        # callable_sc = get_callable_sc_list(global_state)
+        callable_sc = get_callable_sc_list(global_state)
 
-        # if callable_sc == []:
-        #     print("Empty callable list, so this is a external call, we will just return.")
+        if callable_sc == []:
+            print("Empty callable list, so this is a external call, we will just return.")
+
         try:
             (
                 callee_address,
@@ -2273,15 +2276,12 @@ class Instruction:
             
             # 情况一: callee account 以符号的形式存在 并且 不含有代码, 
             # if callee_account is not None and callee_account.code.bytecode == "" and global_state.environment.active_account.address.value != int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16):
-            # Tx_stack = global_state.transaction_stack
+            Tx_stack = global_state.transaction_stack
             # temp = []
-            # for (tx, global_state_) in Tx_stack:
-            #     if global_state_ is None:
-            #         continue
-            #     temp.append(global_state_.environment.active_account.contract_name)
-                          
-
-            if (callee_account is not None and callee_account.code.bytecode == ""):
+            print("output the tx stack depgth {}".format(len(Tx_stack)))
+            
+            
+            if ((callee_account is not None and callee_account.code.bytecode == "") and callable_sc == []) or len(Tx_stack) >= 10:
                 print("------------------call to EOA-------------------------------")
                 log.debug("The call is related to ether transfer between accounts")
                 sender = environment.active_account.address
@@ -2321,64 +2321,67 @@ class Instruction:
             # Add by kevin
             # 情况二: callee_account 地址 是符号型的, 所以账户目前是空, 
             # 生成 可能 call 的 callsub 然后这个输入取决于用户输入
-            if callee_account is not None and callee_account.code.bytecode == "" and global_state.environment.active_account.address.value == int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16):
+            # if callee_account is not None and callee_account.code.bytecode == "" and global_state.environment.active_account.address.value == int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16):
+            if callee_account is not None and callee_account.code.bytecode == "" and callable_sc != []:
                 print("------------------ get callable target call -------------------------------")
                 transactions = []
                 newconstraints = []
                 main_addr = None
 
-                for addr,sc in global_state.world_state.accounts.items():
-                    # print(addr)
-                    # print(sc.contract_name)
-                    if sc.contract_name != "MAIN":
-                        continue
-                    # print("catch main account{}".format(addr))
-                    main_addr = addr
-                    callee_account_ = sc
+                # for addr,sc in global_state.world_state.accounts.items():
+                #     # print(addr)
+                #     # print(sc.contract_name)
+                #     if sc.contract_name != "MAIN":
+                #         continue
+                #     # print("catch main account{}".format(addr))
+                #     main_addr = addr
+                #     callee_account_ = sc
 
-                if main_addr is None:
-                    print("error cannot catch MAIN")
-                    exit(1)
-                if type(main_addr) is str:
-                    main_addr = int(main_addr, 16)
-                elif type(main_addr) is int:
-                    pass
-                else:
-                    print("error main addr type error ")
-                    exit(1)            
+                # if main_addr is None:
+                #     print("error cannot catch MAIN")
+                #     exit(1)
+                # if type(main_addr) is str:
+                #     main_addr = int(main_addr, 16)
+                # elif type(main_addr) is int:
+                #     pass
+                # else:
+                #     print("error main addr type error ")
+                #     exit(1)            
     
-                
-                sender = environment.active_account.address
-                receiver = callee_account.address
-                if value.value is not None and value.value != 0:
-                    transfer_ether(global_state, sender, receiver, value)
-                # transfer_ether(global_state, sender, receiver, value)
+                for callee_account_ in callable_sc:
 
-                # transaction = MessageCallTransaction(
-                #     world_state= global_state.world_state,
-                #     gas_price=environment.gasprice,
-                #     gas_limit=gas,
-                #     identifier=1,
-                #     origin=environment.origin,
-                #     caller=environment.active_account.address,
-                #     callee_account=callee_account_,
-                #     code=callee_account_.code,
-                #     call_data=call_data, # symbol
-                #     call_value=value,
-                #     static=environment.static,
-                #     txtype = "Internal_MessageCall",
-                #     )
-                transaction = {}
-                transaction["type"] = "MessageCallTransaction"              
-                transaction["call_data"]=call_data                
-                transaction["gas_limit"]=gas
-                transaction["call_value"]=value
-                transaction["callee_account"]=callee_account_
-                transaction["txtype"] = "Internal_MessageCall"
-                transaction["fork"]=False
-                # print("callee_address is {}".format(callee_address))
-                newconstraints.append(callee_address == callee_account_.address)
-                transactions.append(transaction)
+                    sender = environment.active_account.address
+                    receiver = callee_account_.address
+                    if value.value is not None and value.value != 0:
+                        transfer_ether(global_state, sender, receiver, value)
+                    # transfer_ether(global_state, sender, receiver, value)
+
+                    # transaction = MessageCallTransaction(
+                    #     world_state= global_state.world_state,
+                    #     gas_price=environment.gasprice,
+                    #     gas_limit=gas,
+                    #     identifier=1,
+                    #     origin=environment.origin,
+                    #     caller=environment.active_account.address,
+                    #     callee_account=callee_account_,
+                    #     code=callee_account_.code,
+                    #     call_data=call_data, # symbol
+                    #     call_value=value,
+                    #     static=environment.static,
+                    #     txtype = "Internal_MessageCall",
+                    #     )
+
+                    transaction = {}
+                    transaction["type"] = "MessageCallTransaction"              
+                    transaction["call_data"]=call_data                
+                    transaction["gas_limit"]=gas
+                    transaction["call_value"]=value
+                    transaction["callee_account"]=callee_account_
+                    transaction["txtype"] = "Internal_MessageCall"
+                    transaction["fork"]=False
+                    print("callee_address is {}".format(callee_address))
+                    newconstraints.append((callee_address, callee_account_.address))
+                    transactions.append(transaction)
 
 
                 # 下面这段代码是强制让他调用 某个合约的代码
@@ -2424,8 +2427,8 @@ class Instruction:
                 # global_state.world_state.constraints.append( to.__eq__(sc.address))
                 # 或者 删除 原有的 issue 
 
-                print("[callable tx created] =============")
-                print(transaction.callee_account.contract_name.__str__())
+                # print("[callable tx created] =============")
+                # print(transaction.callee_account.contract_name.__str__())
                 # print()
                 raise TransactionStartSignal(transactions, self.op_code, global_state, newconstraints)             
         
@@ -2866,6 +2869,8 @@ class Instruction:
         :param global_state:
         :return:
         """
+        # return self.call_(global_state)
+        print("in static call")
         instr = global_state.get_current_instruction()
         environment = global_state.environment
         memory_out_size, memory_out_offset = global_state.mstate.stack[-6:-4]
