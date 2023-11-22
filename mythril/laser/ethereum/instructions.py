@@ -3013,7 +3013,7 @@ class Instruction:
             # 如果是 stop 则
             # if end_type == "STOP":
             #     global_state.world_state.constraints.append(return_value == 1)
-            # # 如果是 revert 则 
+            # # 如果是 revert 则  
             if end_type == "REVERT":
                 # global_state.world_state.constraints.append(return_value == 0)
                 global_state.mstate.stack.append(symbol_factory.BitVecVal(0, 256))
