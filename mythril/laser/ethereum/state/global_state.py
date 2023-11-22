@@ -197,6 +197,7 @@ class GlobalState:
         try:
             return instructions[self.mstate.pc]
         except IndexError:
+            print("error, get current instruction failed")
             return {"address": self.mstate.pc, "opcode": "STOP"}
 
     @property

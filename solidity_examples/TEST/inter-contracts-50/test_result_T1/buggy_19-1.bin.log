@@ -1,0 +1,1329 @@
+warning, Solidity 0.5.17 Does not compile in a lot of cases.
+find signatures {'goal': 'goal()', 'getGoal': 'getGoal()', 'transferMoney': 'transferMoney(address,address)'}
+warning, Solidity 0.5.17 Does not compile in a lot of cases.
+find signatures {'attack': 'attack(uint256,bytes)', 'constructor': 'constructor(bytes)'}
+warning, Solidity 0.5.17 Does not compile in a lot of cases.
+find signatures {'goal': 'goal()', 'getGoal': 'getGoal()'}
+Single analyze mode
+Pruned unreachable states. in false case
+true case satisify
+setup AttackBridge
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+setup Subcontract_0
+Pruned unreachable states. in false case
+true case satisify
+
+=========== Excute 0 TX Loop!!!==========
+
+Now we have 1 open states!!!
+output acc 1004753105490295263244812946565948198177742958590 balance: 100000000000000000000
+output acc 1271270613000041655817448348132275889066893754095 balance: 100000000000000000000
+output acc 51421440056055728346017419001665401074216449311 balance: 100000000000000000000
+output acc 321474317806661133005631537738372018995223047802 balance: 100000000000000000000
+Starting message call transaction, iteration: 0, 1 initial states
+Starting message call transaction to: 1271270613000041655817448348132275889066893754095
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+output the tx stack depgth 1
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 5 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+false path satisify
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+true case satisify
+in static call
+Symbolic call encountered
+false path satisify
+true case satisify
+Warning! Unsupported symbolic max_length offset in RETURNDATACOPY
+Pruned unreachable states. in false case
+true case satisify
+[revert] Error: Return with symbolic length or offset. Not supported
+[revert] Error: Return with symbolic length. Not supported
+false path satisify
+true case satisify
+false path satisify
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+true case satisify
+Warning! Unsupported symbolic max_length offset in RETURNDATACOPY
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Symbolic call encountered
+output the tx stack depgth 2
+------------------ get callable target call -------------------------------
+callee_address is Concat(0,
+       4_calldata[148],
+       4_calldata[149],
+       4_calldata[150],
+       4_calldata[151],
+       4_calldata[152],
+       4_calldata[153],
+       4_calldata[154],
+       4_calldata[155],
+       4_calldata[156],
+       4_calldata[157],
+       4_calldata[158],
+       4_calldata[159],
+       4_calldata[160],
+       4_calldata[161],
+       4_calldata[162],
+       4_calldata[163],
+       4_calldata[164],
+       4_calldata[165],
+       4_calldata[166],
+       4_calldata[167])
+callee_address is Concat(0,
+       4_calldata[148],
+       4_calldata[149],
+       4_calldata[150],
+       4_calldata[151],
+       4_calldata[152],
+       4_calldata[153],
+       4_calldata[154],
+       4_calldata[155],
+       4_calldata[156],
+       4_calldata[157],
+       4_calldata[158],
+       4_calldata[159],
+       4_calldata[160],
+       4_calldata[161],
+       4_calldata[162],
+       4_calldata[163],
+       4_calldata[164],
+       4_calldata[165],
+       4_calldata[166],
+       4_calldata[167])
+Setup new transaction %s MessageCallTransaction 6 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+Setup new transaction %s MessageCallTransaction 7 from 51421440056055728346017419001665401074216449311 to 0x384f682f4a5abefc8795cc38a340de9446dfae7a
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+output the tx stack depgth 3
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 8 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+true case satisify
+in static call
+Symbolic call encountered
+false path satisify
+true case satisify
+Warning! Unsupported symbolic max_length offset in RETURNDATACOPY
+Pruned unreachable states. in false case
+true case satisify
+[revert] Error: Return with symbolic length or offset. Not supported
+[revert] Error: Return with symbolic length. Not supported
+false path satisify
+true case satisify
+false path satisify
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Warning! Unsupported symbolic max_length offset in RETURNDATACOPY
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Symbolic call encountered
+output the tx stack depgth 4
+------------------ get callable target call -------------------------------
+callee_address is Concat(0,
+       4_calldata[148],
+       4_calldata[149],
+       4_calldata[150],
+       4_calldata[151],
+       4_calldata[152],
+       4_calldata[153],
+       4_calldata[154],
+       4_calldata[155],
+       4_calldata[156],
+       4_calldata[157],
+       4_calldata[158],
+       4_calldata[159],
+       4_calldata[160],
+       4_calldata[161],
+       4_calldata[162],
+       4_calldata[163],
+       4_calldata[164],
+       4_calldata[165],
+       4_calldata[166],
+       4_calldata[167])
+callee_address is Concat(0,
+       4_calldata[148],
+       4_calldata[149],
+       4_calldata[150],
+       4_calldata[151],
+       4_calldata[152],
+       4_calldata[153],
+       4_calldata[154],
+       4_calldata[155],
+       4_calldata[156],
+       4_calldata[157],
+       4_calldata[158],
+       4_calldata[159],
+       4_calldata[160],
+       4_calldata[161],
+       4_calldata[162],
+       4_calldata[163],
+       4_calldata[164],
+       4_calldata[165],
+       4_calldata[166],
+       4_calldata[167])
+Setup new transaction %s MessageCallTransaction 9 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+warning ! after the global_state inint, constraint unsolveable !!
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+output the tx stack depgth 5
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 11 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+true case satisify
+in static call
+Symbolic call encountered
+false path satisify
+true case satisify
+Warning! Unsupported symbolic max_length offset in RETURNDATACOPY
+Pruned unreachable states. in false case
+true case satisify
+[revert] Error: Return with symbolic length or offset. Not supported
+[revert] Error: Return with symbolic length. Not supported
+false path satisify
+true case satisify
+false path satisify
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Warning! Unsupported symbolic max_length offset in RETURNDATACOPY
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Symbolic call encountered
+output the tx stack depgth 6
+------------------ get callable target call -------------------------------
+callee_address is Concat(0,
+       4_calldata[148],
+       4_calldata[149],
+       4_calldata[150],
+       4_calldata[151],
+       4_calldata[152],
+       4_calldata[153],
+       4_calldata[154],
+       4_calldata[155],
+       4_calldata[156],
+       4_calldata[157],
+       4_calldata[158],
+       4_calldata[159],
+       4_calldata[160],
+       4_calldata[161],
+       4_calldata[162],
+       4_calldata[163],
+       4_calldata[164],
+       4_calldata[165],
+       4_calldata[166],
+       4_calldata[167])
+callee_address is Concat(0,
+       4_calldata[148],
+       4_calldata[149],
+       4_calldata[150],
+       4_calldata[151],
+       4_calldata[152],
+       4_calldata[153],
+       4_calldata[154],
+       4_calldata[155],
+       4_calldata[156],
+       4_calldata[157],
+       4_calldata[158],
+       4_calldata[159],
+       4_calldata[160],
+       4_calldata[161],
+       4_calldata[162],
+       4_calldata[163],
+       4_calldata[164],
+       4_calldata[165],
+       4_calldata[166],
+       4_calldata[167])
+Setup new transaction %s MessageCallTransaction 12 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+warning ! after the global_state inint, constraint unsolveable !!
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+output the tx stack depgth 7
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 14 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+true case satisify
+in static call
+Symbolic call encountered
+false path satisify
+true case satisify
+Warning! Unsupported symbolic max_length offset in RETURNDATACOPY
+Pruned unreachable states. in false case
+true case satisify
+[revert] Error: Return with symbolic length or offset. Not supported
+[revert] Error: Return with symbolic length. Not supported
+false path satisify
+true case satisify
+false path satisify
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Warning! Unsupported symbolic max_length offset in RETURNDATACOPY
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Symbolic call encountered
+output the tx stack depgth 8
+------------------ get callable target call -------------------------------
+callee_address is Concat(0,
+       4_calldata[148],
+       4_calldata[149],
+       4_calldata[150],
+       4_calldata[151],
+       4_calldata[152],
+       4_calldata[153],
+       4_calldata[154],
+       4_calldata[155],
+       4_calldata[156],
+       4_calldata[157],
+       4_calldata[158],
+       4_calldata[159],
+       4_calldata[160],
+       4_calldata[161],
+       4_calldata[162],
+       4_calldata[163],
+       4_calldata[164],
+       4_calldata[165],
+       4_calldata[166],
+       4_calldata[167])
+callee_address is Concat(0,
+       4_calldata[148],
+       4_calldata[149],
+       4_calldata[150],
+       4_calldata[151],
+       4_calldata[152],
+       4_calldata[153],
+       4_calldata[154],
+       4_calldata[155],
+       4_calldata[156],
+       4_calldata[157],
+       4_calldata[158],
+       4_calldata[159],
+       4_calldata[160],
+       4_calldata[161],
+       4_calldata[162],
+       4_calldata[163],
+       4_calldata[164],
+       4_calldata[165],
+       4_calldata[166],
+       4_calldata[167])
+Setup new transaction %s MessageCallTransaction 15 from 51421440056055728346017419001665401074216449311 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+warning ! after the global_state inint, constraint unsolveable !!
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+false path satisify
+Pruned unreachable states. in true case
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Pruned unreachable states. in false case
+true case satisify
+Excute 0 TX Loop finish!!!
+output the call_chain
+++++++++++++++++++++ In 0th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[['START'], ['EOA', 'None'], ['SUB_0', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['SUB_0', 'fallback_revert'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 1th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[['START'], ['EOA', 'None'], ['SUB_0', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+fallback num is 1
+++++++++++++++++++++ In 2th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[['START'], ['EOA', 'None'], ['SUB_0', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+fallback num is 1
+++++++++++++++++++++ In 3th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[['START'], ['EOA', 'None'], ['SUB_0', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+fallback num is 1
+++++++++++++++++++++ In 4th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[['START'], ['EOA', 'None'], ['SUB_0', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+fallback num is 1
+++++++++++++++++++++ In 5th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[['START'], ['EOA', 'None'], ['SUB_0', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+fallback num is 1
+++++++++++++++++++++ In 6th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[['START'], ['EOA', 'None'], ['SUB_0', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+fallback num is 3
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 7th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[['START'], ['EOA', 'None'], ['SUB_0', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+fallback num is 3
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 8th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[['START'], ['EOA', 'None'], ['SUB_0', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+fallback num is 3
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 9th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[['START'], ['EOA', 'None'], ['SUB_0', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+fallback num is 3
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 10th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[['START'], ['EOA', 'None'], ['SUB_0', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+fallback num is 3
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 11th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[['START'], ['EOA', 'None'], ['SUB_0', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+fallback num is 5
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 12th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[['START'], ['EOA', 'None'], ['SUB_0', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+fallback num is 5
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 13th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[['START'], ['EOA', 'None'], ['SUB_0', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+fallback num is 5
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 14th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[['START'], ['EOA', 'None'], ['SUB_0', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+fallback num is 5
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 15th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[['START'], ['EOA', 'None'], ['SUB_0', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+fallback num is 5
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 16th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[['START'], ['EOA', 'None'], ['SUB_0', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END']]
+fallback num is 7
+********************** Reentrancy Vulnerability found ***********************
+Finished symbolic execution
+
+
+================ Print openstates call_chain ================
+print 0th world_state`s call_chain
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['SUB_0', 'fallback_revert'], ['END']]
+----------------------------------------------------
+print 1th world_state`s call_chain
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+----------------------------------------------------
+print 2th world_state`s call_chain
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+----------------------------------------------------
+print 3th world_state`s call_chain
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+----------------------------------------------------
+print 4th world_state`s call_chain
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+----------------------------------------------------
+print 5th world_state`s call_chain
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+----------------------------------------------------
+print 6th world_state`s call_chain
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+----------------------------------------------------
+print 7th world_state`s call_chain
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+----------------------------------------------------
+print 8th world_state`s call_chain
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+----------------------------------------------------
+print 9th world_state`s call_chain
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+----------------------------------------------------
+print 10th world_state`s call_chain
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+----------------------------------------------------
+print 11th world_state`s call_chain
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+----------------------------------------------------
+print 12th world_state`s call_chain
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+----------------------------------------------------
+print 13th world_state`s call_chain
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+----------------------------------------------------
+print 14th world_state`s call_chain
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+----------------------------------------------------
+print 15th world_state`s call_chain
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback_revert'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)_revert'], ['END']]
+----------------------------------------------------
+print 16th world_state`s call_chain
+[['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], ['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END'], ['START'], ['AttackBridge', 'fallback'], ['MAIN', 'transferMoney(address,address)'], ['END'], ['START'], ['MAIN', 'transferMoney(address,address)'], ['AttackBridge', 'fallback'], ['END']]
+----------------------------------------------------
+
+
+================ Print openstates call_chain finish ================
+print report in [0]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [1]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [2]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [3]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [4]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [5]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [6]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [7]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [8]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [9]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [10]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [11]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [12]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [13]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [14]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [15]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [16]th open_state
+The analysis was completed successfully. No issues were detected.
+
+time cost [84s]

@@ -2726,6 +2726,7 @@ class Instruction:
 
             if callee_account is not None and callee_account.code.bytecode == "":
                 log.debug("The call is related to ether transfer between accounts")
+                print("warning The call is related to ether transfer between accounts")
                 sender = global_state.environment.active_account.address
                 receiver = callee_account.address
 
@@ -2737,6 +2738,7 @@ class Instruction:
                     global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
                 )
                 return [global_state]
+            
         except ValueError as e:
             print("Weak Warning in [delegatecall]: Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
                     e
@@ -2773,12 +2775,16 @@ class Instruction:
         #     call_value=environment.callvalue,
         #     static=environment.static,
         # )
+        # 情况四 callee_account 存在 并且包含代码
+        print("------------------ delegate call to a fixed or created target  -------------------------------")
         transaction = {}
         transaction["type"] = "MessageCallTransaction"              
         transaction["call_data"]=call_data                
         transaction["gas_limit"]=gas
         transaction["call_value"]=value
-        transaction["callee_account"]=callee_account
+        # transaction["callee_account"]=callee_account
+        transaction["code_addr"] = callee_account.address.value,
+        transaction["callee_account"]=environment.active_account
         transaction["txtype"] = "Internal_MessageCall"
         transaction["fork"]=False
         raise TransactionStartSignal([transaction], self.op_code, global_state)

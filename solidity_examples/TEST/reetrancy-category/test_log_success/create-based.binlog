@@ -1,0 +1,2117 @@
+warning, Solidity 0.5.17 Does not compile in a lot of cases.
+find signatures {'deposit': 'deposit()', 'getBalance': 'getBalance(address)', 'withdraw': 'withdraw()', 'constructor': 'constructor(address,address,uint256)', 'registerIntermediary': 'registerIntermediary(address)'}
+warning, Solidity 0.5.17 Does not compile in a lot of cases.
+find signatures {'attack': 'attack(uint256,bytes)', 'constructor': 'constructor(bytes)'}
+Single analyze mode
+setup AttackBridge
+
+=========== Excute 0 TX Loop!!!==========
+
+Now we have 1 open states!!!
+output acc 1004753105490295263244812946565948198177742958590 balance: 100000000000000000000
+output acc 1271270613000041655817448348132275889066893754095 balance: 100000000000000000000
+output acc 51421440056055728346017419001665401074216449311 balance: 100000000000000000000
+Starting message call transaction, iteration: 0, 1 initial states
+Starting message call transaction to: 1271270613000041655817448348132275889066893754095
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 4 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+Setup new transaction %s ContractCreationTransaction 5 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 6 from 655251735853922694967911662580490717076041977877 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 7 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+Setup new transaction %s ContractCreationTransaction 8 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 9 from 1152825010753653967191794247644247831527454850547 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 10 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+Setup new transaction %s ContractCreationTransaction 11 from 51421440056055728346017419001665401074216449311 to 0x9ef9f8c1700966926657d82dd4bc01f6ad711386
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 12 from 907595097014931008877773296891882509434837078918 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 13 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+Setup new transaction %s ContractCreationTransaction 14 from 51421440056055728346017419001665401074216449311 to 0xee7a53a2a16c453f6cb4205286e90b50c5c0b8d5
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 15 from 1361467780030338199976630599027152015418563016917 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+warning! last_return_data.mem_out_off and size may be none
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 16 from 51421440056055728346017419001665401074216449311 to 0xee7a53a2a16c453f6cb4205286e90b50c5c0b8d5
+warning! last_return_data.mem_out_off and size may be none
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 17 from 51421440056055728346017419001665401074216449311 to 0x9ef9f8c1700966926657d82dd4bc01f6ad711386
+warning! last_return_data.mem_out_off and size may be none
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 18 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+warning! last_return_data.mem_out_off and size may be none
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 19 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+Excute 0 TX Loop finish!!!
+output the call_chain
+++++++++++++++++++++ In 0th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 1th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 2th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 3th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'constructor'], ['END'], 
+['START'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xee7a53a2a16c453f6cb4205286e90b50c5c0b8d5', 'constructor'], ['END'], 
+['START'], ['0xee7a53a2a16c453f6cb4205286e90b50c5c0b8d5', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xee7a53a2a16c453f6cb4205286e90b50c5c0b8d5', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+fallback num is 7
+********************** Reentrancy Vulnerability found ***********************
+
+=========== Excute 1 TX Loop!!!==========
+
+Now we have 4 open states!!!
+Starting message call transaction, iteration: 1, 4 initial states
+Starting message call transaction to: 1271270613000041655817448348132275889066893754095
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 24 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 25 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 26 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+Setup new transaction %s ContractCreationTransaction 27 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+Setup new transaction %s ContractCreationTransaction 28 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+Setup new transaction %s ContractCreationTransaction 29 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 30 from 655251735853922694967911662580490717076041977877 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 31 from 655251735853922694967911662580490717076041977877 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 32 from 655251735853922694967911662580490717076041977877 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 33 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 34 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 35 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+Setup new transaction %s ContractCreationTransaction 36 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+Setup new transaction %s ContractCreationTransaction 37 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+Setup new transaction %s ContractCreationTransaction 38 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 39 from 1152825010753653967191794247644247831527454850547 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 40 from 1152825010753653967191794247644247831527454850547 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 41 from 1152825010753653967191794247644247831527454850547 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 42 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 43 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 44 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+Setup new transaction %s ContractCreationTransaction 45 from 51421440056055728346017419001665401074216449311 to 0x9ef9f8c1700966926657d82dd4bc01f6ad711386
+Setup new transaction %s ContractCreationTransaction 46 from 51421440056055728346017419001665401074216449311 to 0x9ef9f8c1700966926657d82dd4bc01f6ad711386
+Setup new transaction %s ContractCreationTransaction 47 from 51421440056055728346017419001665401074216449311 to 0x9ef9f8c1700966926657d82dd4bc01f6ad711386
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 48 from 907595097014931008877773296891882509434837078918 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 49 from 907595097014931008877773296891882509434837078918 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 50 from 907595097014931008877773296891882509434837078918 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 51 from 51421440056055728346017419001665401074216449311 to 0x9ef9f8c1700966926657d82dd4bc01f6ad711386
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 52 from 51421440056055728346017419001665401074216449311 to 0x9ef9f8c1700966926657d82dd4bc01f6ad711386
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 53 from 51421440056055728346017419001665401074216449311 to 0x9ef9f8c1700966926657d82dd4bc01f6ad711386
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 54 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 55 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 56 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 57 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 58 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 59 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+Excute 1 TX Loop finish!!!
+output the call_chain
+++++++++++++++++++++ In 0th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'constructor'], ['END'], 
+['START'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xee7a53a2a16c453f6cb4205286e90b50c5c0b8d5', 'constructor'], ['END'], 
+['START'], ['0xee7a53a2a16c453f6cb4205286e90b50c5c0b8d5', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xee7a53a2a16c453f6cb4205286e90b50c5c0b8d5', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+fallback num is 7
+********************** Reentrancy Vulnerability found ***********************
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 1th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 2th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 3th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 4th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 5th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 6th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 7th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 8th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 9th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 10th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'constructor'], ['END'], 
+['START'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+fallback num is 5
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 11th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'constructor'], ['END'], 
+['START'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+fallback num is 5
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 12th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'constructor'], ['END'], 
+['START'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+fallback num is 5
+********************** Reentrancy Vulnerability found ***********************
+
+=========== Excute 2 TX Loop!!!==========
+
+Now we have 13 open states!!!
+Starting message call transaction, iteration: 2, 13 initial states
+Starting message call transaction to: 1271270613000041655817448348132275889066893754095
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 73 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 74 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 75 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 76 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 77 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 78 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 79 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 80 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 81 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+Setup new transaction %s ContractCreationTransaction 82 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+Setup new transaction %s ContractCreationTransaction 83 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+Setup new transaction %s ContractCreationTransaction 84 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+Setup new transaction %s ContractCreationTransaction 85 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+Setup new transaction %s ContractCreationTransaction 86 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+Setup new transaction %s ContractCreationTransaction 87 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+Setup new transaction %s ContractCreationTransaction 88 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+Setup new transaction %s ContractCreationTransaction 89 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+Setup new transaction %s ContractCreationTransaction 90 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 91 from 655251735853922694967911662580490717076041977877 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 92 from 655251735853922694967911662580490717076041977877 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 93 from 655251735853922694967911662580490717076041977877 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 94 from 655251735853922694967911662580490717076041977877 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 95 from 655251735853922694967911662580490717076041977877 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 96 from 655251735853922694967911662580490717076041977877 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 97 from 655251735853922694967911662580490717076041977877 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 98 from 655251735853922694967911662580490717076041977877 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 99 from 655251735853922694967911662580490717076041977877 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 100 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 101 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 102 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 103 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 104 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 105 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 106 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 107 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 108 from 1271270613000041655817448348132275889066893754095 to  0x901d12ebe1b195e5aa8748e62bd7734ae19b51f
+Setup new transaction %s ContractCreationTransaction 109 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+Setup new transaction %s ContractCreationTransaction 110 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+Setup new transaction %s ContractCreationTransaction 111 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+Setup new transaction %s ContractCreationTransaction 112 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+Setup new transaction %s ContractCreationTransaction 113 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+Setup new transaction %s ContractCreationTransaction 114 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+Setup new transaction %s ContractCreationTransaction 115 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+Setup new transaction %s ContractCreationTransaction 116 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+Setup new transaction %s ContractCreationTransaction 117 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 118 from 1152825010753653967191794247644247831527454850547 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 119 from 1152825010753653967191794247644247831527454850547 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 120 from 1152825010753653967191794247644247831527454850547 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 121 from 1152825010753653967191794247644247831527454850547 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 122 from 1152825010753653967191794247644247831527454850547 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 123 from 1152825010753653967191794247644247831527454850547 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 124 from 1152825010753653967191794247644247831527454850547 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 125 from 1152825010753653967191794247644247831527454850547 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 126 from 1152825010753653967191794247644247831527454850547 to 0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 127 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 128 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 129 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 130 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 131 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 132 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 133 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 134 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 135 from 51421440056055728346017419001665401074216449311 to 0xc9ee761b11a3ef990f3c432e7791f1312406bdf3
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+warning! last_return_data.mem_out_off and size may be none
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 136 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 137 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 138 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 139 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 140 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 141 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 142 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 143 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+------------------ call to a fixed or created target  -------------------------------
+Setup new transaction %s MessageCallTransaction 144 from 51421440056055728346017419001665401074216449311 to 0x72c68108a82e82617b93d1be0d7975d762035015
+Excute 2 TX Loop finish!!!
+output the call_chain
+++++++++++++++++++++ In 0th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'constructor'], ['END'], 
+['START'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xee7a53a2a16c453f6cb4205286e90b50c5c0b8d5', 'constructor'], ['END'], 
+['START'], ['0xee7a53a2a16c453f6cb4205286e90b50c5c0b8d5', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xee7a53a2a16c453f6cb4205286e90b50c5c0b8d5', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+fallback num is 7
+********************** Reentrancy Vulnerability found ***********************
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 1th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'constructor'], ['END'], 
+['START'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+fallback num is 5
+********************** Reentrancy Vulnerability found ***********************
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 2th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'constructor'], ['END'], 
+['START'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+fallback num is 5
+********************** Reentrancy Vulnerability found ***********************
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 3th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'constructor'], ['END'], 
+['START'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x9ef9f8c1700966926657d82dd4bc01f6ad711386', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+fallback num is 5
+********************** Reentrancy Vulnerability found ***********************
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 4th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 5th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 6th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 7th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 8th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 9th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 10th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 11th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 12th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 13th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 14th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 15th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 16th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 17th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 18th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 19th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 20th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 21th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 22th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 23th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 24th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 25th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 26th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 27th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 28th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 29th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 30th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+++++++++++++++++++++ In 31th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+fallback num is 3
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 32th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+fallback num is 3
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 33th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+fallback num is 3
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 34th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+fallback num is 3
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 35th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+fallback num is 3
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 36th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+fallback num is 3
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 37th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+fallback num is 3
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 38th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+fallback num is 3
+********************** Reentrancy Vulnerability found ***********************
+++++++++++++++++++++ In 39th open_state ++++++++++++++++++++
+    -------- output 0th TX --------
+[
+['START'], ['EOA', 'None'], ['MAIN', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 1th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'constructor'], ['END']]
+fallback num is 0
+    -------- output 2th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 3th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+fallback num is 0
+    -------- output 4th TX --------
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+fallback num is 3
+********************** Reentrancy Vulnerability found ***********************
+Finished symbolic execution
+
+
+================ Print openstates call_chain ================
+print 0th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END']]
+----------------------------------------------------
+print 1th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END']]
+----------------------------------------------------
+print 2th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END']]
+----------------------------------------------------
+print 3th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END']]
+----------------------------------------------------
+print 4th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+----------------------------------------------------
+print 5th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+----------------------------------------------------
+print 6th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+----------------------------------------------------
+print 7th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+----------------------------------------------------
+print 8th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+----------------------------------------------------
+print 9th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+----------------------------------------------------
+print 10th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+----------------------------------------------------
+print 11th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+----------------------------------------------------
+print 12th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'deposit()'], ['END']]
+----------------------------------------------------
+print 13th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+----------------------------------------------------
+print 14th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+----------------------------------------------------
+print 15th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+----------------------------------------------------
+print 16th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+----------------------------------------------------
+print 17th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+----------------------------------------------------
+print 18th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+----------------------------------------------------
+print 19th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+----------------------------------------------------
+print 20th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+----------------------------------------------------
+print 21th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END']]
+----------------------------------------------------
+print 22th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+----------------------------------------------------
+print 23th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+----------------------------------------------------
+print 24th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+----------------------------------------------------
+print 25th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+----------------------------------------------------
+print 26th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+----------------------------------------------------
+print 27th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+----------------------------------------------------
+print 28th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+----------------------------------------------------
+print 29th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+----------------------------------------------------
+print 30th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'getBalance(address)'], ['END']]
+----------------------------------------------------
+print 31th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+----------------------------------------------------
+print 32th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+----------------------------------------------------
+print 33th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+----------------------------------------------------
+print 34th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+----------------------------------------------------
+print 35th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+----------------------------------------------------
+print 36th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+----------------------------------------------------
+print 37th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+----------------------------------------------------
+print 38th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+----------------------------------------------------
+print 39th world_state`s call_chain
+[
+['START'], ['EOA', 'None'], ['AttackBridge', 'attack(uint256,bytes)'], ['END'], 
+['START'], ['AttackBridge', 'attack(uint256,bytes)'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['END'], 
+['START'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['AttackBridge', 'fallback'], ['MAIN', 'withdraw(uint256)'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['END'], 
+['START'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'constructor'], ['AttackBridge', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0xc9ee761b11a3ef990f3c432e7791f1312406bdf3', 'fallback'], ['END'], 
+['START'], ['MAIN', 'withdraw(uint256)'], ['0x72c68108a82e82617b93d1be0d7975d762035015', 'fallback'], ['END']]
+----------------------------------------------------
+
+
+================ Print openstates call_chain finish ================
+print report in [0]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [1]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [2]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [3]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [4]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [5]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [6]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [7]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [8]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [9]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [10]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [11]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [12]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [13]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [14]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [15]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [16]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [17]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [18]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [19]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [20]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [21]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [22]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [23]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [24]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [25]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [26]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [27]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [28]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [29]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [30]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [31]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [32]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [33]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [34]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [35]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [36]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [37]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [38]th open_state
+The analysis was completed successfully. No issues were detected.
+
+print report in [39]th open_state
+The analysis was completed successfully. No issues were detected.
+
+time cost [706s]
