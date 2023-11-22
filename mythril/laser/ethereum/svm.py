@@ -4,7 +4,7 @@ from collections import defaultdict
 from copy import copy, deepcopy
 from datetime import datetime, timedelta
 import random
-from typing import Callable, Dict, DefaultDict, List, Tuple, Optional
+from typing import Callable, Dict, DefaultDict, List, Tuple, Optional, cast
 
 from mythril.support.opcodes import OPCODES
 # from mythril.analysis.potential_issues import check_potential_issues
@@ -35,7 +35,7 @@ from mythril.laser.ethereum.transaction import (
     execute_message_call,
     tx_id_manager,
 )
-from mythril.laser.smt import symbol_factory
+from mythril.laser.smt import symbol_factory, UGT, BitVec
 from mythril.support.support_args import args
 
 # from mythril.mythril.mythril_disassembler import MythrilDisassembler
@@ -640,6 +640,11 @@ class LaserEVM:
                     #     calldata = SymbolicCalldata(next_transaction_id+"_temp")
                     # else:
                     #     calldata = deepcopy(tx.call_data)
+                    if tx.get("code_addr", None) is not None:
+                        code_ = forked_new_world_state._accounts[tx.get("code_addr", None)].code
+                    else:
+                        code_ = forked_new_world_state._accounts[tx.get("callee_account").address.value].code
+
                     new_transaction = MessageCallTransaction(
                         world_state = forked_new_world_state,
                         gas_price = forked_caller_global_state.environment.gasprice,
@@ -648,7 +653,8 @@ class LaserEVM:
                         origin = forked_caller_global_state.environment.origin,
                         caller = forked_caller_global_state.environment.active_account.address,
                         callee_account = forked_new_world_state._accounts[tx.get("callee_account").address.value],
-                        code=forked_new_world_state._accounts[tx.get("callee_account").address.value].code,
+                        # code=forked_new_world_state._accounts[tx.get("callee_account").address.value].code,
+                        code = code_,
                         # call_data = deepcopy(tx.call_data), # symbol
                         # 我这种行为算强行给他一个call_data了。。。
                         call_data = constructor_arguments,
@@ -668,7 +674,11 @@ class LaserEVM:
                     a = new_constraint[0]
                     b = new_constraint[1]
                     new_global_state.world_state.constraints.append(a == b)
-                    
+                    gaslimit_ = tx.get("gas_limit",0)
+                    if not isinstance(gaslimit_, BitVec):
+                        gaslimit_ = cast(BitVec, gaslimit_)
+                    new_global_state.world_state.constraints.append(UGT(gaslimit_, symbol_factory.BitVecVal(2300, 256)))
+
                 if not new_global_state.world_state.constraints.is_possible():
                     print("warning ! after the global_state inint, constraint unsolveable !!")
                     index += 1
