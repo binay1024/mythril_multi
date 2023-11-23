@@ -299,7 +299,7 @@ class LaserEVM:
         """
         self.time = datetime.now()
         # 记得删除
-        self.transaction_count = 2
+        # self.transaction_count = 2
         for i in range(self.transaction_count):
             print("\n=========== Excute %d TX Loop!!!==========\n"%i)
             # 这句话决定了 如果你的 open_states 为空 那么不执行剩下的语句
@@ -407,8 +407,8 @@ class LaserEVM:
             # if(len(self.work_list)>=1):
                 # print("+++++++++++++ change to execute next path +++++++++++++++++")
                 # pass
-            # print("=========================")
-            # print("current opcode is {}".format(global_state.environment.code.instruction_list[global_state.mstate.pc]))
+            print("=========================")
+            print("current opcode is {}".format(global_state.environment.code.instruction_list[global_state.mstate.pc]))
             # print("current tx id is {}".format(global_state.current_transaction.id))
             # print("Print stack states ")
             # print(global_state.mstate.stack)
@@ -678,7 +678,7 @@ class LaserEVM:
                 # gaslimit_ = tx.get("gas_limit",0)
                 # if not isinstance(gaslimit_, BitVec):
                 #     gaslimit_ = cast(BitVec, gaslimit_)
-                new_global_state.world_state.constraints.append(UGT(gaslimit_, symbol_factory.BitVecVal(2300, 256)))
+                # new_global_state.world_state.constraints.append(UGT(gaslimit_, symbol_factory.BitVecVal(2300, 256)))
 
                 if not new_global_state.world_state.constraints.is_possible():
                     print("warning ! after the global_state inint, constraint unsolveable !!")

@@ -2282,14 +2282,14 @@ class Instruction:
             flag = False
             if not global_state.world_state.constraints.is_possible():
                 # print("warning ! after the global_state inint, constraint unsolveable !!")
-                return []
+                raise VmException("Gaslimit unsatisfiy")
             
             gaslimit_ = gas
             if not isinstance(gaslimit_, BitVec):
                 gaslimit_ = cast(BitVec, gaslimit_)
             nconstraints = Constraints([UGT(gaslimit_, symbol_factory.BitVecVal(2300, 256))])
             nconstraints += global_state.world_state.constraints
-            if not nconstraints.is_possible():
+            if not nconstraints.is_possible() or gaslimit_.value == 2300:
                 print("gas limit fail")       
                 flag = True
 
@@ -2312,6 +2312,12 @@ class Instruction:
 
                 return [global_state]
             
+            # 这里添加了 fallback 处理， 就是我们让 当 fallback 生成新的 函数call 的时候 让他生成 自动calldata 可以调用任何人。
+            if global_state.environment.active_account.address.value == int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16) and global_state.environment.active_function_name == "fallback":
+                print("current in attackBridge contract's fallback function, assign new calldata to")
+                call_data = {}
+                call_data["symbol"] = True
+
             # 情况三  callee account 存在 并且 含有代码 但是 callable 为空 证明已经呼叫过了.
             # if callee_account is not None and callee_account.code.bytecode != "":
             #     print("Error Second callee account case")
@@ -2392,7 +2398,7 @@ class Instruction:
                     transaction["callee_account"]=callee_account_
                     transaction["txtype"] = "Internal_MessageCall"
                     transaction["fork"]=False
-                    print("callee_address is {}".format(callee_address))
+                    # print("callee_address is {}".format(callee_address))
                     newconstraints.append((callee_address, callee_account_.address))
                     transactions.append(transaction)
 
