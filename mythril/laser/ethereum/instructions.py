@@ -2603,7 +2603,8 @@ class Instruction:
         #     static=environment.static,
         # )
         transaction = {}
-        transaction["type"] = "MessageCallTransaction"              
+        transaction["type"] = "MessageCallTransaction"
+        transaction["call_type"] = "delegatecall"              
         transaction["call_data"]=call_data                
         transaction["gas_limit"]=gas
         transaction["call_value"]=value
@@ -2781,7 +2782,8 @@ class Instruction:
         # 情况四 callee_account 存在 并且包含代码
         print("------------------ delegate call to a fixed or created target  -------------------------------")
         transaction = {}
-        transaction["type"] = "MessageCallTransaction"              
+        transaction["type"] = "MessageCallTransaction"    
+        transaction["call_type"] = "delegatecall"          
         transaction["call_data"]=call_data                
         transaction["gas_limit"]=gas
         transaction["call_value"]=value

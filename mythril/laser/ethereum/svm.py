@@ -641,22 +641,42 @@ class LaserEVM:
                         code_ = forked_new_world_state._accounts[tx.get("code_addr", None)].code
                     else:
                         code_ = forked_new_world_state._accounts[tx.get("callee_account").address.value].code
-                    new_transaction = MessageCallTransaction(
-                        world_state = forked_new_world_state,
-                        gas_price = forked_caller_global_state.environment.gasprice,
-                        gas_limit = tx.get("gas_limit"),
-                        identifier = next_transaction_id,
-                        origin = forked_caller_global_state.environment.origin,
-                        caller = forked_caller_global_state.environment.active_account.address,
-                        callee_account = forked_new_world_state._accounts[tx.get("callee_account").address.value],
-                        code=code_,
-                        # call_data = deepcopy(tx.call_data), # symbol
-                        # 我这种行为算强行给他一个call_data了。。。
-                        call_data = constructor_arguments,
-                        call_value = tx.get("call_value"),
-                        static = forked_caller_global_state.environment.static,
-                        txtype = "Internal_MessageCall",
-                        )
+                    if tx.get("call_type", None) == "delegatecall":
+                        new_transaction = MessageCallTransaction(
+                            world_state = forked_new_world_state,
+                            gas_price = forked_caller_global_state.environment.gasprice,
+                            gas_limit = tx.get("gas_limit"),
+                            identifier = next_transaction_id,
+                            origin = forked_caller_global_state.environment.origin,
+                            caller = forked_caller_global_state.environment.sender.address,
+                            # caller = forked_caller_global_state.environment.active_account.address,
+                            # account 实际上是 caller的 account， balance， storage，然后 只有 code是 callee的 code
+                            callee_account = forked_new_world_state._accounts[tx.get("callee_account").address.value],
+                            code=code_,
+                            # call_data = deepcopy(tx.call_data), # symbol
+                            # 我这种行为算强行给他一个call_data了。。。
+                            call_data = constructor_arguments,
+                            call_value = tx.get("call_value"),
+                            static = forked_caller_global_state.environment.static,
+                            txtype = "Internal_MessageCall",
+                            )
+                    else:
+                        new_transaction = MessageCallTransaction(
+                            world_state = forked_new_world_state,
+                            gas_price = forked_caller_global_state.environment.gasprice,
+                            gas_limit = tx.get("gas_limit"),
+                            identifier = next_transaction_id,
+                            origin = forked_caller_global_state.environment.origin,
+                            caller = forked_caller_global_state.environment.active_account.address,
+                            callee_account = forked_new_world_state._accounts[tx.get("callee_account").address.value],
+                            code=code_,
+                            # call_data = deepcopy(tx.call_data), # symbol
+                            # 我这种行为算强行给他一个call_data了。。。
+                            call_data = constructor_arguments,
+                            call_value = tx.get("call_value"),
+                            static = forked_caller_global_state.environment.static,
+                            txtype = "Internal_MessageCall",
+                            )
                 new_global_state = new_transaction.initial_global_state()
                 
                 # 这一步才是负责与之前 global_state 的链接
@@ -671,10 +691,10 @@ class LaserEVM:
                     a = new_constraint[0]
                     b = new_constraint[1]
                     new_global_state.world_state.constraints.append(a == b)
-                    gaslimit_ = tx.get("gas_limit",0)
-                    if not isinstance(gaslimit_, BitVec):
-                        gaslimit_ = cast(BitVec, gaslimit_)
-                    new_global_state.world_state.constraints.append(UGT(gaslimit_, symbol_factory.BitVecVal(2300, 256)))
+                gaslimit_ = tx.get("gas_limit",0)
+                if not isinstance(gaslimit_, BitVec):
+                    gaslimit_ = cast(BitVec, gaslimit_)
+                new_global_state.world_state.constraints.append(UGT(gaslimit_, symbol_factory.BitVecVal(2300, 256)))
                 if not new_global_state.world_state.constraints.is_possible():
                     print("warning ! after the global_state inint, constraint unsolveable !!")
                     index +=1
