@@ -2287,7 +2287,7 @@ class Instruction:
 
             flag = False
             if not global_state.world_state.constraints.is_possible():
-                # print("warning ! after the global_state inint, constraint unsolveable !!")
+                print("warning ! befpre, constraint unsolveable !!")
                 return []
             
             gaslimit_ = gas
@@ -2295,7 +2295,7 @@ class Instruction:
                 gaslimit_ = cast(BitVec, gaslimit_)
             nconstraints = Constraints([UGT(gaslimit_, symbol_factory.BitVecVal(2300, 256))])
             nconstraints += global_state.world_state.constraints
-            if nconstraints.is_possible():
+            if not nconstraints.is_possible():
                 print("gas limit fail")       
                 flag = True                          
 
