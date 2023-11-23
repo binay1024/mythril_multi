@@ -67,7 +67,7 @@ from mythril.support.loader import DynLoader
 
 from mythril.laser.ethereum.state.account import Account
 from mythril.laser.ethereum.state.world_state import WorldState
-
+from mythril.laser.ethereum.state.constraints import Constraints
 from mythril.support.my_utils import get_callable_sc_list
 
 log = logging.getLogger(__name__)
@@ -2279,9 +2279,22 @@ class Instruction:
             Tx_stack = global_state.transaction_stack
             # temp = []
             print("output the tx stack depgth {}".format(len(Tx_stack)))
+            flag = False
+            if not global_state.world_state.constraints.is_possible():
+                # print("warning ! after the global_state inint, constraint unsolveable !!")
+                return []
             
-            
-            if ((callee_account is not None and callee_account.code.bytecode == "") and callable_sc == []) or len(Tx_stack) >= 10:
+            gaslimit_ = gas
+            if not isinstance(gaslimit_, BitVec):
+                gaslimit_ = cast(BitVec, gaslimit_)
+            nconstraints = Constraints([UGT(gaslimit_, symbol_factory.BitVecVal(2300, 256))])
+            nconstraints += global_state.world_state.constraints
+            if nconstraints.is_possible():
+                print("gas limit fail")       
+                flag = True
+
+            # 如果 transfer， 那么就不call过去了， 如果 大于10个了 那么也不call过去了，如果 没有calleeaccount 那么也不call过去了
+            if ((callee_account is not None and callee_account.code.bytecode == "") and callable_sc == []) or len(Tx_stack) >= 10 or flag:
                 print("------------------call to EOA-------------------------------")
                 log.debug("The call is related to ether transfer between accounts")
                 sender = environment.active_account.address
