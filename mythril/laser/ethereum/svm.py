@@ -691,10 +691,10 @@ class LaserEVM:
                     a = new_constraint[0]
                     b = new_constraint[1]
                     new_global_state.world_state.constraints.append(a == b)
-                gaslimit_ = tx.get("gas_limit",0)
-                if not isinstance(gaslimit_, BitVec):
-                    gaslimit_ = cast(BitVec, gaslimit_)
-                new_global_state.world_state.constraints.append(UGT(gaslimit_, symbol_factory.BitVecVal(2300, 256)))
+                # gaslimit_ = tx.get("gas_limit",0)
+                # if not isinstance(gaslimit_, BitVec):
+                #     gaslimit_ = cast(BitVec, gaslimit_)
+                # new_global_state.world_state.constraints.append(UGT(gaslimit_, symbol_factory.BitVecVal(2300, 256)))
                 if not new_global_state.world_state.constraints.is_possible():
                     print("warning ! after the global_state inint, constraint unsolveable !!")
                     index +=1
