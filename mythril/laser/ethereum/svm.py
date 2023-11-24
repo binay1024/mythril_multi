@@ -407,8 +407,12 @@ class LaserEVM:
             # if(len(self.work_list)>=1):
                 # print("+++++++++++++ change to execute next path +++++++++++++++++")
                 # pass
+            
+            # if global_state.environment.active_function_name == "delegatecall_a_delegatecall()" or global_state.environment.active_function_name == "callFunc()":
+            
             print("=========================")
             print("current opcode is {}".format(global_state.environment.code.instruction_list[global_state.mstate.pc]))
+            print("current activate function is {}".format(global_state.environment.active_function_name))
             # print("current tx id is {}".format(global_state.current_transaction.id))
             # print("Print stack states ")
             # print(global_state.mstate.stack)
@@ -633,6 +637,7 @@ class LaserEVM:
                         txtype = "Internal_MessageCall",
                         fork=False,
                     )
+                    new_global_state = new_transaction.initial_global_state()
                 else:
                     # next_transaction_id = tx_id_manager.get_next_tx_id()
                     # 处于 某些 原因， 他在从 fallback出发调用 其他地方的时候 calldata 有些问题啊。。。。
@@ -641,35 +646,79 @@ class LaserEVM:
                     # else:
                     #     calldata = deepcopy(tx.call_data)
                     if tx.get("code_addr", None) is not None:
-                        code_ = forked_new_world_state._accounts[tx.get("code_addr", None)].code
+                        addr = tx.get("code_addr", None)[0]
+                        code_ = forked_new_world_state._accounts[addr].code
                     else:
                         code_ = forked_new_world_state._accounts[tx.get("callee_account").address.value].code
-
-                    new_transaction = MessageCallTransaction(
-                        world_state = forked_new_world_state,
-                        gas_price = forked_caller_global_state.environment.gasprice,
-                        gas_limit = tx.get("gas_limit"),
-                        identifier = next_transaction_id,
-                        origin = forked_caller_global_state.environment.origin,
-                        caller = forked_caller_global_state.environment.active_account.address,
-                        callee_account = forked_new_world_state._accounts[tx.get("callee_account").address.value],
-                        # code=forked_new_world_state._accounts[tx.get("callee_account").address.value].code,
-                        code = code_,
-                        # call_data = deepcopy(tx.call_data), # symbol
-                        # 我这种行为算强行给他一个call_data了。。。
-                        call_data = constructor_arguments,
-                        call_value = tx.get("call_value"),
-                        static = forked_caller_global_state.environment.static,
-                        txtype = "Internal_MessageCall",
-                        )
-                new_global_state = new_transaction.initial_global_state()
+                    callee_account = forked_new_world_state._accounts[tx.get("callee_account").address.value]
+                    # set the storage mapped with the caller's storage
+                    callee_account.storage = forked_caller_global_state.environment.active_account.storage
+                    #
+                    if tx.get("call_type", None) == "delegatecall":
+                        # keep sender, value and storage same
+                        new_transaction = MessageCallTransaction(
+                            world_state = forked_new_world_state,
+                            gas_price = forked_caller_global_state.environment.gasprice,
+                            gas_limit = tx.get("gas_limit"),
+                            identifier = next_transaction_id,
+                            origin = forked_caller_global_state.environment.origin,
+                            caller = forked_caller_global_state.environment.active_account.address,
+                            # caller = forked_caller_global_state.environment.sender,
+                            # account 实际上是 caller的 account， balance， storage，然后 只有 code是 callee的 code
+                            callee_account = forked_new_world_state._accounts[tx.get("callee_account").address.value],
+                            code = code_,
+                            # call_data = deepcopy(tx.call_data), # symbol
+                            # 我这种行为算强行给他一个call_data了。。。
+                            call_data = constructor_arguments,
+                            # call_value = tx.get("call_value"),
+                            call_value = forked_caller_global_state.environment.callvalue,
+                            static = forked_caller_global_state.environment.static,
+                            txtype = "Internal_MessageCall",
+                            )
+                        new_global_state = new_transaction.initial_global_state("delegatecall")
+                    else:
+                        new_transaction = MessageCallTransaction(
+                            world_state = forked_new_world_state,
+                            gas_price = forked_caller_global_state.environment.gasprice,
+                            gas_limit = tx.get("gas_limit"),
+                            identifier = next_transaction_id,
+                            origin = forked_caller_global_state.environment.origin,
+                            caller = forked_caller_global_state.environment.active_account.address,
+                            callee_account = forked_new_world_state._accounts[tx.get("callee_account").address.value],
+                            code=code_,
+                            # call_data = deepcopy(tx.call_data), # symbol
+                            # 我这种行为算强行给他一个call_data了。。。
+                            call_data = constructor_arguments,
+                            call_value = tx.get("call_value"),
+                            static = forked_caller_global_state.environment.static,
+                            txtype = "Internal_MessageCall",
+                            )
+                        new_global_state = new_transaction.initial_global_state()
+                    # new_transaction = MessageCallTransaction(
+                    #     world_state = forked_new_world_state,
+                    #     gas_price = forked_caller_global_state.environment.gasprice,
+                    #     gas_limit = tx.get("gas_limit"),
+                    #     identifier = next_transaction_id,
+                    #     origin = forked_caller_global_state.environment.origin,
+                    #     caller = forked_caller_global_state.environment.active_account.address,
+                    #     callee_account = forked_new_world_state._accounts[tx.get("callee_account").address.value],
+                    #     # code=forked_new_world_state._accounts[tx.get("callee_account").address.value].code,
+                    #     code = code_,
+                    #     # call_data = deepcopy(tx.call_data), # symbol
+                    #     # 我这种行为算强行给他一个call_data了。。。
+                    #     call_data = constructor_arguments,
+                    #     call_value = tx.get("call_value"),
+                    #     static = forked_caller_global_state.environment.static,
+                    #     txtype = "Internal_MessageCall",
+                    #     )
+                # new_global_state = new_transaction.initial_global_state()
                 # 这一步才是负责与之前 global_state 的链接
                 new_global_state.transaction_stack = forked_caller_global_state.transaction_stack + [(new_transaction, forked_caller_global_state)]
                 if new_global_state.current_transaction.call_chain[1][0] == "":
                     new_global_state.current_transaction.call_chain[1][0] = forked_caller_global_state.environment.active_account.contract_name
                 new_global_state.node = forked_caller_global_state.node
                 # # 要加上 call 对象的 匹配这个 constraint
-                if start_signal.constraints is not None and tx.__class__.__name__ != "ContractCreationTransaction":
+                if (start_signal.constraints is not None and start_signal.constraints != []) and tx.__class__.__name__ != "ContractCreationTransaction":
                     new_constraint = start_signal.constraints[index]
                     a = new_constraint[0]
                     b = new_constraint[1]

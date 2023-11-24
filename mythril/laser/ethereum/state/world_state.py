@@ -206,7 +206,7 @@ class WorldState:
             return self.accounts[addr_bitvec.value]
         
         if dynamic_loader is None:
-            print("error dynamic_loader is None")
+            print("warning, dynamic_loader is None, but fine")
             raise ValueError("dynamic_loader is None")
 
         if dynamic_loader.active is False:

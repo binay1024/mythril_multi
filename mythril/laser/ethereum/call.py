@@ -88,7 +88,7 @@ def get_call_parameters(
         callee_account = get_callee_account(
             global_state, callee_address, dynamic_loader
         )
-
+    
     gas = gas + If(value > 0, symbol_factory.BitVecVal(GAS_CALLSTIPEND, gas.size()), 0)
     return (
         callee_address,
@@ -169,11 +169,13 @@ def get_callee_account(
             return Account(callee_address, balances=global_state.world_state.balances)
         else:
             callee_address = hex(callee_address.value)[2:]
-
-    return global_state.world_state.accounts_exist_or_load(
-        callee_address, dynamic_loader
-    )
-
+    try:
+        callee_account = global_state.world_state.accounts_exist_or_load(
+            callee_address, dynamic_loader
+        )
+    except:
+        callee_account = None
+    return callee_account
 
 def get_call_data(
     global_state: GlobalState,

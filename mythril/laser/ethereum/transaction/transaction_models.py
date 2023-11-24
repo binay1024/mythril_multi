@@ -250,19 +250,33 @@ class MessageCallTransaction(BaseTransaction):
     #     return deepcopy(self)
 
 
-    def initial_global_state(self) -> GlobalState:
+    def initial_global_state(self, mode = None) -> GlobalState:
         """Initialize the execution environment."""
-        environment = Environment(
-            self.callee_account,
-            self.caller,
-            self.call_data,
-            self.gas_price,
-            self.call_value,
-            self.origin,
-            self.base_fee,
-            code=self.code if self.code is not None else self.callee_account.code,
-            static=self.static,
-        )
+        if mode is None:
+            environment = Environment(
+                self.callee_account,
+                self.caller,
+                self.call_data,
+                self.gas_price,
+                self.call_value,
+                self.origin,
+                self.base_fee,
+                code=self.code if self.code is not None else self.callee_account.code,
+                static=self.static,
+            )
+        else:
+            environment = Environment(
+                self.callee_account,
+                self.caller,
+                self.call_data,
+                self.gas_price,
+                self.call_value,
+                self.origin,
+                self.base_fee,
+                code=self.code if self.code is not None else self.callee_account.code,
+                static=self.static,
+                address = self.caller,
+            )
         start = ["START"]
         end = ["END"]
         if self.type == "EOA_MessageCall":
@@ -272,8 +286,7 @@ class MessageCallTransaction(BaseTransaction):
         caller_func = ""
         callee_name = environment.active_account.contract_name
         callee_func = []
-        record = [start,[caller_name,caller_func],[callee_name,callee_func],end]
-        
+        record = [start,[caller_name,caller_func],[callee_name,callee_func],end]    
         self.call_chain = record
         # 加上 如果是 调用一个 可识别的 合约 我们加上 constraint
         return super().initial_global_state_from_environment(
