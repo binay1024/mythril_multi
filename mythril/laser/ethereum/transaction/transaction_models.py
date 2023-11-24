@@ -250,19 +250,33 @@ class MessageCallTransaction(BaseTransaction):
     #     return deepcopy(self)
 
 
-    def initial_global_state(self) -> GlobalState:
+    def initial_global_state(self, mode = None) -> GlobalState:
         """Initialize the execution environment."""
-        environment = Environment(
-            self.callee_account,
-            self.caller,
-            self.call_data,
-            self.gas_price,
-            self.call_value,
-            self.origin,
-            self.base_fee,
-            code=self.code if self.code is not None else self.callee_account.code,
-            static=self.static,
-        )
+        if mode is None:
+            environment = Environment(
+                self.callee_account,
+                self.caller,
+                self.call_data,
+                self.gas_price,
+                self.call_value,
+                self.origin,
+                self.base_fee,
+                code=self.code if self.code is not None else self.callee_account.code,
+                static=self.static,
+            )
+        else:
+            environment = Environment(
+                self.callee_account,
+                self.caller,
+                self.call_data,
+                self.gas_price,
+                self.call_value,
+                self.origin,
+                self.base_fee,
+                code=self.code if self.code is not None else self.callee_account.code,
+                static=self.static,
+                address = self.caller,
+            )
         start = ["START"]
         end = ["END"]
         if self.type == "EOA_MessageCall":

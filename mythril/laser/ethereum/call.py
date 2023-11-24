@@ -169,9 +169,16 @@ def get_callee_account(
         else:
             callee_address = hex(callee_address.value)[2:]
 
-    return global_state.world_state.accounts_exist_or_load(
-        callee_address, dynamic_loader
-    )
+    # return global_state.world_state.accounts_exist_or_load(
+    #     callee_address, dynamic_loader
+    # )
+    try:
+        callee_account = global_state.world_state.accounts_exist_or_load(
+            callee_address, dynamic_loader)
+    except:
+        print("warning, callee_account_load fail")
+        callee_account = None
+    return callee_account
 
 
 def get_call_data(

@@ -2295,7 +2295,7 @@ class Instruction:
                 gaslimit_ = cast(BitVec, gaslimit_)
             nconstraints = Constraints([UGT(gaslimit_, symbol_factory.BitVecVal(2300, 256))])
             nconstraints += global_state.world_state.constraints
-            if not nconstraints.is_possible():
+            if not nconstraints.is_possible() or gaslimit_.value == 2300:
                 print("gas limit fail")       
                 flag = True                          
 
@@ -2316,7 +2316,7 @@ class Instruction:
                 )
 
                 return [global_state]
-            
+            # 这里添加了 fallback 处理， 就是我们让 当 fallback 生成新的 函数call 的时候 让他生成 自动calldata 可以调用任何人。
             if global_state.environment.active_account.address.value == int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16) and global_state.environment.active_function_name == "fallback":
                 print("current in attackBridge contract's fallback function, assign new calldata to")
                 call_data = {}
@@ -2567,24 +2567,25 @@ class Instruction:
                 gas,
                 _,
                 _,
-            ) = get_call_parameters(global_state, self.dynamic_loader, with_value=False)
+            ) = get_call_parameters(global_state, self.dynamic_loader)
 
             if callee_account is not None and callee_account.code.bytecode == "":
                 log.debug("The call is related to ether transfer between accounts")
+                print("warning The call is related to ether transfer between accounts")
                 sender = global_state.environment.active_account.address
                 receiver = callee_account.address
-                transfer_ether(global_state, sender, receiver, value)
+
+                # transfer_ether(global_state, sender, receiver, value)
                 self._write_symbolic_returndata(
                     global_state, memory_out_offset, memory_out_size
                 )
-
                 global_state.mstate.stack.append(
                     global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
                 )
                 return [global_state]
-
+            
         except ValueError as e:
-            print("Weak Warning in [callcode]: Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
+            print("Weak Warning in [delegatecall]: Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
                     e
                 ))
             log.debug(
@@ -2600,37 +2601,49 @@ class Instruction:
             )
             return [global_state]
 
+        if callee_account is None:
+            print("Weak Warning in [delegatecall]: callee_accout is NOne")
+            self._write_symbolic_returndata(
+                global_state, memory_out_offset, memory_out_size
+            )
+            global_state.mstate.stack.append(
+                global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
+            )
+            return [global_state]
+
         native_result = native_call(
             global_state, callee_address, call_data, memory_out_offset, memory_out_size
         )
         if native_result:
             return native_result
-        # identifier = id 记得弄
+
         # transaction = MessageCallTransaction(
         #     world_state=global_state.world_state,
         #     gas_price=environment.gasprice,
         #     gas_limit=gas,
-        #     idendifier = 1,
+        #     identifier = 1,
         #     origin=environment.origin,
         #     code=callee_account.code,
-        #     caller=environment.address,
+        #     caller=environment.sender,
         #     callee_account=environment.active_account,
         #     call_data=call_data,
-        #     call_value=value,
+        #     call_value=environment.callvalue,
         #     static=environment.static,
         # )
+
+        # 情况四 callee_account 存在 并且包含代码
+        print("------------------ delegate call to a fixed or created target  -------------------------------")
         transaction = {}
-        transaction["type"] = "MessageCallTransaction"
-        transaction["call_type"] = "delegatecall"              
+        transaction["type"] = "MessageCallTransaction"    
+        transaction["call_type"] = "delegatecall"          
         transaction["call_data"]=call_data                
         transaction["gas_limit"]=gas
         transaction["call_value"]=value
-        # transaction["callee_account"]=callee_account
+        transaction["callee_account"]=callee_account
         transaction["code_addr"] = callee_account.address.value,
-        transaction["callee_account"]=environment.active_account
+        # transaction["callee_account"]=environment.active_account
         transaction["txtype"] = "Internal_MessageCall"
         transaction["fork"]=False
-
         raise TransactionStartSignal([transaction], self.op_code, global_state)
 
     @StateTransition()
@@ -2729,9 +2742,10 @@ class Instruction:
         :return:
         """
         print("============= DelegateCall Instruction!! print stack states=============")
-        print(global_state.mstate.stack)
+        
         instr = global_state.get_current_instruction()
         environment = global_state.environment
+
         memory_out_size, memory_out_offset = global_state.mstate.stack[-6:-4]
 
         try:
@@ -2751,7 +2765,7 @@ class Instruction:
                 sender = global_state.environment.active_account.address
                 receiver = callee_account.address
 
-                transfer_ether(global_state, sender, receiver, value)
+                # transfer_ether(global_state, sender, receiver, value)
                 self._write_symbolic_returndata(
                     global_state, memory_out_offset, memory_out_size
                 )
@@ -2769,6 +2783,16 @@ class Instruction:
                     e
                 )
             )
+            self._write_symbolic_returndata(
+                global_state, memory_out_offset, memory_out_size
+            )
+            global_state.mstate.stack.append(
+                global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
+            )
+            return [global_state]
+
+        if callee_account is None:
+            print("Weak Warning in [delegatecall]: callee_accout is NOne")
             self._write_symbolic_returndata(
                 global_state, memory_out_offset, memory_out_size
             )
@@ -2796,6 +2820,7 @@ class Instruction:
         #     call_value=environment.callvalue,
         #     static=environment.static,
         # )
+
         # 情况四 callee_account 存在 并且包含代码
         print("------------------ delegate call to a fixed or created target  -------------------------------")
         transaction = {}
@@ -2804,9 +2829,9 @@ class Instruction:
         transaction["call_data"]=call_data                
         transaction["gas_limit"]=gas
         transaction["call_value"]=value
-        # transaction["callee_account"]=callee_account
+        transaction["callee_account"]=callee_account
         transaction["code_addr"] = callee_account.address.value,
-        transaction["callee_account"]=environment.active_account
+        # transaction["callee_account"]=environment.active_account
         transaction["txtype"] = "Internal_MessageCall"
         transaction["fork"]=False
         raise TransactionStartSignal([transaction], self.op_code, global_state)

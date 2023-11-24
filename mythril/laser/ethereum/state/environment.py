@@ -24,6 +24,7 @@ class Environment:
         basefee: ExprRef,
         code=None,
         static=False,
+        address = None,
     ) -> None:
         """
 
@@ -41,8 +42,9 @@ class Environment:
         self.active_account = active_account
         self.active_function_name = ""
 
-        self.address = active_account.address
-
+        # self.address = active_account.address
+        self.address = active_account.address if address is None else address
+        
         # TODO: Add tx_2 > tx_1 then block_no(tx_2) > block_no(tx_1)
         self.block_number = symbol_factory.BitVecSym("block_number", 256)
         self.chainid = symbol_factory.BitVecSym("chain_id", 256)

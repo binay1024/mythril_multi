@@ -159,6 +159,7 @@ class GlobalState:
             code = forked_code,
             static=forked_current_tx.static,
         )
+        new_environment.address = deepcopy(self.environment.address)
         new_environment.active_function_name = deepcopy(self.environment.active_function_name)
         ########################################################
         ######### init global state with env ################
