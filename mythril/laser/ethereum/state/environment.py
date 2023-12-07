@@ -43,6 +43,7 @@ class Environment:
         self.active_function_name = ""
 
         # self.address = active_account.address
+        # delegatecall 情况 传入 address 强行改变状态
         self.address = active_account.address if address is None else address
         
         # TODO: Add tx_2 > tx_1 then block_no(tx_2) > block_no(tx_1)

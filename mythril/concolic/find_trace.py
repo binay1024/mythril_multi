@@ -49,7 +49,7 @@ def concrete_execution(concrete_data: ConcreteData) -> Tuple[WorldState, List]:
     """
     tx_id_manager.restart_counter()
     init_state = setup_concrete_initial_state(concrete_data)
-    laser_evm = LaserEVM(execution_timeout=1000)
+    laser_evm = LaserEVM(execution_timeout=600000)
     laser_evm.open_states = [deepcopy(init_state)]
     plugin_loader = LaserPluginLoader()
     assert PluginDiscovery().is_installed("myth_concolic_execution")

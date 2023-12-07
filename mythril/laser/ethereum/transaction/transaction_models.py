@@ -275,7 +275,7 @@ class MessageCallTransaction(BaseTransaction):
                 self.base_fee,
                 code=self.code if self.code is not None else self.callee_account.code,
                 static=self.static,
-                address = self.caller,
+                address = self.caller, # 都是 account.address 类型。
             )
         start = ["START"]
         end = ["END"]

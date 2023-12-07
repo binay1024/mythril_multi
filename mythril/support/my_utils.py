@@ -4,7 +4,10 @@ import os
 from copy import copy, deepcopy
 from typing import cast, Callable, List, Union, Tuple
 from mythril.laser.ethereum.state.calldata import MixedSymbolicCalldata
-# from mythril.laser.smt import (
+from mythril.laser.ethereum.state.constraints import Constraints
+from z3 import Model, sat, unsat, unknown
+from mythril.laser.smt import Solver
+from mythril.laser.smt import (
 #     Extract,
 #     Expression,
 #     UDiv,
@@ -12,16 +15,16 @@ from mythril.laser.ethereum.state.calldata import MixedSymbolicCalldata
 #     Concat,
 #     ULT,
 #     UGT,
-#     BitVec,
+    BitVec,
 #     is_false,
 #     URem,
 #     SRem,
 #     If,
-#     Bool,
+    Bool,
 #     Not,
 #     LShR,
 #     UGE,
-# )
+)
 # from mythril.laser.smt import symbol_factory
 
 
@@ -349,6 +352,65 @@ def extract_signature(ast_json_path):
                 signatures[function["type"]] = signature
 
     return signatures
+
+# 比较balances和 每个 account的 storage
+def check_worldstate_change(worldstate_old, worldstate_new):
+    old_balance = worldstate_old.balances
+    new_balance = worldstate_new.balances
+    
+    s = Solver()
+    # s.add(new_balance.raw != old_balance.raw)
+    try:
+        cond2 = old_balance == new_balance
+    except:
+        print("balance error")
+    try:
+        s.add(Bool(cond2))
+    except:
+        print("add balance error")
+
+    old_accounts = worldstate_old._accounts
+    new_accounts = worldstate_new._accounts
+    for addr, acc in old_accounts.items():
+        new_acc = new_accounts.get(addr,None)
+        if new_acc is None:
+            # 有变化
+            return False
+        # 对于 acc来说 我们比较 acc.storage
+        cond1 = True
+        cond2 = True
+        try:
+            new_ = new_acc.storage._standard_storage.raw
+            old_ = acc.storage._standard_storage.raw
+            cond1 = new_== old_
+        except:
+            print("storage error")
+        
+        try:
+            # print(Bool(cond1).raw)
+            # print(Bool(cond2).raw)
+            s.add(Bool(cond1))
+        except:
+            print("s.add problem")
+    
+
+    # 收集完 各自 account的配对， 但凡有一个
+    s.set_timeout(60000)
+    result = s.check()
+    if result == unsat:
+        print("world_state change")
+        return False
+    elif result == unknown:
+        print("warning, cannot calculate world_state change or not")
+        return True
+    else:
+        print("world_state not change")
+        return True
+    
+
+    
+
+
 
 # def get_callable_sc_list(global_state: GlobalState):    
 #     callable_sc = []

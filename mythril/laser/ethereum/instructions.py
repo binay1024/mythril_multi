@@ -22,6 +22,7 @@ from mythril.laser.smt import (
     Not,
     LShR,
     UGE,
+    Or,
 )
 from mythril.laser.smt import symbol_factory
 
@@ -1404,9 +1405,13 @@ class Instruction:
             code_hash = symbol_factory.BitVecVal(0, 256)
         else:
             addr = "0" * (40 - len(hex(address.value)[2:])) + hex(address.value)[2:]
-            code = world_state.accounts_exist_or_load(
-                addr, self.dynamic_loader
-            ).code.bytecode
+            try:
+                code = world_state.accounts_exist_or_load(
+                    addr, self.dynamic_loader
+                ).code.bytecode
+            except:
+                print("get account error!!!")
+                code = "0x00"
             code_hash = symbol_factory.BitVecVal(int(get_code_hash(code), 16), 256)
         stack.append(code_hash)
         return [global_state]
@@ -2246,9 +2251,9 @@ class Instruction:
 
         memory_out_size, memory_out_offset = global_state.mstate.stack[-7:-5]
         
-        # function_name = global_state.environment.active_function_name
+        function_name = global_state.environment.active_function_name
         # global_state.call_chain.append(global_state.environment.active_account.contract_name+"."+function_name)
-        
+        print("now in contract {} and function {}".format(global_state.environment.active_account.contract_name, function_name))
         recursive_call = False
         # just for test, can be removed 
         # callable_sc = get_callable_sc_list(global_state)
@@ -2283,7 +2288,7 @@ class Instruction:
 
             Tx_stack = global_state.transaction_stack
             # temp = []
-            print("output the tx stack depgth {}".format(len(Tx_stack)))
+            print("output the tx stack depth {}".format(len(Tx_stack)))
 
             flag = False
             if not global_state.world_state.constraints.is_possible():
@@ -2291,15 +2296,24 @@ class Instruction:
                 return []
             
             gaslimit_ = gas
+            
             if not isinstance(gaslimit_, BitVec):
                 gaslimit_ = cast(BitVec, gaslimit_)
-            nconstraints = Constraints([UGT(gaslimit_, symbol_factory.BitVecVal(2300, 256))])
+            nconstraints = Constraints([UGT(gaslimit_, symbol_factory.BitVecVal(2300, 256)) ])
             nconstraints += global_state.world_state.constraints
-            if not nconstraints.is_possible() or gaslimit_.value == 2300:
-                print("gas limit fail")       
-                flag = True                          
+            if not nconstraints.is_possible():
+                print("gas constraint limit fail")       
+                flag = True
 
-            if ((callee_account is not None and callee_account.code.bytecode == "")) or len(Tx_stack) >= 10 or flag:
+            if gaslimit_.value == 2300:                         
+                print("gas limit fail")       
+                flag = True
+            
+            if callee_account is None:
+                print("warning, unknwon callee account, just return")
+                flag = True
+
+            if ((callee_account is not None and callee_account.code.bytecode == "")) or len(Tx_stack) >= 10 or flag :
                 print("------------------call to EOA-------------------------------")
                 log.debug("The call is related to ether transfer between accounts")
                 sender = environment.active_account.address
@@ -2316,11 +2330,14 @@ class Instruction:
                 )
 
                 return [global_state]
+            
             # 这里添加了 fallback 处理， 就是我们让 当 fallback 生成新的 函数call 的时候 让他生成 自动calldata 可以调用任何人。
-            if global_state.environment.active_account.address.value == int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16) and global_state.environment.active_function_name == "fallback":
+            active_addr = global_state.environment.active_account.address.value
+            if active_addr == int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16) and global_state.environment.active_function_name == "fallback":
                 print("current in attackBridge contract's fallback function, assign new calldata to")
                 call_data = {}
                 call_data["symbol"] = True
+                
 
 
             # 情况三  callee account 存在 并且 含有代码 但是 callable 为空 证明已经呼叫过了.
@@ -2345,8 +2362,8 @@ class Instruction:
             # Add by kevin
             # 情况二: callee_account 地址 是符号型的, 所以账户目前是空, 
             # 生成 可能 call 的 callsub 然后这个输入取决于用户输入
-            if callee_account is not None and callee_account.code.bytecode == "" and global_state.environment.active_account.address.value == int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16):
-                print("------------------ get callable target call -------------------------------")
+            if callee_account is not None and callee_account.code.bytecode == "" and active_addr == int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16):
+                print("------------------ get callable target call in AttackBridge-------------------------------")
                 transactions = []
                 newconstraints = []
                 main_addr = None
@@ -2400,58 +2417,14 @@ class Instruction:
                 transaction["callee_account"]=callee_account_
                 transaction["txtype"] = "Internal_MessageCall"
                 transaction["fork"]=False
-                # print("callee_address is {}".format(callee_address))
+                
                 newconstraints.append((callee_address, callee_account_.address))
+                # else:
+                    # print("ignore the constraint for callee_addr")
                 transactions.append(transaction)
 
-
-                # 下面这段代码是强制让他调用 某个合约的代码
-                # for sc in callable_sc:
-                #     # to = global_state.mstate.stack[-2]
-                #     # print(to)
-                #     # print(sc.address)
-                #     # print(global_state.world_state.constraints.is_possible())
-                #     # step1 为了 后面 N 个 fork 生成 N 个 新的 TX
-                #     # 这里是否需要 fork???????????????????????????????????????? 我们可以扔个后面 fork
-                #     transaction = MessageCallTransaction(
-                #     world_state= global_state.world_state,
-                #     gas_price=environment.gasprice,
-                #     gas_limit=gas,
-                #     identifier=1,
-                #     origin=environment.origin,
-                #     caller=environment.active_account.address,
-                #     callee_account=sc,
-                #     code=sc.code,
-                #     call_data=call_data, # symbol
-                #     call_value=value,
-                #     static=environment.static,
-                #     txtype = "Internal_MessageCall",
-                #     )
-                #     # if index > 0:
-                #         # 为了让每个分支 互不干扰. 不需要! 需要深度拷贝的是 global_state 不是你.
-                #         # transaction = deepcopy(transaction)
-                #     newconstraints.append(callee_address == sc.address)
-                #     transactions.append(transaction)
-                    
-                
-                # 添加 call 的 to 为一个指定地址 by kevin
-                # to = global_state.mstate.stack[-2]
-                # addr = str(hex(int(sc.address.__str__(),10)))
-                
-                # print(type(to))
-                # print(type(sc.address))
-                # print(to)
-                # print(sc.address)
-                # print(hex(int(sc.address.__str__(),10)))
-                # print(type(sc))
-                # print(sc.address.value)
-                # global_state.world_state.constraints.append( to.__eq__(sc.address))
-                # 或者 删除 原有的 issue 
-
-                # print("[callable tx created] =============")
-                # print(transaction.callee_account.contract_name.__str__())
-                # print()
-                raise TransactionStartSignal(transactions, self.op_code, global_state, newconstraints)             
+                raise TransactionStartSignal(transactions, self.op_code, global_state, newconstraints)
+                         
         
         except ValueError as e:
             print("Weak Warning in [call]: Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
@@ -2504,29 +2477,6 @@ class Instruction:
         if value.value is not None and value.value != 0:
             transfer_ether(global_state, sender, receiver, value)
 
-        # if global_state.environment.active_function_name == "fallback":
-        #     print("call from fallback")
-        #     print("calldata id is {}".format(call_data.tx_id))
-        #     if call_data.__class__.__name__ != "ConcreteCalldata":
-        #         print("calldata size is {}".format(call_data._size))
-        #     else:
-        #         print("calldata size is {}".format(call_data.calldatasize))
-        #     print("calldata data is {}".format(call_data._calldata))
-
-        # transaction = MessageCallTransaction(
-        #     world_state=global_state.world_state,
-        #     gas_price=environment.gasprice,
-        #     gas_limit=gas,
-        #     identifier=1,
-        #     origin=environment.origin,
-        #     caller=environment.active_account.address,
-        #     callee_account=callee_account,
-        #     code=callee_account.code,
-        #     call_data=call_data,
-        #     call_value=value,
-        #     static=environment.static,
-        #     txtype = "Internal_MessageCall",
-        # )
         transaction = {}
         transaction["type"] = "MessageCallTransaction"              
         transaction["call_data"]=call_data                
@@ -2555,6 +2505,7 @@ class Instruction:
         :param global_state:
         :return:
         """
+        print("warning, in callcode_")
         instr = global_state.get_current_instruction()
         environment = global_state.environment
         memory_out_size, memory_out_offset = global_state.mstate.stack[-7:-5]
@@ -2741,7 +2692,7 @@ class Instruction:
         :param global_state:
         :return:
         """
-        print("============= DelegateCall Instruction!! print stack states=============")
+        print("============= DelegateCall Instruction!! =============")
         
         instr = global_state.get_current_instruction()
         environment = global_state.environment

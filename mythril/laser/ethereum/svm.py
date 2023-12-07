@@ -37,7 +37,7 @@ from mythril.laser.ethereum.transaction import (
 )
 from mythril.laser.smt import symbol_factory, UGT, BitVec
 from mythril.support.support_args import args
-
+from mythril.support.my_utils import check_worldstate_change
 # from mythril.mythril.mythril_disassembler import MythrilDisassembler
 from mythril.solidity.soliditycontract import EVMContract
 
@@ -249,7 +249,7 @@ class LaserEVM:
             attackBridge_addr = symbol_factory.BitVecVal(0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF, 256)
             accounts_ = self.open_states[0].accounts
             for (addr, acc) in accounts_.items():
-                acc.set_balance(100000000000000000000)
+                acc.set_balance(10000000000000000000)
             # self.execute_transactions(created_account.address)
             self.execute_transactions(attackBridge_addr)
 
@@ -369,10 +369,24 @@ class LaserEVM:
                     count = sum(1 for item in tx.call_chain if item == fallback_record)
                     print("fallback num is {}".format(count))
                     if count >= 3:
-                        print("********************** Reentrancy Vulnerability found ***********************") 
+                        print("********************** Reentrancy Vulnerability found ***********************")
+                    if self.check_cross(tx.call_chain, 4):
+                        print("********************** Cross Reentrancy Vulnerability found ***********************")
 
         self.executed_transactions = True
 
+    def check_cross(self, lst, group_size = 4):
+        # print(lst)
+        groups = [lst[i:i+group_size] for i in range(0, len(lst), group_size)]
+        counter = 0
+        for group in groups:
+            if len(group) >= 2 and 'MAIN' in group[-2]:
+                if len(group[-2][1]) >=6 and group[-2][1][-6:]=="revert":
+                    continue
+                counter += 1
+            if counter >= 2:
+                return True
+        return False
 
 
     def _check_create_termination(self) -> bool:
@@ -506,8 +520,22 @@ class LaserEVM:
                 # 否则 就会将这条 执行路径的 world_state 加入到 open_states里面 然后 tx 循环执行的时候就会执行这条路径.
                 # return
                 continue
+        # self.open_states.append(deepcopy(global_state.world_state))
+        new_state = deepcopy(global_state.world_state)
+        flag = False
+        try:
+            for state_ in self.open_states:
+                if check_worldstate_change(state_, new_state):
+                    print("found same worldsate state, pass")
+                    flag = True
+                    break
+        except:
+            print("match error in _add_world_state")
+            flag = True
 
-        self.open_states.append(deepcopy(global_state.world_state))
+        if not flag:
+            self.open_states.append(new_state)
+
     # 当 opcode 是 "INVALID"的时候处理, 或者 命令执行有问题的时候, 比如 dup4时候 stack 只有3个元素
     def handle_vm_exception(
         self, global_state: GlobalState, op_code: str, error_msg: str
@@ -640,13 +668,17 @@ class LaserEVM:
                     #     calldata = deepcopy(tx.call_data)
                     if tx.get("code_addr", None) is not None:
                         addr = tx.get("code_addr", None)[0]
+                        print("print the code addr length is []".format(len(tx.get("code_addr", None))))
                         code_ = forked_new_world_state._accounts[addr].code
                     else:
                         code_ = forked_new_world_state._accounts[tx.get("callee_account").address.value].code
-                    callee_account = forked_new_world_state._accounts[tx.get("callee_account").address.value]
-                    callee_account.storage = forked_caller_global_state.environment.active_account.storage
+                    
+                    
 
                     if tx.get("call_type", None) == "delegatecall":
+                        callee_account = forked_new_world_state._accounts[tx.get("callee_account").address.value]
+                        callee_account.storage = forked_caller_global_state.environment.active_account.storage
+
                         new_transaction = MessageCallTransaction(
                             world_state = forked_new_world_state,
                             gas_price = forked_caller_global_state.environment.gasprice,
@@ -699,10 +731,7 @@ class LaserEVM:
                     a = new_constraint[0]
                     b = new_constraint[1]
                     new_global_state.world_state.constraints.append(a == b)
-                # gaslimit_ = tx.get("gas_limit",0)
-                # if not isinstance(gaslimit_, BitVec):
-                #     gaslimit_ = cast(BitVec, gaslimit_)
-                # new_global_state.world_state.constraints.append(UGT(gaslimit_, symbol_factory.BitVecVal(2300, 256)))
+                
                 if not new_global_state.world_state.constraints.is_possible():
                     print("warning ! after the global_state inint, constraint unsolveable !!")
                     index +=1
@@ -776,7 +805,7 @@ class LaserEVM:
                         return [], None
                     # print("[Good!!] global_state constraints get solved passed!")
                     end_signal.global_state.world_state.node = global_state.node
-                    # 加到 EVM open_states 里面
+                    # 加到 EVM open_states 里面 之前先 check 是否 有 状态的变化， 而这个状态包括 storage变量和 balance
                     self._add_world_state(end_signal.global_state)
                 # if (transaction.type == "EOA_MessageCall"):
 

@@ -190,15 +190,16 @@ class WorldState:
         :param dynamic_loader: Dynamic Loader
         :return: The code
         """
-
+        # 如果是一个 str地址 那么地址变成int
         if isinstance(addr, str):
             addr = int(addr, 16)
-
+        # 如果yint 变成 符号 int
         if isinstance(addr, int):
             addr_bitvec = symbol_factory.BitVecVal(addr, 256)
         elif not isinstance(addr, BitVec):
             addr_bitvec = symbol_factory.BitVecVal(int(addr, 16), 256)
         else:
+            print("warning! unkown addr type")
             addr_bitvec = addr
 
         if addr_bitvec.value in self.accounts:
@@ -208,10 +209,11 @@ class WorldState:
         if dynamic_loader is None:
             # print("error dynamic_loader is None")
             print("warning, dynamic_loader is None, but fine")
-            raise ValueError("dynamic_loader is None")
+            # raise ValueError("dynamic_loader is None")
 
         if dynamic_loader.active is False:
-            raise ValueError("Dynamic Loader is deactivated. Use a symbol.")
+            # raise ValueError("Dynamic Loader is deactivated. Use a symbol.")
+            pass
 
         if isinstance(addr, int):
             try:

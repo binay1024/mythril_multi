@@ -34,9 +34,12 @@ class BaseSolver(Generic[T]):
         :param constraints:
         :return:
         """
-        z3_constraints = [
-            c.raw for c in cast(List[Bool], constraints)
-        ]  # type: Sequence[z3.BoolRef]
+        z3_constraints = []
+        cs = cast(List[Bool], constraints)
+        for c in cs:
+            z3_constraints.append(c.raw)
+            
+          # type: Sequence[z3.BoolRef]
         self.raw.add(z3_constraints)
 
     def append(self, *constraints: List[Bool]) -> None:

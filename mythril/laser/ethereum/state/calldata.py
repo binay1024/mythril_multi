@@ -24,7 +24,7 @@ from mythril.laser.smt import (
     And,
 )
 
-MAXCALLDATA = 480
+MAXCALLDATA = 960
 
 class BaseCalldata:
     """Base calldata class This represents the calldata provided when sending a
@@ -107,7 +107,8 @@ class BaseCalldata:
                         break
 
                     s = Solver()
-                    s.set_timeout(10000)
+                    # 6000
+                    s.set_timeout(6000)
                     s.add(current_index < stop)
                     
                     if isinstance(stop,BitVec) and stop.value == None:

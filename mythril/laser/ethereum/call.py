@@ -88,7 +88,7 @@ def get_call_parameters(
         callee_account = get_callee_account(
             global_state, callee_address, dynamic_loader
         )
-
+    # callee_account 有三种返回可能性：１.　新的账号地址，但是没有代码　２.确实存在的地址　有代码　３.None
     gas = gas + If(value > 0, symbol_factory.BitVecVal(GAS_CALLSTIPEND, gas.size()), 0)
     return (
         callee_address,
@@ -164,14 +164,18 @@ def get_callee_account(
     :return: Account belonging to callee
     """
     if isinstance(callee_address, BitVec):
+        # 如果 callee account是符号性的 我们生成一个新的 然后没有代码
         if callee_address.symbolic:
             return Account(callee_address, balances=global_state.world_state.balances)
+        # 如果不是 callee_address 等于一个真正的地址
         else:
             callee_address = hex(callee_address.value)[2:]
-
+    
+    # version11.23
     # return global_state.world_state.accounts_exist_or_load(
     #     callee_address, dynamic_loader
     # )
+
     try:
         callee_account = global_state.world_state.accounts_exist_or_load(
             callee_address, dynamic_loader)
