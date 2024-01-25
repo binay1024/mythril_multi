@@ -129,7 +129,8 @@ class GlobalState:
         if prev_global_state is None:
             current_transaction_stack = [(forked_current_tx, None)]
         else:
-            forked_prev_global_state = deepcopy(prev_global_state,memo)
+            # forked_prev_global_state = deepcopy(prev_global_state,memo)
+            forked_prev_global_state = prev_global_state
             current_transaction_stack = forked_prev_global_state.transaction_stack + [(forked_current_tx, forked_prev_global_state)]
         ################################# transaction_stack setting end #################################
         if current_transaction_stack is None:

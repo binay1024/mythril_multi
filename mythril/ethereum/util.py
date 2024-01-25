@@ -208,11 +208,13 @@ def extract_version(file: typing.Optional[str]):
         else min_version
     )
     version_constraint = semver.SimpleSpec(version_spec)
+    version_constraint = str(version_constraint)
 
     for version in all_versions:
+        version = str(version)
         if version in version_constraint:
             # if "0.5.17" in str(version):
-            print("warning, Solidity 0.5.17 Does not compile in a lot of cases.")
+            # print("warning, Solidity 0.5.17 Does not compile in a lot of cases.")
             #     continue
             return str(version)
 

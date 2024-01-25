@@ -24,7 +24,7 @@ from mythril.laser.smt import (
     And,
 )
 
-MAXCALLDATA = 480
+MAXCALLDATA = 960
 
 class BaseCalldata:
     """Base calldata class This represents the calldata provided when sending a

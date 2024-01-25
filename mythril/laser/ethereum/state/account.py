@@ -177,16 +177,16 @@ class Account:
         assert self._balances is not None
         self._balances[self.address] = balance
     
-    def get_balance(self, balance: Union[int, BitVec]) -> BitVec:
+    def get_balance(self, balance: Union[int, BitVec]=None) -> BitVec:
         """
 
         :param balance:
         """
-        balance = (
-            symbol_factory.BitVecVal(balance, 256)
-            if isinstance(balance, int)
-            else balance
-        )
+        # balance = (
+        #     symbol_factory.BitVecVal(balance, 256)
+        #     if isinstance(balance, int)
+        #     else balance
+        # )
         
         return self._balances[self.address]
 

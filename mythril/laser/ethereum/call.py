@@ -88,6 +88,7 @@ def get_call_parameters(
         callee_account = get_callee_account(
             global_state, callee_address, dynamic_loader
         )
+    # 只可能返回具体指或者None
     
     gas = gas + If(value > 0, symbol_factory.BitVecVal(GAS_CALLSTIPEND, gas.size()), 0)
     return (
@@ -166,7 +167,8 @@ def get_callee_account(
     """
     if isinstance(callee_address, BitVec):
         if callee_address.symbolic:
-            return Account(callee_address, balances=global_state.world_state.balances)
+            # return Account(callee_address, balances=global_state.world_state.balances)
+            return None
         else:
             callee_address = hex(callee_address.value)[2:]
     try:
@@ -277,7 +279,7 @@ def native_call(
     except TypeError:
         insert_ret_val(global_state)
         log.debug("CALL with symbolic start or offset not supported")
-        print("CALL with symbolic start or offset not supported")
+        print("warning, CALL with symbolic start or offset not supported")
         return [global_state]
 
     call_address_int = int(callee_address, 16)

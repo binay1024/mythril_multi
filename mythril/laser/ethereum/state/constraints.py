@@ -26,7 +26,7 @@ class Constraints(list):
         super(Constraints, self).__init__(constraint_list)
 
     # 1000ms = 1s, 60000 = 1 min, 
-    def is_possible(self, solver_timeout=600000) -> bool:
+    def is_possible(self, solver_timeout=10000) -> bool:
         """
         :param solver_timeout: The default timeout uses analysis timeout from args.solver_timeout
         :return: True/False based on the existence of solution of constraints
@@ -46,7 +46,7 @@ class Constraints(list):
             return False
         return True
 
-    def get_model(self, solver_timeout=600000) -> bool:
+    def get_model(self, solver_timeout=10000) -> bool:
         """
         :param solver_timeout: The default timeout uses analysis timeout from args.solver_timeout
         :return: True/False based on the existence of solution of constraints

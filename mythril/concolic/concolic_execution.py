@@ -65,7 +65,7 @@ def flip_branches(
 
 
 def concolic_execution(
-    concrete_data: ConcreteData, jump_addresses: List, solver_timeout=100000
+    concrete_data: ConcreteData, jump_addresses: List, solver_timeout=10000
 ) -> List[Dict[str, Dict[str, Any]]]:
     """
     Executes codes and prints input required to cover the branch flips

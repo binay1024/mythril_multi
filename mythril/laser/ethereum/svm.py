@@ -24,7 +24,7 @@ from mythril.laser.ethereum.time_handler import time_handler
 from mythril.laser.ethereum.state.calldata import ConcreteCalldata, SymbolicCalldata,MixedSymbolicCalldata
 from mythril.analysis import solver
 from mythril.exceptions import UnsatError, SolverTimeOutException
-
+from mythril.support.my_utils import check_worldstate_change
 from mythril.laser.ethereum.transaction import (
     ContractCreationTransaction,
     MessageCallTransaction,
@@ -410,9 +410,9 @@ class LaserEVM:
             
             # if global_state.environment.active_function_name == "delegatecall_a_delegatecall()" or global_state.environment.active_function_name == "callFunc()":
             
-            print("=========================")
-            print("current opcode is {}".format(global_state.environment.code.instruction_list[global_state.mstate.pc]))
-            print("current activate function is {}".format(global_state.environment.active_function_name))
+            # print("=========================")
+            # print("current opcode is {}".format(global_state.environment.code.instruction_list[global_state.mstate.pc]))
+            # print("current activate function is {}".format(global_state.environment.active_function_name))
             # print("current tx id is {}".format(global_state.current_transaction.id))
             # print("Print stack states ")
             # print(global_state.mstate.stack)
@@ -513,7 +513,24 @@ class LaserEVM:
                 # return
                 continue
 
-        self.open_states.append(deepcopy(global_state.world_state))
+        # self.open_states.append(deepcopy(global_state.world_state))
+        new_state = deepcopy(global_state.world_state)
+        flag = False
+        try:
+            for state_ in self.open_states:
+                if check_worldstate_change(state_, new_state):
+                    print("found same worldsate state, pass")
+                    flag = True
+                    break
+        except:
+            print("match error in _add_world_state")
+            flag = True
+
+        if not flag:
+            self.open_states.append(new_state)
+
+
+
     # 当 opcode 是 "INVALID"的时候处理, 或者 命令执行有问题的时候, 比如 dup4时候 stack 只有3个元素
     def handle_vm_exception(
         self, global_state: GlobalState, op_code: str, error_msg: str
@@ -650,11 +667,11 @@ class LaserEVM:
                         code_ = forked_new_world_state._accounts[addr].code
                     else:
                         code_ = forked_new_world_state._accounts[tx.get("callee_account").address.value].code
-                    callee_account = forked_new_world_state._accounts[tx.get("callee_account").address.value]
-                    # set the storage mapped with the caller's storage
-                    callee_account.storage = forked_caller_global_state.environment.active_account.storage
+                   
                     #
                     if tx.get("call_type", None) == "delegatecall":
+                        callee_account = forked_new_world_state._accounts[tx.get("callee_account").address.value]
+                        callee_account.storage = forked_caller_global_state.environment.active_account.storage
                         # keep sender, value and storage same
                         new_transaction = MessageCallTransaction(
                             world_state = forked_new_world_state,
@@ -694,23 +711,7 @@ class LaserEVM:
                             txtype = "Internal_MessageCall",
                             )
                         new_global_state = new_transaction.initial_global_state()
-                    # new_transaction = MessageCallTransaction(
-                    #     world_state = forked_new_world_state,
-                    #     gas_price = forked_caller_global_state.environment.gasprice,
-                    #     gas_limit = tx.get("gas_limit"),
-                    #     identifier = next_transaction_id,
-                    #     origin = forked_caller_global_state.environment.origin,
-                    #     caller = forked_caller_global_state.environment.active_account.address,
-                    #     callee_account = forked_new_world_state._accounts[tx.get("callee_account").address.value],
-                    #     # code=forked_new_world_state._accounts[tx.get("callee_account").address.value].code,
-                    #     code = code_,
-                    #     # call_data = deepcopy(tx.call_data), # symbol
-                    #     # 我这种行为算强行给他一个call_data了。。。
-                    #     call_data = constructor_arguments,
-                    #     call_value = tx.get("call_value"),
-                    #     static = forked_caller_global_state.environment.static,
-                    #     txtype = "Internal_MessageCall",
-                    #     )
+                    
                 # new_global_state = new_transaction.initial_global_state()
                 # 这一步才是负责与之前 global_state 的链接
                 new_global_state.transaction_stack = forked_caller_global_state.transaction_stack + [(new_transaction, forked_caller_global_state)]
@@ -824,7 +825,7 @@ class LaserEVM:
             # 这里 应该传回 annotations 
             else:
                 # print("END WITH Internal MessageCALLTX: {} **************************".format(transaction))
-                
+                return_global_state = deepcopy(return_global_state)
                 # First execute the post hook for the transaction ending instruction
                 self._execute_post_hook(op_code, [end_signal.global_state])
                     # [合约名，函数名]

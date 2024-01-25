@@ -4,7 +4,10 @@ import os
 from copy import copy, deepcopy
 from typing import cast, Callable, List, Union, Tuple
 from mythril.laser.ethereum.state.calldata import MixedSymbolicCalldata
-# from mythril.laser.smt import (
+from mythril.laser.ethereum.state.constraints import Constraints
+from z3 import Model, sat, unsat, unknown
+from mythril.laser.smt import Solver
+from mythril.laser.smt import (
 #     Extract,
 #     Expression,
 #     UDiv,
@@ -12,16 +15,16 @@ from mythril.laser.ethereum.state.calldata import MixedSymbolicCalldata
 #     Concat,
 #     ULT,
 #     UGT,
-#     BitVec,
+    BitVec,
 #     is_false,
 #     URem,
 #     SRem,
 #     If,
-#     Bool,
+    Bool,
 #     Not,
 #     LShR,
 #     UGE,
-# )
+)
 from mythril.laser.smt import symbol_factory
 
 
@@ -350,63 +353,83 @@ def extract_signature(ast_json_path):
 
     return signatures
 
-def get_callable_sc_list(global_statｅ):    
+def get_callable_sc_list(global_state):    
     callable_sc = []
+    worldstate = global_state.world_state
     # 首先 不可以 call 自己，creator， sumbug， 
-     
-
     act = symbol_factory.BitVecVal(int("0xAFFEAFFEAFFEAFFEAFFEAFFEAFFEAFFEAFFEAFFE", 16), 256)
-    # att = symbol_factory.BitVecVal(int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16), 256)
+    att = symbol_factory.BitVecVal(int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16), 256)
     smg = symbol_factory.BitVecVal(int("0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 16), 256)
     current_account_addr = global_state.environment.active_account.address
-    except_accounts_addr = [act,smg,current_account_addr]
-    worldstate = global_state.world_state
+    except_accounts_addr = [act,att,smg,current_account_addr]
+
+    Tx_stack = global_state.transaction_stack
+    for tx, _ in Tx_stack:
+        acc_addr = tx.callee_account.address
+        except_accounts_addr.append(acc_addr)
+    
+    if global_state.environment.active_account.address != att:
+        callable_sc.append(worldstate.accounts[0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF])
+    
     # print("start to print accounts")
     for addr,sc in worldstate.accounts.items():
-        # print(addr)
-        # print(sc.contract_name)
         if addr in except_accounts_addr:
             continue
         callable_sc.append(sc)
         # print("add callable sc")
-    
-    # # 我先在想摘除重复的 
-    # for sc in callable_sc:
-    #     for tx, global_st in global_state.transaction_stack:
-    #         print("Compare !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    #         print(sc.address.__str__())
-    #         print(tx.caller.__str__())
-    #         # 注意 如果是 EOA 的话 是一个符号可能是任何人 记得处理这个.
-    #         if "sender" in sc.address.__str__():
-    #             callable_sc.remove(sc)
-    #         if sc.address.__str__() == tx.caller.__str__():
-    #             print("remove reentrancy target")
-    #             callable_sc.remove(sc)
-    
-    # if callable_sc!= []:
-    #     print("not a empty account {}".format(callable_sc))
-    # txlist = global_state.transaction_stack
-    # len_txlist = len(txlist)
-    # tx_, oldgs_ = txlist[-1]
-    
-    # last_sender_tx_seq = []
-    # for i in range(len(txlist)):
-    #     tx, old_global_state = txlist[len_txlist-1-i]
-    #     origin = tx.origin.__str__()
-    #     caller = tx.caller.__str__()
-    #     callee = tx.callee_account.address.__str__()
-    #     last_sender_tx_seq.append((tx.origin, tx.caller, tx.callee_account))
-    #     pre_tx, pre_old_global_state = txlist[len_txlist-1-i-1]
-    #     if pre_tx.origin.__str__() != origin:
-    #         break
-    # # 上面代码提取出了最后一个 sender 的 相关 tx 序列 如果 callable_sc 存在于曾经的 callee 序列 那么可以停止了
-    # for origin, caller, callee in last_sender_tx_seq:
-    #     flag = False
-    #     for sc in callable_sc:
-    #         if callee.address.__str__() == sc.address.__str__():
-    #             callable_sc.remove(sc)
-    #             flag = True
-    #             break
-    #     if flag:
-    #         break
     return callable_sc
+
+# 比较balances和 每个 account的 storage
+def check_worldstate_change(worldstate_old, worldstate_new):
+    old_balance = worldstate_old.balances
+    new_balance = worldstate_new.balances
+    
+    s = Solver()
+    # s.add(new_balance.raw != old_balance.raw)
+    try:
+        cond2 = old_balance == new_balance
+    except:
+        print("balance error")
+    try:
+        s.add(Bool(cond2))
+    except:
+        print("add balance error")
+
+    old_accounts = worldstate_old._accounts
+    new_accounts = worldstate_new._accounts
+    for addr, acc in old_accounts.items():
+        new_acc = new_accounts.get(addr,None)
+        if new_acc is None:
+            # 有变化
+            return False
+        # 对于 acc来说 我们比较 acc.storage
+        cond1 = True
+        cond2 = True
+        try:
+            new_ = new_acc.storage._standard_storage.raw
+            old_ = acc.storage._standard_storage.raw
+            cond1 = new_== old_
+        except:
+            print("storage error")
+        
+        try:
+            # print(Bool(cond1).raw)
+            # print(Bool(cond2).raw)
+            s.add(Bool(cond1))
+        except:
+            print("s.add problem")
+    
+
+    # 收集完 各自 account的配对， 但凡有一个
+    s.set_timeout(60000)
+    result = s.check()
+    if result == unsat:
+        print("world_state change")
+        return False
+    elif result == unknown:
+        print("warning, cannot calculate world_state change or not")
+        return True
+    else:
+        print("world_state not change")
+        return True
+    
