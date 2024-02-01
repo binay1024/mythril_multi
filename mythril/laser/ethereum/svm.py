@@ -16,6 +16,7 @@ from mythril.laser.ethereum.instructions import Instruction
 from mythril.laser.ethereum.instruction_data import get_required_stack_elements
 from mythril.laser.plugin.signals import PluginSkipWorldState, PluginSkipState
 from mythril.laser.ethereum.state.global_state import GlobalState
+
 from mythril.laser.ethereum.state.world_state import WorldState
 from mythril.laser.ethereum.strategy.basic import DepthFirstSearchStrategy
 from mythril.laser.ethereum.strategy.constraint_strategy import DelayConstraintStrategy
@@ -360,18 +361,18 @@ class LaserEVM:
             for hook in self._stop_sym_trans_hooks:
                 hook()
 
-            print("Excute %d TX Loop finish!!!\noutput the call_chain"%i)
-            for i in range(len(self.open_states)):
-                print("++++++++++++++++++++ In {}th open_state ++++++++++++++++++++".format(i))
-                for j in range(len(self.open_states[i].transaction_sequence)):
-                    tx = self.open_states[i].transaction_sequence[j]
-                    print("    -------- output {}th TX --------".format(j))
-                    print(tx.call_chain)
-                    fallback_record = ['AttackBridge', 'fallback']
-                    count = sum(1 for item in tx.call_chain if item == fallback_record)
-                    print("fallback num is {}".format(count))
-                    if count >= 3:
-                        print("********************** Reentrancy Vulnerability found ***********************") 
+            # print("Excute %d TX Loop finish!!!\noutput the call_chain"%i)
+            # for i in range(len(self.open_states)):
+            #     print("++++++++++++++++++++ In {}th open_state ++++++++++++++++++++".format(i))
+            #     for j in range(len(self.open_states[i].transaction_sequence)):
+            #         tx = self.open_states[i].transaction_sequence[j]
+            #         print("    -------- output {}th TX --------".format(j))
+            #         print(tx.call_chain)
+            #         fallback_record = ['AttackBridge', 'fallback']
+            #         count = sum(1 for item in tx.call_chain if item == fallback_record)
+            #         print("fallback num is {}".format(count))
+            #         if count >= 3:
+            #             print("********************** Reentrancy Vulnerability found ***********************") 
 
         self.executed_transactions = True
 
@@ -491,8 +492,7 @@ class LaserEVM:
                 pass
                 # print("no new_states error")
             # 证明当我在某一个 work_list 里面修改 call_chain 的时候 其他的 worklist 路径中的值也会被改动
-            # if len(self.work_list)>1:
-                # self.work_list[0].world_state.transaction_sequence[0].call_chain.append("TESTEST")    
+            
             self.total_states += len(new_states)
 
         for hook in self._stop_exec_hooks:
@@ -503,31 +503,31 @@ class LaserEVM:
     def _add_world_state(self, global_state: GlobalState):
         """Stores the world_state of the passed global state in the open states"""
 
-        for hook in self._add_world_state_hooks:
-            try:
-                hook(global_state)
-            except PluginSkipWorldState:
-                print("catch PluginSkipWorldState exception!")
-                # 原来这里设置的 return 是希望 如果发现 一路执行过来木有 call, staticcall, sstore 这种命令的话我们不管当前这个命令 让他直接返回
-                # 否则 就会将这条 执行路径的 world_state 加入到 open_states里面 然后 tx 循环执行的时候就会执行这条路径.
-                # return
-                continue
+        # for hook in self._add_world_state_hooks:
+        #     try:
+        #         hook(global_state)
+        #     except PluginSkipWorldState:
+        #         print("catch PluginSkipWorldState exception!")
+        #         # 原来这里设置的 return 是希望 如果发现 一路执行过来木有 call, staticcall, sstore 这种命令的话我们不管当前这个命令 让他直接返回
+        #         # 否则 就会将这条 执行路径的 world_state 加入到 open_states里面 然后 tx 循环执行的时候就会执行这条路径.
+        #         # return
+        #         continue
 
-        # self.open_states.append(deepcopy(global_state.world_state))
-        new_state = deepcopy(global_state.world_state)
-        flag = False
-        try:
-            for state_ in self.open_states:
-                if check_worldstate_change(state_, new_state):
-                    print("found same worldsate state, pass")
-                    flag = True
-                    break
-        except:
-            print("match error in _add_world_state")
-            flag = True
+        self.open_states.append(deepcopy(global_state.world_state))
+        # new_state = deepcopy(global_state.world_state)
+        # flag = False
+        # try:
+        #     for state_ in self.open_states:
+        #         if not check_worldstate_change(state_, new_state):
+        #             print("found same worldsate state, pass")
+        #             flag = True
+        #             break
+        # except:
+        #     print("match error in _add_world_state")
+        #     flag = True
 
-        if not flag:
-            self.open_states.append(new_state)
+        # if not flag:
+        #     self.open_states.append(new_state)
 
 
 
@@ -712,18 +712,20 @@ class LaserEVM:
                             )
                         new_global_state = new_transaction.initial_global_state()
                     
-                # new_global_state = new_transaction.initial_global_state()
+                
                 # 这一步才是负责与之前 global_state 的链接
                 new_global_state.transaction_stack = forked_caller_global_state.transaction_stack + [(new_transaction, forked_caller_global_state)]
-                if new_global_state.current_transaction.call_chain[1][0] == "":
-                    new_global_state.current_transaction.call_chain[1][0] = forked_caller_global_state.environment.active_account.contract_name
+                # 对于 prev TX来说 已经更新好了, 要更新 new tx的 caller function
+                new_global_state.current_transaction.call_chain[0][1][1] = forked_caller_global_state.environment.active_function_name
+                
                 new_global_state.node = forked_caller_global_state.node
                 # # 要加上 call 对象的 匹配这个 constraint
                 if (start_signal.constraints is not None and start_signal.constraints != []) and tx.__class__.__name__ != "ContractCreationTransaction":
                     new_constraint = start_signal.constraints[index]
                     a = new_constraint[0]
                     b = new_constraint[1]
-                    new_global_state.world_state.constraints.append(a == b)
+                    if type(a) == BitVec:
+                        new_global_state.world_state.constraints.append(a == b)
                 
                 # gaslimit_ = tx.get("gas_limit",0)
                 # if not isinstance(gaslimit_, BitVec):
@@ -752,7 +754,7 @@ class LaserEVM:
             # 打印 约束条件们
             # calldata_exp = global_state.world_state.constraints.as_list
             # print(calldata_exp)            
-            # print("try to print global_state_call_chain: {}".format(global_state.world_state.transaction_sequence[-1].call_chain))
+           
             
             for hook in self._transaction_end_hooks:
                 hook(
@@ -767,31 +769,25 @@ class LaserEVM:
                 print("Error +++++++++++++++++++ world_sate not match")
 
             # 要处理一下 call_chain的问题
-
+            callee_tx = end_signal.global_state.current_transaction
+            callee_tx.call_chain[0][2][1] = end_signal.global_state.environment.active_function_name
+            callee_tx.call_chain[0][3] = "REVERT" if end_signal.revert else "END"
             # 情况一 结束 creation TX
             # from an EOA send a TX to a smartcontract case
             if return_global_state is None:
                 # print("END with EOA TX CASE: {} ***********".format(transaction))
                 
-
-                temp = end_signal.call_chain.split("-") if end_signal.call_chain!=None else None
-                if temp is None:
-                    print("call chain process error")
-                    exit(0)
-                function_name_ = temp[-1] if temp[-1] != "revert" else temp[-2]+"_"+temp[-1]
-                contract_name_ = temp[-2] if temp[-1] != "revert" else temp[-3]
-                callee_record = [contract_name_,function_name_]
-                caller_record = ["EOA","None"]
+                # 对于 callee是新的， 所以没什么好做的，但是对于 caller 需要定义一个 index_来标记自己现在的 index 在哪里 返回的时候要更新这个
                 
-                end_signal.global_state.current_transaction.call_chain[1] = caller_record
-                end_signal.global_state.current_transaction.call_chain[2] = callee_record
                 
+                
+                # end_signal.global_state.current_transaction.call_chain[-1][1] = caller_record
                 # 如果 不是 revert 那么 返回 漏洞相关的 potentialIssues
                 if (
                     not isinstance(transaction, ContractCreationTransaction)
                     or transaction.return_data
                 ) and not end_signal.revert:
-                    # print("output EOA case global_state: {}".format(end_signal.global_state.world_state.transaction_sequence[-1].call_chain))
+                   
                     # 先执行一下当前路径是否存在 issue 这种
                     # check_potential_issues(end_signal.global_state)
                     try:
@@ -810,15 +806,6 @@ class LaserEVM:
 
                 # 不论是不是 revert 结束的情况 那么 因为状态回滚 返回的新世界状态为 0
                 new_global_states = []
-                if not end_signal.revert:
-                    # print("End Transaction with EOA TX:  {}".format(global_state.current_transaction))
-                    # print("call_chain is {}".format(global_state.world_state.transaction_sequence[-1].call_chain))
-                    pass
-                    
-                else:
-                    # print("End Transaction with messagecall Revert: {}".format(global_state.current_transaction))
-                    # print("call_chain is {}".format(global_state.world_state.transaction_sequence[-1].call_chain))
-                    pass                    
                 
             # 情况二 结束 MessageCall TX
             # from an smartcontract send a TX to a smartcontract case, end internal messageTX
@@ -829,39 +816,18 @@ class LaserEVM:
                 # First execute the post hook for the transaction ending instruction
                 self._execute_post_hook(op_code, [end_signal.global_state])
                     # [合约名，函数名]
-                temp = end_signal.call_chain.split("-") if end_signal.call_chain!=None else None
-                if temp is None:
-                    print("call chain process error")
-                    return [], None
-                function_name_ = temp[-1] if temp[-1] != "revert" else temp[-2]+"_"+temp[-1]
-                contract_name_ = temp[-2] if temp[-1] != "revert" else temp[-3]
-                callee_record = [contract_name_,function_name_]
-                caller_record = [return_global_state.environment.active_account.contract_name,return_global_state.environment.active_function_name]
-                # ele = [["START"], caller_record, callee_record, ["END"]]
-                # current_EOA_tx = return_global_state.world_state.transaction_sequence[-1]
-                callee_tx = end_signal.global_state.current_transaction
-                caller_tx = return_global_state.current_transaction
-                # 每个 callee 回去之前补满 callee的 call_chain 然后 加到 caller的 call_chain后面
-                # 反正每次 补充的时候都是从 callee的 头部开始确认
                 
-                callee_tx.call_chain[1] = caller_record
-                callee_tx.call_chain[2] = callee_record
-                caller_tx.call_chain += callee_tx.call_chain                    
-
-                # if current_EOA_tx.call_chain is None or current_EOA_tx.call_chain == []:
-                #     current_EOA_tx.call_chain = ele 
+                
+                # 每个 callee 回去之前补满 callee的 call_chain 然后 加到 caller的 call_chain后面
+                # 反正每次 补充的时候都是从 callee的 头部开始确认, 我只需要确认 每个 tx的 第一个是自己就行
+                # if len(callee_tx.call_chain) > 1:
+                #     callee_tx.call_chain[0][3] = "REVERT" if end_signal.revert else "END"
                 # else:
-                #         # 如果 current_EOA_tx.call_chain 里面有内容 说明 1) A->B->C 情况中的 B return A 情况 B call C 已经在里面了
-                #         # 情况 2) A->B 结束后 A 继续执行 A->C 情况下 C return A 的时候 A call B 已经在里面了 
-                #     if len(current_EOA_tx.call_chain)<3 or len(ele)<3:
-                #         print("error, len of call_chain less than 3")
-                #         print(current_EOA_tx.call_chain)
-                #         print("print ele")
-                #         exit(0)
-                #     if current_EOA_tx.call_chain[1] == ele[1]: # caller 没结束 向后延长
-                #         current_EOA_tx.call_chain = current_EOA_tx.call_chain + ele
-                #     else: # caller 结束 回头了该
-                #         current_EOA_tx.call_chain = ele + current_EOA_tx.call_chain
+                #     callee_tx.call_chain[-1][3] = "REVERT" if end_signal.revert else "END"
+
+                return_global_state.current_transaction.call_chain += callee_tx.call_chain                    
+
+                
 
                 # Propagate annotations
                 # new_annotations = [
@@ -927,9 +893,7 @@ class LaserEVM:
         # )
         
         # Resume execution of the transaction initializing instruction
-        op_code = return_global_state.environment.code.instruction_list[
-            return_global_state.mstate.pc
-        ]["opcode"]
+        op_code = return_global_state.environment.code.instruction_list[return_global_state.mstate.pc]["opcode"]
 
         # Set execution result in the return_state of callee_global_state
         if return_global_state.last_return_data is None:

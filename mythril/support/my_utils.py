@@ -361,15 +361,17 @@ def get_callable_sc_list(global_state):
     att = symbol_factory.BitVecVal(int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16), 256)
     smg = symbol_factory.BitVecVal(int("0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 16), 256)
     current_account_addr = global_state.environment.active_account.address
-    except_accounts_addr = [act,att,smg,current_account_addr]
+    except_accounts_addr = [act,smg,current_account_addr]
 
-    Tx_stack = global_state.transaction_stack
-    for tx, _ in Tx_stack:
-        acc_addr = tx.callee_account.address
-        except_accounts_addr.append(acc_addr)
-    
-    if global_state.environment.active_account.address != att:
-        callable_sc.append(worldstate.accounts[0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF])
+    # Tx_stack = global_state.transaction_stack
+    # for tx, _ in Tx_stack:
+    #     acc_addr = tx.caller
+    #     if (acc_addr != att) and (not acc_addr in except_accounts_addr):
+    #         except_accounts_addr.append(acc_addr)
+    # 除了 攻击者合约，调用过的合约不再重复调用
+
+    # if global_state.environment.active_account.address != att:
+    #     callable_sc.append(worldstate.accounts[0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF])
     
     # print("start to print accounts")
     for addr,sc in worldstate.accounts.items():
@@ -387,7 +389,7 @@ def check_worldstate_change(worldstate_old, worldstate_new):
     s = Solver()
     # s.add(new_balance.raw != old_balance.raw)
     try:
-        cond2 = old_balance == new_balance
+        cond2 = old_balance != new_balance
     except:
         print("balance error")
     try:
@@ -408,7 +410,7 @@ def check_worldstate_change(worldstate_old, worldstate_new):
         try:
             new_ = new_acc.storage._standard_storage.raw
             old_ = acc.storage._standard_storage.raw
-            cond1 = new_== old_
+            cond1 = new_!= old_
         except:
             print("storage error")
         
@@ -424,12 +426,12 @@ def check_worldstate_change(worldstate_old, worldstate_new):
     s.set_timeout(60000)
     result = s.check()
     if result == unsat:
-        print("world_state change")
-        return False
-    elif result == unknown:
-        print("warning, cannot calculate world_state change or not")
-        return True
-    else:
         print("world_state not change")
         return True
+    elif result == unknown:
+        print("warning, cannot calculate world_state change or not")
+        return False
+    else:
+        print("world_state change")
+        return False
     

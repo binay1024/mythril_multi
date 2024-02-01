@@ -94,7 +94,7 @@ for subdir in os.listdir(data_dir):
                 result = subprocess.run(command, shell=True, text=True)
                 output = "/home/kevinj/Desktop/evaluation/dataset/paper_dataset/contract/ReentrancyStudy-Data-main/reentrancy_byte_sol/output"
                 output_path = os.path.join(output, temp)
-                command = "python3 myth.py analyze -mc {} {} {} --solver-timeout 600000 -t 1 --strategy dfs > {}".format(bin1_path,attack_bridge_path,bin2_path, output_path)
+                command = "python3 myth.py analyze -mc {} {} {} --solver-timeout 600000 -t 1 --strategy bfs > {}".format(bin1_path,attack_bridge_path,bin2_path, output_path)
                 print(command)
                 # 执行命令并捕获输出
                 time_start = time.time()
