@@ -1728,7 +1728,7 @@ class Instruction:
         condi = simplify(condition) if isinstance(condition, Bool) else condition != 0
         condi.simplify()
         
-        print("in function : {}".format(global_state.environment.active_function_name))
+        # print("in function : {}".format(global_state.environment.active_function_name))
         # print("condi is {}".format(condi))
         # print("negated is {}".format(negated))
         
@@ -1747,13 +1747,13 @@ class Instruction:
         # neg_constraints = global_state.world_state.constraints + [negated]
         # if negated_cond and neg_constraints.is_possible():
         if negated_cond:
-            print("false path satisify")
+            # print("false path satisify")
             # States have to be deep copied during a fork as summaries assume independence across states.
             # 分叉的时候会 深度拷贝 但是 TX_stack 却又 浅拷贝 ! 为什么呢? 
             new_state = deepcopy(global_state, memo=None)
             # 
-            if new_state.world_state != new_state.world_state.transaction_sequence[-1].world_state:
-                print("Error +++++++++++++++++++ world_sate not match in jumpi")
+            # if new_state.world_state != new_state.world_state.transaction_sequence[-1].world_state:
+                # print("Error +++++++++++++++++++ world_sate not match in jumpi")
             
             # add JUMPI gas cost
             new_state.mstate.min_gas_used += min_gas
@@ -1765,7 +1765,8 @@ class Instruction:
             new_state.world_state.constraints.append(negated)
             states.append(new_state)
         else:
-            print("Pruned unreachable states. in false case")
+            # print("Pruned unreachable states. in false case")
+            pass
             # print("unreached path")
             # print(negated)
             # print("------")
@@ -1786,7 +1787,7 @@ class Instruction:
             # post_constraints = global_state.world_state.constraints + [condi]
             # if positive_cond and post_constraints.is_possible():
             if positive_cond:
-                print("true case satisify")
+                # print("true case satisify")
                 # print("Now in function: %s in contract: %s"%(global_state.environment.active_function_name, global_state.environment.active_account.contract_name))
                 # 一个分叉深拷贝, 一个 接着走
                 new_state2 = deepcopy(global_state, memo=None)
@@ -1800,11 +1801,13 @@ class Instruction:
                 new_state2.mstate.depth += 1 
                 new_state2.world_state.constraints.append(condi)
                 states.append(new_state2)
-
-                print("current path reached function in addr {}".format(jump_addr))
+                # print("true case jump addr is {}".format(jump_addr))
+                # print("true case instr index is {}".format(index))
+                # print("instruction is {}".format(instr))
+                # print("current path reached function in addr {}".format(jump_addr))
                 if jump_addr in disassembly.address_to_function_name:
                     function_name = disassembly.address_to_function_name[jump_addr]
-                    print("current path reached function in addr {}".format(function_name))
+                    # print("current path reached function in addr {}".format(function_name))
                     # if len(new_state2.current_transaction.call_chain) >1:
                     #     index = 0
                     # else:
@@ -1812,11 +1815,15 @@ class Instruction:
                     # 这个是callee 更新 信息的地方 主要是函数 function name 
                     if new_state2.current_transaction.call_chain[0][2][1] != new_state2.environment.active_function_name:
                         new_state2.current_transaction.call_chain[0][2][1] = new_state2.environment.active_function_name
-                    
+                    # if new_state2.environment.calldata.read_concrete_size() is None:
+                    #     s = new_state2.environment.code.func_to_parasize[function_name.split('(')[0]]
+                    #     size_ = symbol_factory.BitVecVal(s+4, 256)
+                    #     print("update calldata size to {}".format(size_))
+                    #     new_state2.environment.calldata.update_size(size_)
                     
 
             else:
-                print("Pruned unreachable states. in true case")
+                # print("Pruned unreachable states. in true case")
                 # print(condi)
                 log.debug("Pruned unreachable states.")
         else:
@@ -2313,8 +2320,9 @@ class Instruction:
                 const = Constraints([value > symbol_factory.BitVecVal(0,256)])
                 const += global_state.world_state.constraints
                 if const.is_possible():
-                    global_state.world_state.constraints+=const
+                    # global_state.world_state.constraints+=const
                     # attack_flag = True
+                    pass
                 else:
                     value = symbol_factory.BitVecVal(0,256)
                     sub_flag = True
@@ -2372,7 +2380,7 @@ class Instruction:
                         continue
                     if global_.environment.active_account.contract_name == "AttackBridge" and global_.environment.active_function_name == "fallback":
                         reentrancy_flag = True
-                        print("find reentrancy")
+                        # print("find reentrancy")
                         return_flag = True
                            
             # return_flag 意味着 我不要继续执行和call下去了， 我要准备返回call 了
@@ -2393,8 +2401,51 @@ class Instruction:
                 )
                 # global_state.mstate.stack.append(symbol_factory.BitVecVal(1,256))
                 if reentrancy_flag:
-                    record = ["start",[global_state.environment.active_account.contract_name,global_state.environment.active_function_name],["AttackBridge","fallback"],"END"]
-                    global_state.current_transaction.call_chain.append(record)
+                    print("enter reentrancy check")
+                    if global_state.re_pc is not None and global_state.environment.active_account.contract_name == global_state.re_pc[0] and global_state.re_pc[1] == global_state.mstate.pc:
+                        print("find reentrancy")
+                        record = ["start",[global_state.environment.active_account.contract_name,global_state.environment.active_function_name],["AttackBridge","fallback"],"END"]
+                        global_state.current_transaction.call_chain.append(record)
+                    else:
+                        print("setting reentrancy reenter execution")               
+                        func_addr = global_state.environment.code.function_name_to_address.get(global_state.environment.active_function_name,None)
+                        if func_addr is not None:
+                            if (global_state.re_pc is not None):
+                                print("Warning, global_state.re_pc overwritting ... ")
+                            name = global_state.environment.active_account.contract_name
+                            pc_ = global_state.mstate.pc
+                            global_state.re_pc = [deepcopy(name), deepcopy(pc_)]
+                            # 原计划是让他跳回函数入口执行， 但是栈啥的都不对了 不正确
+                            # global_state.mstate.pc = func_addr - 1
+                            # 新计划就是初始化现在的 执行状态重新执行， 但保留 state 和 constraint
+                            global_state.update_mstate()
+                            # 利用constraint 初始化一些 calldata
+                            # 根据 functionHash 初始化 calldata
+                            fname = global_state.environment.active_function_name
+                            fhash = ""
+                            for hash_, sig in global_state.environment.code.hash_to_function_name.items():
+                                if sig != fname:
+                                    continue
+                                fhash = hash_
+                                break
+                            fhash = int(fhash,16)
+                            print("fhash is {}".format(fhash))
+                            c_0 = symbol_factory.BitVecVal(fhash >> 24,8)
+                            c_1 = symbol_factory.BitVecVal((fhash >> 16) & 0xff,8)
+                            c_2 = symbol_factory.BitVecVal((fhash >> 8) & 0xff ,8)
+                            c_3 = symbol_factory.BitVecVal(fhash & 0xff, 8)
+                            global_state.environment.calldata.assign_value_at_index(0,c_0)
+                            global_state.environment.calldata.assign_value_at_index(1,c_1)
+                            global_state.environment.calldata.assign_value_at_index(2,c_2)
+                            global_state.environment.calldata.assign_value_at_index(3,c_3)
+                            
+                            # print("calldata[0,4] is {},{},{},{}".format(global_state.environment.calldata[0], global_state.environment.calldata[1],global_state.environment.calldata[2],global_state.environment.calldata[3]))
+                            raise TransactionStartSignal([], self.op_code, global_state, None,"reenter")
+                        else:
+                            print("Warning, reentrancy by old way")
+                            exit(1)
+                else:
+                    print("Other exit case")
 
                 return [global_state]
             
@@ -2479,6 +2530,8 @@ class Instruction:
         transaction["fork"]=False
 
         raise TransactionStartSignal([transaction], self.op_code, global_state)
+
+    
 
     @StateTransition()
     def call_post(self, global_state: GlobalState, end_type = None) -> List[GlobalState]:

@@ -52,6 +52,7 @@ class GlobalState:
         self.op_code = ""
         self.last_return_data = last_return_data
         self._annotations = annotations or []
+        self.re_pc = None
 
 
     def add_annotations(self, annotations: List[StateAnnotation]):
@@ -109,6 +110,7 @@ class GlobalState:
             last_return_data = self.last_return_data,
             annotations=[copy(a) for a in self._annotations],
         )
+        new_global_state.re_pc = copy(self.re_pc)
         return new_global_state
 
 
@@ -177,6 +179,7 @@ class GlobalState:
             # new_global_state._annotations.append(new_annotation)
         ########################################################
         # check!
+        new_global_state.re_pc = deepcopy(self.re_pc)
         if new_global_state.world_state != new_global_state.world_state.transaction_sequence[-1].world_state:
             print("ERROR !!!!!!!!!!!!!!!!! world_state not match \n\n\n")
         return new_global_state
@@ -284,3 +287,5 @@ class GlobalState:
         # 更新 environment 的 activate_account
         self.environment.active_account = self.world_state.transaction_sequence[-1].callee_account
 
+    def update_mstate(self,):
+        self.mstate = MachineState(gas_limit=self.mstate.gas_limit, depth=self.mstate.depth, max_gas_used=self.mstate.max_gas_used,min_gas_used=self.mstate.min_gas_used)

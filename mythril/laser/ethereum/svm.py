@@ -413,6 +413,13 @@ class LaserEVM:
             
             # print("=========================")
             # print("current opcode is {}".format(global_state.environment.code.instruction_list[global_state.mstate.pc]))
+            # opcode = global_state.environment.code.instruction_list[global_state.mstate.pc]
+            # if opcode["address"] == 242 and opcode["opcode"] == "JUMPDEST":
+                # print("reach true path")
+            # if global_state.re_pc is not None:
+                # print(global_state.re_pc)
+            # if global_state.mstate.pc == 210:
+                # print("210") # 210是 attacker里 attack中的某一位置。 attack函数地址是 215
             # print("current activate function is {}".format(global_state.environment.active_function_name))
             # print("current tx id is {}".format(global_state.current_transaction.id))
             # print("Print stack states ")
@@ -462,22 +469,29 @@ class LaserEVM:
             except:
                 print("unkown error in svm")
 
-            if op_code == "JUMP":
-                # print(op_code)
-                # print("new_state is {}".format(len(new_states)))
-                # print("")
-                pass
+            # if op_code == "JUMP":
+            #     # print(op_code)
+            #     # print("new_state is {}".format(len(new_states)))
+            #     # print("")
+            #     pass
             if type(new_states) != list:
                 print("error found")
-
+            temp = []
             if self.strategy.run_check() and (
                 len(new_states) > 1 and random.uniform(0, 1) < args.pruning_factor
             ):
-                new_states = [
-                    state
-                    for state in new_states
-                    if state.world_state.constraints.is_possible()
-                ]
+                
+                for state in new_states:
+                    if state.world_state.constraints.is_possible():
+                        temp.append(state)
+                    else:
+                        print("constraint not satisify")
+                new_states = temp
+                # new_states = [
+                #     state
+                #     for state in new_states
+                #     if state.world_state.constraints.is_possible()
+                # ]
                 # if len(new_states) >1:
                     # print("{} worklist added! now the worklist num is {}".format(len(new_states), len(self.work_list)+len(new_states)))
                 
@@ -618,6 +632,11 @@ class LaserEVM:
             #start_signal = (transactions, op_code, global_state)
             new_global_states = []
             index = 0
+            if start_signal.mode == "reenter":
+                new_global_states.append(start_signal.global_state)
+                self.work_list.clear()
+                print("clear worklist")
+                return new_global_states, start_signal.op_code
             for tx in start_signal.transaction:
                 # step 1: 因为已经有了 TX 了, 利用 TX 生成 新的 global_stack 
                 # step 2: 深拷贝 旧 GlobalState 然后放入新的 global_stack 中
@@ -742,7 +761,7 @@ class LaserEVM:
                 new_global_states.append(new_global_state)
                 index += 1
             
-            return new_global_states, op_code
+            return new_global_states, start_signal.op_code
         
         # 因为在每次执行的时候只添加当前的 callfunction 所以, 当当前环境执行结束的时候需要将这次执行的记录传递给之前的环境 这样才能记录上
         except TransactionEndSignal as end_signal:

@@ -432,9 +432,11 @@ class MixedSymbolicCalldata(BaseCalldata):
         if isinstance(newsize, int):
             self.type = 1
             self._size = symbol_factory.BitVecVal(newsize, 256)
+            self.concrete_size = symbol_factory.BitVecVal(newsize, 256)
         elif type(newsize) == BitVec and newsize.value is not None:
             self.type = 1
             self._size = symbol_factory.BitVecVal(newsize.value, 256)
+            self.concrete_size = symbol_factory.BitVecVal(newsize, 256)
         else:
             pass
 
@@ -496,6 +498,8 @@ class MixedSymbolicCalldata(BaseCalldata):
                         self._load(index)
                     )
             )
+        # if self._size.value is None:
+        #     print("size is symbol")
         # print("result is {}".format(result))
         self._calldata[index] = result
         # self._calldata.raw = z3.Store(self.raw, index.raw, value.raw)

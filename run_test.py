@@ -5,7 +5,7 @@ import time
 import gc
 
 # 设置基础目录 
-data_dir = "/home/kevinj/Desktop/evaluation/dataset/paper_dataset/contract/ReentrancyStudy-Data-main/reentrancy_byte_sol/mul"
+data_dir = "/home/kevinj/Desktop/evaluation/dataset/paper_dataset/contract/ReentrancyStudy-Data-main/reentrancy_byte_sol/sigle/TN"
 # data_dir = "/opt/paper_byte_sol"
 # data_dir = "/opt/t1"
 
@@ -38,23 +38,27 @@ for subdir in os.listdir(data_dir):
 
             # 检查文件是否存在
             if os.path.exists(attack_bridge_path) and os.path.exists(bin_path):
-                if flag == 1:
-                    command = "python3 myth.py analyze -mc {} {}".format(bin_path,attack_bridge_path)
-                    print(command)
-                else:
-                    # command = "python3 myth.py analyze -mc {} {} {}".format(bin_path,attack_bridge_path)
-                    pass
-                    
+                temp = subdir_path+".log"
+                output = "/home/kevinj/Desktop/evaluation/dataset/paper_dataset/contract/ReentrancyStudy-Data-main/reentrancy_byte_sol/output"
+                output_path = os.path.join(output, temp)
+                
+                command = "python3 myth.py analyze  {}".format(bin_path[:-3]) + "sol" + " --solver-timeout 600 -t 1"
+                print(command)
+                result = subprocess.run(command, shell=True, text=True)
+
+                command = "python3 myth.py analyze -mc {} {}  --solver-timeout 600000 -t 2 --strategy bfs > {}".format(bin_path,attack_bridge_path, output_path)
+                print(command)
                 # 执行命令并捕获输出
                 time_start = time.time()
                 try:
-                    result = subprocess.run(command, shell=True, text=True,  stdout=subprocess.PIPE)
-                    output = result.stdout
+                    # result = subprocess.run(command, shell=True, text=True,  stdout=subprocess.PIPE)
+                    subprocess.run(command, shell=True, text=True)
+                    # output = result.stdout
 
                     # 将文件名和输出添加到结果列表
-                    time_end = time.time()
-                    time_cost = time_end-time_start
-                    results.append([os.path.basename(subdir_path), output, time_cost])
+                    # time_end = time.time()
+                    # time_cost = time_end-time_start
+                    # results.append([os.path.basename(subdir_path), output, time_cost])
                     counter += 1
                     
                 except subprocess.CalledProcessError as e:

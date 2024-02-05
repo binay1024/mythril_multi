@@ -60,11 +60,13 @@ class TransactionStartSignal(Exception):
         op_code: str,
         global_state: GlobalState,
         constraints=None,
+        mode:str = None,
     ) -> None:
         self.transaction = transaction
         self.op_code = op_code
         self.global_state = global_state
         self.constraints = constraints
+        self.mode = mode
 
 
 class BaseTransaction:
