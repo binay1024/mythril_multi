@@ -382,6 +382,57 @@ def get_callable_sc_list(global_state):
     return callable_sc
 
 # 比较balances和 每个 account的 storage
+# def check_worldstate_change(worldstate_old, worldstate_new):
+#     acc_ = worldstate_old._accounts.get(0x901d12ebe1b195e5aa8748e62bd7734ae19b51f,None)
+#     new_acc = worldstate_new._accounts.get(0x901d12ebe1b195e5aa8748e62bd7734ae19b51f,None)
+#     if acc_ is None or new_acc is None:
+#         return False
+#     # print("check change 1")
+#     s = Solver()
+#     # s.add(new_balance.raw != old_balance.raw)
+#     # try:
+#     #     cond2 = old_balance != new_balance
+#     # except:
+#     #     print("balance error")
+#     try:
+        
+#             # 对于 acc来说 我们比较 acc.storage
+#             # new_s = new_acc.storage._standard_storage.raw
+#             # old_s = acc.storage._standard_storage.raw
+#             # cond1 = new_s!= old_s
+#             # c2 = cond1
+#         new_b = new_acc._balances[new_acc.address]
+#         print(new_b)
+#         # print(acc_._balances)
+#         # exit(0)
+#         old_b = acc_._balances[acc_.address]
+#         print(old_b)
+#         print("compare acc {} new_b old b {} vs {}".format(acc_.contract_name, new_b, old_b))
+#         s.add(new_b != old_b)
+#         new_kset = new_acc.storage.keys_set
+#         old_kset = acc_.storage.keys_set
+#         a = new_kset + old_kset
+#         if len(new_kset) != len(old_kset):
+#             print("warning, account storage key set changes")
+#         for key_ in a:
+#             s.add(new_acc.storage.printable_storage.get(key_,0) != new_acc.storage.printable_storage.get(key_,0))
+#             print("compare new storage as key {}".format(key_,new_acc.storage.printable_storage.get(key_,0), new_acc.storage.printable_storage.get(key_,0)))
+#     except:
+#         print("s.add problem")
+        
+#     # 收集完 各自 account的配对， 但凡有一个
+#     s.set_timeout(1000)
+#     result = s.check()
+#     # print("check change 2")
+#     if result == unsat:
+#         print("world_state not change")
+#         return True
+#     elif result == unknown:
+#         print("warning, cannot calculate world_state change or not")
+#         return False
+#     else:
+#         print("world_state change")
+#         return False
 def check_worldstate_change(worldstate_old, worldstate_new):
     old_balance = worldstate_old.balances
     new_balance = worldstate_new.balances
@@ -389,7 +440,7 @@ def check_worldstate_change(worldstate_old, worldstate_new):
     s = Solver()
     # s.add(new_balance.raw != old_balance.raw)
     try:
-        cond2 = old_balance != new_balance
+        cond2 = old_balance == new_balance
     except:
         print("balance error")
     try:
@@ -406,11 +457,11 @@ def check_worldstate_change(worldstate_old, worldstate_new):
             return False
         # 对于 acc来说 我们比较 acc.storage
         cond1 = True
-        cond2 = True
+        # cond2 = True
         try:
             new_ = new_acc.storage._standard_storage.raw
             old_ = acc.storage._standard_storage.raw
-            cond1 = new_!= old_
+            cond1 = new_== old_
         except:
             print("storage error")
         
@@ -423,15 +474,14 @@ def check_worldstate_change(worldstate_old, worldstate_new):
     
 
     # 收集完 各自 account的配对， 但凡有一个
-    s.set_timeout(60000)
+    s.set_timeout(600)
     result = s.check()
     if result == unsat:
-        print("world_state not change")
-        return True
+        # print("world_state change")
+        return False
     elif result == unknown:
         print("warning, cannot calculate world_state change or not")
-        return False
+        return True
     else:
-        print("world_state change")
-        return False
-    
+        print("world_state not change")
+        return True

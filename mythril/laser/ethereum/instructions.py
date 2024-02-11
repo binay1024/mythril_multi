@@ -27,7 +27,7 @@ from mythril.laser.smt import symbol_factory
 
 from mythril.disassembler.disassembly import Disassembly
 
-from mythril.laser.ethereum.state.calldata import ConcreteCalldata, SymbolicCalldata
+from mythril.laser.ethereum.state.calldata import ConcreteCalldata, SymbolicCalldata, MixedSymbolicCalldata
 
 import mythril.laser.ethereum.util as helper
 from mythril.laser.ethereum import util
@@ -57,6 +57,7 @@ from mythril.laser.ethereum.state.return_data import ReturnData
 from mythril.laser.ethereum.transaction import (
     MessageCallTransaction,
     TransactionStartSignal,
+    TransactionEndSignal,
     ContractCreationTransaction,
     tx_id_manager,
 )
@@ -68,13 +69,16 @@ from mythril.support.loader import DynLoader
 from mythril.laser.ethereum.state.account import Account
 from mythril.laser.ethereum.state.world_state import WorldState
 from mythril.laser.ethereum.state.constraints import Constraints
-from mythril.support.my_utils import get_callable_sc_list
+# from mythril.support.my_utils import get_callable_sc_list
+from mythril.support.my_utils import *
 
 log = logging.getLogger(__name__)
 
 TT256 = symbol_factory.BitVecVal(0, 256)
 TT256M1 = symbol_factory.BitVecVal(2**256 - 1, 256)
 # last_pushed_4byte = 0
+
+
 
 def transfer_ether(
     global_state: GlobalState,
@@ -1482,9 +1486,13 @@ class Instruction:
         :param global_state:
         :return:
         """
-        if global_state.last_return_data.return_data_size:
-            global_state.mstate.stack.append(global_state.last_return_data.size)
+        if global_state.last_return_data is not None and global_state.last_return_data.return_data_size:
+            # g = deepcopy(global_state)
+            global_state.mstate.stack.append(global_state.last_return_data.return_data_size)
+            # g.mstate.stack.append(symbol_factory.BitVecVal(8, 256))
+            # return[global_state,g]
         else:
+            print("last_return_data is None")
             global_state.mstate.stack.append(symbol_factory.BitVecVal(0, 256))
         return [global_state]
 
@@ -1515,11 +1523,12 @@ class Instruction:
     @StateTransition()
     def timestamp_(self, global_state: GlobalState) -> List[GlobalState]:
         """
-
+        对于一个顺序执行的代码序列来说，每次调用 timestamp 必须拥有增长性，
+        并且这个和 TX有关系
         :param global_state:
         :return:
         """
-        global_state.mstate.stack.append(global_state.new_bitvec("timestamp", 256))
+        global_state.mstate.stack.append(global_state.world_state.timestamp)
         return [global_state]
 
     @StateTransition()
@@ -1703,8 +1712,14 @@ class Instruction:
         min_gas, max_gas = get_opcode_gas("JUMPI")
         states = []
         
-
+        # ins = global_state.get_current_instruction()
+        # if ins['address'] == 1247:
+        #     cs = global_state.world_state.constraints
+        #     for item in cs:
+        #         print(simplify(item))
         op0, condition = state.stack.pop(), state.stack.pop()
+        
+        # print("condition is {}".format(condition))
 
         try:
             jump_addr = util.get_concrete_int(op0)
@@ -1815,6 +1830,8 @@ class Instruction:
                     # 这个是callee 更新 信息的地方 主要是函数 function name 
                     if new_state2.current_transaction.call_chain[0][2][1] != new_state2.environment.active_function_name:
                         new_state2.current_transaction.call_chain[0][2][1] = new_state2.environment.active_function_name
+
+                    
                     # if new_state2.environment.calldata.read_concrete_size() is None:
                     #     s = new_state2.environment.code.func_to_parasize[function_name.split('(')[0]]
                     #     size_ = symbol_factory.BitVecVal(s+4, 256)
@@ -2280,9 +2297,12 @@ class Instruction:
         """
         # print("=============Call Instruction!! print stack states=============")
         # print(global_state.mstate.stack)
+        crossFunctionMode = False
         instr = global_state.get_current_instruction()
         environment = global_state.environment
         memory_out_size, memory_out_offset = global_state.mstate.stack[-7:-5]
+        transactions = []
+        newconstraints = []
         try:
             (
                 callee_address,
@@ -2293,6 +2313,9 @@ class Instruction:
                 memory_out_offset,
                 memory_out_size,
             ) = get_call_parameters(global_state, self.dynamic_loader, with_value=True, )
+
+            
+
             # 除了 弹栈 读数据以外在里面也会 给 global_state.last_return_data 赋值
             # 所以此时 global_state 已经具有了 last_return_data
             if global_state.current_transaction.call_chain[0][2][1] != global_state.environment.active_function_name:
@@ -2302,33 +2325,57 @@ class Instruction:
             Tx_stack = global_state.transaction_stack
             # temp = []
             print("output the tx stack depth {}".format(len(Tx_stack)))
+            if len(Tx_stack) > 8:
+                print("------------------ Doesn't call and  return -------------------------------")
+                log.debug("The call is related to ether transfer between accounts")
+                
+                self._write_symbolic_returndata(
+                    global_state, memory_out_offset, memory_out_size
+                )
+
+                global_state.mstate.stack.append(
+                    global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
+                )
+                # global_state.mstate.stack.append(symbol_factory.BitVecVal(1,256))
             
+                sender = environment.active_account.address
+                receiver = callee_account.address
+                transfer_ether(global_state, sender, receiver, value)
+                return [global_state]
 
             # 处理一下 callable_sc 比如当 环境中存在： Main, Sub, Attacker 的时候， Main 调用unknown sc的时候 可以调用 Attacker 也可以调用 Sub，
             # 我们看看是否 function signature 是 确定的就好了啦。 
             return_flag = False
             sub_flag = False
-            attack_flag = False
+            attack_flag = 0
             reentrancy_flag = False
-            # 没有 value 的话会让他是0
-            if value.value is not None and value.value == 0:
-                sub_flag = True
-            elif value.value is not None and value.value != 0:
-                transfer_ether(global_state, sender, receiver, value)
-                # attack_flag = True
-            else:
-                const = Constraints([value > symbol_factory.BitVecVal(0,256)])
-                const += global_state.world_state.constraints
-                if const.is_possible():
-                    # global_state.world_state.constraints+=const
+            transfercall = False
+            singleRE = False
+            if global_state.environment.active_account.address.value != 0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF:
+                # 没有 value 的话会让他是0
+                if value.value is not None and value.value == 0:
+                    sub_flag = True
+                elif value.value is not None and value.value != 0:
+                    # transfer_ether(global_state, sender, receiver, value)
                     # attack_flag = True
                     pass
                 else:
-                    value = symbol_factory.BitVecVal(0,256)
-                    sub_flag = True
+                    const = Constraints([value > symbol_factory.BitVecVal(0,256)])
+                    const += global_state.world_state.constraints
+                    if const.is_possible():
+                        # global_state.world_state.constraints+=const
+                        # attack_flag = True
+                        pass
+                    else:
+                        value = symbol_factory.BitVecVal(0,256)
+                        sub_flag = True
+            else:
+                sub_flag = True
 
             attcker_sc = global_state.world_state.accounts[0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF]
             callable_sc = None
+
+            # case1： 当 callee是一个符号类型的时候，做一个预处理看看是否有直接调用 sub 或者 attacker的情况
             if callee_account is None:
                 
                 callable_sc = get_callable_sc_list(global_state)
@@ -2348,7 +2395,7 @@ class Instruction:
                     # 如果 是 0 我们就让他连接到 sub 否则就连接到 attacker （我们放弃两个都连的情况）
                     callable_sc = [attcker_sc]
                 # 大于一个以上并且是 caller 不是 attacker时候那就在 calllist中 剔除掉 attacker
-                elif sub_flag:
+                elif sub_flag and len(global_state.world_state._accounts)>3:
                     print("call sub")
                     # 只留下sub 剔除 attacker
                     if attcker_sc in callable_sc:
@@ -2361,7 +2408,8 @@ class Instruction:
                     #     callable_sc.remove(attcker_sc)
                     # sub_flag = True
                 ############################ 至此， 我们更新好了 callable_sc 
-
+            if sub_flag and len(global_state.world_state._accounts)<=3:
+                sub_flag = False
 
             # 如果 transfer， 那么就不call过去了， 如果 循环超过了 那么也不call过去了，如果 没有callee_account 那么也不call过去了
             ############################################################
@@ -2370,9 +2418,438 @@ class Instruction:
                 gaslimit_ = cast(BitVec, gaslimit_)
             nconstraints = Constraints([UGT(gaslimit_, symbol_factory.BitVecVal(2300, 256))])
             nconstraints += global_state.world_state.constraints
-            if not nconstraints.is_possible() or gaslimit_.value == 2300:
-                print("gas limit fail OR tranfer_call")       
+            if gaslimit_.value is None and not nconstraints.is_possible():
+                print("gas limit fail")       
                 return_flag = True
+            if (gaslimit_.value is not None and gaslimit_.value == 2300 ):
+                print("tranfer_call")       
+                return_flag = True
+                transfercall = True
+            
+            ################## 当我当前的 callee是 attacker 并且 tx_stack callee中也有的话那么就 算重复了哦 ############################
+            reentrancy_target_state = None
+            if callee_account is not None and callee_account != attcker_sc:
+                attack_flag = 3
+                print("flag is 3")
+            elif (callee_account is None and attcker_sc in callable_sc) or (callee_account is not None and callee_account == attcker_sc): # 这种情况就定调为调用 attacker
+                attack_flag = 2
+                print("flag is 2")
+                for (tx, global_) in global_state.transaction_stack:
+                    if global_ is None:
+                        continue
+                    if global_.environment.active_account.contract_name == "AttackBridge" and global_.environment.active_function_name == "fallback":
+                        return_flag = True
+                        singleRE = True
+                        break               
+                    else:
+                        pass
+                if callee_account is None:
+                    callable_sc.remove(attcker_sc)
+            else: # 剩下的情况就是 callable_sc里面木有 attacker了
+                print("flag is 0")
+                pass
+
+            # 要区分是直接返回还是再另起新的执行? 如果不是指定 sub 并且 存在 attacke也在 callee 列表中的时候
+            # if not sub_flag and attack_flag == 2 and crossFunctionMode: # 如果发现当前的
+            #     print("exist single reentrancy check")
+            #     if global_state.re_pc is not None and 'cross' == global_state.re_pc[0]:
+            #         print("find single reentrancy")
+            #         record = ["start",[global_state.environment.active_account.contract_name,global_state.environment.active_function_name],["AttackBridge","fallback"],"END_singleRE"]
+            #         global_state.current_transaction.call_chain.append(record)
+
+            #         raise TransactionEndSignal(global_state,revert=False,end_type="reenter")
+            #     else:
+            #         print("setting cross reentrancy reentrant execution")  
+            #         print("enter reentrancy check in crossFunction mode")
+            #         # 如果 执行crossfunction mode的话 check 不再这个地点而是在直接结束的那个地点 或者 
+                    
+            #         print("setting reentrancy reenter execution in cross mode")
+            #         if len(global_state.transaction_stack) > 2:
+            #             (re_tx, reentrancy_target_state) = global_state.transaction_stack[2]
+            #         else:
+            #             reentrancy_target_state = global_state
+            #         # 生成一个新的 Tx和 GlobalState 然后连接上
+            #         new_global_state_tx = deepcopy(reentrancy_target_state.current_transaction)
+            #         copied_worldstate = deepcopy(global_state.world_state)
+            #         new_global_state_tx.world_state = copied_worldstate
+            #         addr_ = new_global_state_tx.callee_account.address.value
+            #         new_callee_acc = new_global_state_tx.world_state.accounts.get(addr_)
+            #         if new_callee_acc is None:
+            #             print("error, cannot find acc")
+            #         new_global_state_tx.callee_account = new_callee_acc
+            #         # global_state_.update_mstate()
+            #         # global_state_.re_pc = ["cross", "cross"]
+            #             # raise TransactionStartSignal([], self.op_code, global_state, None,"reenter")
+            #         transaction_re = {}
+            #         transaction_re["type"] = "reenter"              
+            #         transaction_re["transaction"]= new_global_state_tx               
+            #         transactions.append(transaction_re)
+            #         newconstraints.append(True)
+            #         # raise TransactionStartSignal(transactions, self.op_code, global_state, newconstraints)
+
+            if not sub_flag and attack_flag == 2 and not crossFunctionMode: # 如果发现当前的
+                print("exist single reentrancy check")
+                if global_state.re_pc is not None and global_state.environment.active_account.contract_name == global_state.re_pc[0] and global_state.re_pc[1] == global_state.mstate.pc:
+                    print("find single reentrancy")
+                    record = ["start",[global_state.environment.active_account.contract_name,global_state.environment.active_function_name],["AttackBridge","fallback"],"END_singleRE"]
+                    global_state.current_transaction.call_chain.append(record)
+                    # if global_state.last_return_data is None:
+                    #     self._write_symbolic_returndata( global_state, memory_out_offset, memory_out_size )
+                    raise TransactionEndSignal(global_state, revert=False,end_type="reenter")
+                    
+                else:
+                    print("setting single reentrancy reentrant execution")  
+                    cross_f = False
+                    func_addr = global_state.environment.code.function_name_to_address.get(global_state.environment.active_function_name, None)
+                    if len(global_state.transaction_stack) > 2:
+                        (re_tx, reentrancy_target_state) = global_state.transaction_stack[2]
+                    else:
+                        reentrancy_target_state = global_state
+                    if func_addr is not None and reentrancy_target_state is not None:
+                        if (global_state.re_pc is not None):
+                            print("Warning, global_state.re_pc overwritting ... ")
+                        name = global_state.environment.active_account.contract_name
+                        pc_ = global_state.mstate.pc
+                        
+                        re_pc = [deepcopy(name), deepcopy(pc_)]
+                            # 原计划是让他跳回函数入口执行， 但是栈啥的都不对了 不正确
+                            # global_state.mstate.pc = func_addr - 1
+                            # 新计划就是初始化现在的 执行状态重新执行， 但保留 state 和 constraint
+                        # 将当前执行环境设置成 诱发
+                        # global_state_.update_mstate(reentrancy_target_state)
+                            # 利用constraint 初始化一些 calldata
+                            # 根据 functionHash 初始化 calldata
+                        # new_global_state_tx = deepcopy(reentrancy_target_state.current_transaction)
+                        copied_tx = deepcopy(reentrancy_target_state.current_transaction)
+                        copied_worldstate = deepcopy(global_state.world_state)
+                        copied_calldata = copied_tx.call_data
+                        contract_sig = reentrancy_target_state.environment.active_function_name
+                        new_id = tx_id_manager.get_next_tx_id()
+                        mixed_calldata = None
+                        if not cross_f:
+                            if contract_sig:
+                                # _init_calldata, length = build_calldata(contract_sig)
+                                # if _init_calldata == []:
+                                #     _init_calldata = None
+                                # mixed_calldata = build_mixed_symbolic_data(id=new_id, init_calldata=_init_calldata, length=length)
+                                
+                                init_calldata, length = build_calldata(contract_sig)
+                                mixed_calldata = build_mixed_symbolic_data_for_msg(id=new_id, init_calldata=init_calldata, length=length)
+                        
+                            # calldata_ = tx.get("call_data")
+                            # calldata_total_length = calldata_.get("total_length") if calldata_ is not None else None
+                            # calldata_data = calldata_.get("calldata") if calldata_ is not None else None
+                            # constructor_arguments = MixedSymbolicCalldata(tx_id=next_transaction_id, calldata=calldata_data, total_length=calldata_total_length)
+                        else:
+                            mixed_calldata = MixedSymbolicCalldata(tx_id=new_id)
+                        new_global_state_tx = MessageCallTransaction(world_state=copied_worldstate,call_data = mixed_calldata )
+                        new_global_state_tx.world_state.constraints = Constraints()
+                        addr_ = copied_tx.callee_account.address.value
+                        new_callee_acc = new_global_state_tx.world_state.accounts.get(addr_)
+                        if new_callee_acc is None:
+                            print("error, cannot find acc")
+                        new_global_state_tx.callee_account = new_callee_acc
+                        new_global_state_tx.call_function = copied_tx.call_function
+                        new_global_state_tx.gas_limit = copied_tx.gas_limit
+                        new_global_state_tx.caller = copied_tx.caller
+                        new_global_state_tx.static = copied_tx.static
+                        new_global_state_tx.return_data = copied_tx.return_data
+                        new_global_state_tx.type = copied_tx.type
+
+                        fname = reentrancy_target_state.environment.active_function_name
+                        print("we hope reenter {}".format(fname))
+                        # print(reentrancy_target_state.environment.active_account.storage.printable_storage)
+                        fhash = ""
+                        for hash_, sig in reentrancy_target_state.environment.code.hash_to_function_name.items():
+                            if sig != fname:
+                                continue
+                            fhash = hash_
+                            # print("get function hash")
+                            break
+                        fhash = int(fhash,16) if fhash != "" else 0
+                        # print("fhash is {}".format(fhash))
+                        c_0 = symbol_factory.BitVecVal(fhash >> 24,8)
+                        c_1 = symbol_factory.BitVecVal((fhash >> 16) & 0xff,8)
+                        c_2 = symbol_factory.BitVecVal((fhash >> 8) & 0xff ,8)
+                        c_3 = symbol_factory.BitVecVal(fhash & 0xff, 8)
+                        # print(c_0, c_1, c_2, c_3)
+                        
+                        if not cross_f:
+                            # global_state_.environment.calldata.assign_value_at_index(0,c_0)
+                            # global_state_.environment.calldata.assign_value_at_index(1,c_1)
+                            # global_state_.environment.calldata.assign_value_at_index(2,c_2)
+                            # global_state_.environment.calldata.assign_value_at_index(3,c_3)
+                            new_global_state_tx.call_data.assign_value_at_index(0,c_0)
+                            new_global_state_tx.call_data.assign_value_at_index(1,c_1)
+                            new_global_state_tx.call_data.assign_value_at_index(2,c_2)
+                            new_global_state_tx.call_data.assign_value_at_index(3,c_3)
+                            # print("calldata[0,4] is {},{},{},{}".format(global_state.environment.calldata[0], global_state.environment.calldata[1],global_state.environment.calldata[2],global_state.environment.calldata[3]))
+                        # raise TransactionStartSignal([], self.op_code, global_state, global_state_,"reenter")
+                        transaction_re = {}
+                        transaction_re["type"] = "reenter"              
+                        transaction_re["transaction"]=new_global_state_tx
+                        transaction_re["re_pc"]= re_pc
+                        
+                        # transaction_re["calldata0"] = c_0
+                        # transaction_re["calldata1"] = c_1
+                        # transaction_re["calldata2"] = c_2
+                        # transaction_re["calldata3"] = c_3
+                        transactions.append(transaction_re)
+                        newconstraints.append(True)
+                    else:
+                        print("find func_addr failed, setting failed")
+                        pass
+            # case2 不去执行了要返回了
+            # return_flag 意味着 我不要继续执行和call下去了， 我要准备返回call 了
+            if return_flag or len(Tx_stack) > 8:
+                print("------------------ Doesn't call and  return -------------------------------")
+                log.debug("The call is related to ether transfer between accounts")
+                
+                self._write_symbolic_returndata(
+                    global_state, memory_out_offset, memory_out_size
+                )
+
+                global_state.mstate.stack.append(
+                    global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
+                )
+                # global_state.mstate.stack.append(symbol_factory.BitVecVal(1,256))
+            
+                sender = environment.active_account.address
+                receiver = callee_account.address
+                transfer_ether(global_state, sender, receiver, value)
+                return [global_state]
+            
+            # 这里添加了 fallback 处理， 就是我们让 当 fallback 生成新的 函数call 的时候 让他生成 自动calldata 可以调用任何人。
+            if (global_state.environment.active_account.address.value == int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16) 
+                and global_state.environment.active_function_name == "fallback"):
+                print("current in attackBridge contract's fallback function, assign new calldata to")
+                call_data = {}
+                call_data["symbol"] = True
+            
+            # case3: 符号类型，并且存在 subcall 那就去call sub
+            if attack_flag != 3 :
+                print("------------------ get callable target call -------------------------------")
+                if callable_sc != [] and callable_sc is not None:
+                    for callee_account_ in callable_sc:
+                        v = value
+                        if callee_account_.address.value == int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16) and v.value is None:
+                            # 计算 constraint 中 让 value 大于0 是否满足 当前 constr
+                            if not isinstance(v, BitVec):
+                                v = cast(BitVec, v)
+                            nconstraints = Constraints([UGT(v, symbol_factory.BitVecVal(0, 256))])
+                            nconstraints += global_state.world_state.constraints
+                            if not nconstraints.is_possible():
+                                print("call value is zero, do not explore")
+                                continue  
+                        if callee_account_.address.value == int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16):
+                            print("pass attacker,we already have")
+                            continue
+                        sender = environment.active_account.address
+                        receiver = callee_account_.address
+                        # if value.value is not None and value.value != 0:
+                        transfer_ether(global_state, sender, receiver, value)
+                        # transfer_ether(global_state, sender, receiver, value)
+
+                        transaction = {}
+                        transaction["type"] = "MessageCallTransaction"              
+                        transaction["call_data"]=call_data                
+                        transaction["gas_limit"]=gas
+                        transaction["call_value"]=value
+                        transaction["callee_account"]=callee_account_
+                        transaction["txtype"] = "Internal_MessageCall"
+                        transaction["fork"]=False
+                        # print("callee_address is {}".format(callee_address))
+                        newconstraints.append((callee_address, callee_account_.address))
+                        transactions.append(transaction)
+                else:
+                    print("directly call attacker")
+
+                raise TransactionStartSignal(transactions, self.op_code, global_state, newconstraints)        
+            
+            # case4 符号类型了 并且没有  sub 可以call 的情况 也是返回
+            if callee_account is None:
+                print("warinig, callee is None, no callable target!!")
+                sender = environment.active_account.address
+                receiver = callee_account.address
+                if value.value is not None and value.value != 0:
+                    transfer_ether(global_state, sender, receiver, value)
+
+                self._write_symbolic_returndata(
+                    global_state, memory_out_offset, memory_out_size
+                )
+
+                global_state.mstate.stack.append(
+                    global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
+                )
+
+                return [global_state]
+
+        except ValueError as e:
+            print("Weak Warning in [call]: Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
+                    e
+                ))
+            log.debug(
+                "Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
+                    e
+                )
+            )
+            print("*************** valueError case in call instruction")
+            self._write_symbolic_returndata(
+                global_state, memory_out_offset, memory_out_size
+            )
+            # TODO: decide what to do in this case
+            global_state.mstate.stack.append(
+                global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
+            )
+            return [global_state]
+        
+        # 情况三 调用提前编译好的那九个合约
+        # 这个是 precompiled function 例如 sha3 这种                
+        native_result = native_call(
+            global_state, callee_address, call_data, memory_out_offset, memory_out_size
+        )
+        if native_result:
+            print("------------------ native call  -------------------------------")
+            return native_result
+        
+        # case5 调用指定的合约，不过如果是调用 攻击者并且 value是0的话 我们不去调用了就，抛弃当前这个执行路径
+        # 情况四 callee_account 存在 并且包含代码
+        print("------------------ call to a fixed or created target  -------------------------------")
+        v = value
+        if v.value is None and callee_account.address.value == int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16) :
+            # 计算 constraint 中 让 value 大于0 是否满足 当前 constr
+            if not isinstance(v, BitVec):
+                v = cast(BitVec, v)
+            nconstraints = Constraints([UGT(v, symbol_factory.BitVecVal(0, 256))])
+            nconstraints += global_state.world_state.constraints
+            if not nconstraints.is_possible():
+                print("call value is zero, do not explore")
+                return []       
+
+        sender = environment.active_account.address
+        receiver = callee_account.address
+        transfer_ether(global_state, sender, receiver, value)
+
+        transaction = {}
+        transaction["type"] = "MessageCallTransaction"              
+        transaction["call_data"]=call_data                
+        transaction["gas_limit"]=gas
+        transaction["call_value"]=value
+        transaction["callee_account"]=callee_account
+        transaction["txtype"] = "Internal_MessageCall"
+        transaction["fork"]=False
+
+        raise TransactionStartSignal([transaction], self.op_code, global_state)
+
+    
+
+    @StateTransition()
+    def call_post(self, global_state: GlobalState, end_type = None) -> List[GlobalState]:
+        """
+
+        :param global_state:
+        :return:
+        """
+
+        return self.post_handler(global_state, function_name="call", end_type=end_type)
+
+    @StateTransition()
+    def callcode_(self, global_state: GlobalState) -> List[GlobalState]:
+        """
+
+        :param global_state:
+        :return:
+        """
+        instr = global_state.get_current_instruction()
+        environment = global_state.environment
+        memory_out_size, memory_out_offset = global_state.mstate.stack[-7:-5]
+        
+        # callable_sc = get_callable_sc_list(global_state)
+        # callable_sc_ = []
+        # if callable_sc == []:
+        #     print("Empty callable list, so this is a external call, we will just return.")
+        # for sc in callable_sc:
+        #     if sc.address == symbol_factory.BitVecVal(int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16), 256):
+        #         print("remove attack contract from multi target")
+        #         continue
+        #     callable_sc_.append(sc)
+        # callable_sc = callable_sc_
+        try:
+            (
+                callee_address,
+                callee_account,
+                call_data,
+                value,
+                gas,
+                _,
+                _,
+            ) = get_call_parameters(global_state, self.dynamic_loader)
+            
+            if global_state.current_transaction.call_chain[0][2][1] != global_state.environment.active_function_name:
+                global_state.current_transaction.call_chain[0][2][1] = global_state.environment.active_function_name
+            Tx_stack = global_state.transaction_stack
+            print("output the tx stack depth in callcode {}".format(len(Tx_stack)))
+            if len(Tx_stack) > 8:
+                print("------------------ Doesn't call and  return -------------------------------")
+                log.debug("The call is related to ether transfer between accounts")
+                
+                self._write_symbolic_returndata(
+                    global_state, memory_out_offset, memory_out_size
+                )
+
+                global_state.mstate.stack.append(
+                    global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
+                )
+                # global_state.mstate.stack.append(symbol_factory.BitVecVal(1,256))
+            
+                sender = environment.active_account.address
+                receiver = callee_account.address
+                transfer_ether(global_state, sender, receiver, value)
+                return [global_state]
+
+            return_flag = False
+            sub_flag = False
+            attack_flag = False
+            reentrancy_flag = False
+
+            if value.value is not None and value.value == 0:
+                sub_flag = True
+            elif value.value is not None and value.value != 0:
+                pass
+            else:
+                const = Constraints([value > symbol_factory.BitVecVal(0,256)])
+                const += global_state.world_state.constraints
+                if const.is_possible():
+                    pass
+                else:
+                    value = symbol_factory.BitVecVal(0,256)
+                    sub_flag = True
+
+            attcker_sc = global_state.world_state.accounts[0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF]
+            callable_sc = None
+            if callee_account is None:
+                callable_sc = get_callable_sc_list(global_state)
+                
+                if callable_sc == [] or callable_sc is None:
+                    return_flag = True
+                    print("warning, Empty callable list, we will just return.")
+
+                elif len(callable_sc) == 1:
+                    pass
+                
+                elif(not sub_flag) and environment.active_account.contract_name != "AttackBridge":
+                    print("Call attacker")
+                    callable_sc = [attcker_sc]
+                
+                elif sub_flag:
+                    print("call sub")
+                    
+                    if attcker_sc in callable_sc:
+                        callable_sc.remove(attcker_sc)
+                else:
+                    pass
+
+
             ################## 当我当前的 callee是 attacker 并且 tx_stack callee中也有的话那么就 算重复了哦 ############################
             if (callee_account is None and attcker_sc in callable_sc) or (callee_account == attcker_sc):
                 for (tx, global_) in global_state.transaction_stack:
@@ -2455,139 +2932,8 @@ class Instruction:
                 print("current in attackBridge contract's fallback function, assign new calldata to")
                 call_data = {}
                 call_data["symbol"] = True
-           
-            if callee_account is None and callable_sc != []:
-                print("------------------ get callable target call -------------------------------")
-                transactions = []
-                newconstraints = []
-                main_addr = None
 
-                for callee_account_ in callable_sc:
-
-                    sender = environment.active_account.address
-                    receiver = callee_account_.address
-                    if value.value is not None and value.value != 0:
-                        transfer_ether(global_state, sender, receiver, value)
-                    # transfer_ether(global_state, sender, receiver, value)
-
-                    transaction = {}
-                    transaction["type"] = "MessageCallTransaction"              
-                    transaction["call_data"]=call_data                
-                    transaction["gas_limit"]=gas
-                    transaction["call_value"]=value
-                    transaction["callee_account"]=callee_account_
-                    transaction["txtype"] = "Internal_MessageCall"
-                    transaction["fork"]=False
-                    # print("callee_address is {}".format(callee_address))
-                    newconstraints.append((callee_address, callee_account_.address))
-                    transactions.append(transaction)
-
-                raise TransactionStartSignal(transactions, self.op_code, global_state, newconstraints)             
-        
-        except ValueError as e:
-            print("Weak Warning in [call]: Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
-                    e
-                ))
-            log.debug(
-                "Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
-                    e
-                )
-            )
-            print("*************** valueError case in call instruction")
-            self._write_symbolic_returndata(
-                global_state, memory_out_offset, memory_out_size
-            )
-            # TODO: decide what to do in this case
-            global_state.mstate.stack.append(
-                global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
-            )
-            return [global_state]
-        
-        # 情况三 调用提前编译好的那九个合约
-        # 这个是 precompiled function 例如 sha3 这种                
-        native_result = native_call(
-            global_state, callee_address, call_data, memory_out_offset, memory_out_size
-        )
-        if native_result:
-            print("------------------ native call  -------------------------------")
-            return native_result
-        
-        # 情况四 callee_account 存在 并且包含代码
-        print("------------------ call to a fixed or created target  -------------------------------")
-
-        sender = environment.active_account.address
-        receiver = callee_account.address
-        if value.value is not None and value.value != 0:
-            transfer_ether(global_state, sender, receiver, value)
-
-        transaction = {}
-        transaction["type"] = "MessageCallTransaction"              
-        transaction["call_data"]=call_data                
-        transaction["gas_limit"]=gas
-        transaction["call_value"]=value
-        transaction["callee_account"]=callee_account
-        transaction["txtype"] = "Internal_MessageCall"
-        transaction["fork"]=False
-
-        raise TransactionStartSignal([transaction], self.op_code, global_state)
-
-    
-
-    @StateTransition()
-    def call_post(self, global_state: GlobalState, end_type = None) -> List[GlobalState]:
-        """
-
-        :param global_state:
-        :return:
-        """
-
-        return self.post_handler(global_state, function_name="call", end_type=end_type)
-
-    @StateTransition()
-    def callcode_(self, global_state: GlobalState) -> List[GlobalState]:
-        """
-
-        :param global_state:
-        :return:
-        """
-        instr = global_state.get_current_instruction()
-        environment = global_state.environment
-        memory_out_size, memory_out_offset = global_state.mstate.stack[-7:-5]
-        
-        callable_sc = get_callable_sc_list(global_state)
-        callable_sc_ = []
-        if callable_sc == []:
-            print("Empty callable list, so this is a external call, we will just return.")
-        for sc in callable_sc:
-            if sc.address == symbol_factory.BitVecVal(int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16), 256):
-                print("remove attack contract from multi target")
-                continue
-            callable_sc_.append(sc)
-        callable_sc = callable_sc_
-        try:
-            (
-                callee_address,
-                callee_account,
-                call_data,
-                value,
-                gas,
-                _,
-                _,
-            ) = get_call_parameters(global_state, self.dynamic_loader)
-
-            if callee_account is not None and callee_account.code.bytecode == "":
-                log.debug("The call is related to ether transfer between accounts")
-                sender = global_state.environment.active_account.address
-                receiver = callee_account.address
-
-                # transfer_ether(global_state, sender, receiver, value)
-                self._write_symbolic_returndata(
-                    global_state, memory_out_offset, memory_out_size
-                )
-                global_state.mstate.stack.append(
-                    global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
-                )
-                return [global_state]
+            
             
             if callee_account is None and callable_sc != []:
                 print("------------------ get callable target call -------------------------------")
@@ -2628,7 +2974,23 @@ class Instruction:
                     transactions.append(transaction)
 
                 raise TransactionStartSignal(transactions, self.op_code, global_state, newconstraints)
+   
+            if callee_account is None:
+                print("warinig, callee is None, no callable target!!")
+                sender = environment.active_account.address
+                receiver = callee_account.address
+                # if value.value is not None and value.value != 0:
+                transfer_ether(global_state, sender, receiver, value)
 
+                self._write_symbolic_returndata(
+                    global_state, memory_out_offset, memory_out_size
+                )
+
+                global_state.mstate.stack.append(
+                    global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
+                )
+
+                return [global_state]
             
         except ValueError as e:
             print("Weak Warning in [delegatecall]: Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
@@ -2647,15 +3009,15 @@ class Instruction:
             )
             return [global_state]
 
-        if callee_account is None:
-            print("Weak Warning in [delegatecall]: callee_accout is NOne")
-            self._write_symbolic_returndata(
-                global_state, memory_out_offset, memory_out_size
-            )
-            global_state.mstate.stack.append(
-                global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
-            )
-            return [global_state]
+        # if callee_account is None:
+        #     print("Weak Warning in [delegatecall]: callee_accout is NOne")
+        #     self._write_symbolic_returndata(
+        #         global_state, memory_out_offset, memory_out_size
+        #     )
+        #     global_state.mstate.stack.append(
+        #         global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
+        #     )
+        #     return [global_state]
 
 
         native_result = native_call(
@@ -2791,16 +3153,16 @@ class Instruction:
         environment = global_state.environment
         memory_out_size, memory_out_offset = global_state.mstate.stack[-6:-4]
 
-        callable_sc = get_callable_sc_list(global_state)
-        callable_sc_ = []
-        if callable_sc == []:
-            print("Empty callable list, so this is a external call, we will just return.")
-        for sc in callable_sc:
-            if sc.address == symbol_factory.BitVecVal(int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16), 256):
-                print("remove attack contract from multi target")
-                continue
-            callable_sc_.append(sc)
-        callable_sc = callable_sc_
+        # callable_sc = get_callable_sc_list(global_state)
+        # callable_sc_ = []
+        # if callable_sc == []:
+        #     print("Empty callable list, so this is a external call, we will just return.")
+        # for sc in callable_sc:
+        #     if sc.address == symbol_factory.BitVecVal(int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16), 256):
+        #         print("remove attack contract from multi target")
+        #         continue
+        #     callable_sc_.append(sc)
+        # callable_sc = callable_sc_
 
         
         try:
@@ -2813,20 +3175,157 @@ class Instruction:
                 _,
                 _,
             ) = get_call_parameters(global_state, self.dynamic_loader)
-
-            if callee_account is not None and callee_account.code.bytecode == "":
+            
+            if global_state.current_transaction.call_chain[0][2][1] != global_state.environment.active_function_name:
+                global_state.current_transaction.call_chain[0][2][1] = global_state.environment.active_function_name
+            Tx_stack = global_state.transaction_stack
+            print("output the tx stack depth in delegate call {}".format(len(Tx_stack)))
+            
+            if len(Tx_stack) > 8:
+                print("------------------ Doesn't call and  return -------------------------------")
                 log.debug("The call is related to ether transfer between accounts")
-                sender = global_state.environment.active_account.address
-                receiver = callee_account.address
-
-                # transfer_ether(global_state, sender, receiver, value)
+                
                 self._write_symbolic_returndata(
                     global_state, memory_out_offset, memory_out_size
                 )
+
                 global_state.mstate.stack.append(
                     global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
                 )
+                # global_state.mstate.stack.append(symbol_factory.BitVecVal(1,256))
+            
+                sender = environment.active_account.address
+                receiver = callee_account.address
+                transfer_ether(global_state, sender, receiver, value)
                 return [global_state]
+
+            return_flag = False
+            sub_flag = False
+            attack_flag = False
+            reentrancy_flag = False
+
+            if value.value is not None and value.value == 0:
+                sub_flag = True
+            elif value.value is not None and value.value != 0:
+                pass
+            else:
+                const = Constraints([value > symbol_factory.BitVecVal(0,256)])
+                const += global_state.world_state.constraints
+                if const.is_possible():
+                    pass
+                else:
+                    value = symbol_factory.BitVecVal(0,256)
+                    sub_flag = True
+
+            attcker_sc = global_state.world_state.accounts[0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF]
+            callable_sc = None
+            if callee_account is None:
+                callable_sc = get_callable_sc_list(global_state)
+                
+                if callable_sc == [] or callable_sc is None:
+                    return_flag = True
+                    print("warning, Empty callable list, we will just return.")
+
+                elif len(callable_sc) == 1:
+                    pass
+                
+                elif(not sub_flag) and environment.active_account.contract_name != "AttackBridge":
+                    print("Call attacker")
+                    callable_sc = [attcker_sc]
+                
+                elif sub_flag:
+                    print("call sub")
+                    
+                    if attcker_sc in callable_sc:
+                        callable_sc.remove(attcker_sc)
+                else:
+                    pass
+
+
+            ################## 当我当前的 callee是 attacker 并且 tx_stack callee中也有的话那么就 算重复了哦 ############################
+            if (callee_account is None and attcker_sc in callable_sc) or (callee_account == attcker_sc):
+                for (tx, global_) in global_state.transaction_stack:
+                    if global_ is None:
+                        continue
+                    if global_.environment.active_account.contract_name == "AttackBridge" and global_.environment.active_function_name == "fallback":
+                        reentrancy_flag = True
+                        # print("find reentrancy")
+                        return_flag = True
+                           
+            # return_flag 意味着 我不要继续执行和call下去了， 我要准备返回call 了
+            if return_flag or len(Tx_stack) > 8:
+                print("------------------ may call to Attacker and return -------------------------------")
+                log.debug("The call is related to ether transfer between accounts")
+                sender = environment.active_account.address
+                # receiver = callee_account.address
+                # if value.value is not None and value.value != 0:
+                #     transfer_ether(global_state, sender, receiver, value)
+
+                self._write_symbolic_returndata(
+                    global_state, memory_out_offset, memory_out_size
+                )
+
+                global_state.mstate.stack.append(
+                    global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
+                )
+                # global_state.mstate.stack.append(symbol_factory.BitVecVal(1,256))
+                if reentrancy_flag:
+                    print("enter reentrancy check")
+                    if global_state.re_pc is not None and global_state.environment.active_account.contract_name == global_state.re_pc[0] and global_state.re_pc[1] == global_state.mstate.pc:
+                        print("find reentrancy")
+                        record = ["start",[global_state.environment.active_account.contract_name,global_state.environment.active_function_name],["AttackBridge","fallback"],"END"]
+                        global_state.current_transaction.call_chain.append(record)
+                    else:
+                        print("setting reentrancy reenter execution")               
+                        func_addr = global_state.environment.code.function_name_to_address.get(global_state.environment.active_function_name,None)
+                        if func_addr is not None:
+                            if (global_state.re_pc is not None):
+                                print("Warning, global_state.re_pc overwritting ... ")
+                            name = global_state.environment.active_account.contract_name
+                            pc_ = global_state.mstate.pc
+                            global_state.re_pc = [deepcopy(name), deepcopy(pc_)]
+                            # 原计划是让他跳回函数入口执行， 但是栈啥的都不对了 不正确
+                            # global_state.mstate.pc = func_addr - 1
+                            # 新计划就是初始化现在的 执行状态重新执行， 但保留 state 和 constraint
+                            global_state.update_mstate()
+                            # 利用constraint 初始化一些 calldata
+                            # 根据 functionHash 初始化 calldata
+                            fname = global_state.environment.active_function_name
+                            fhash = ""
+                            for hash_, sig in global_state.environment.code.hash_to_function_name.items():
+                                if sig != fname:
+                                    continue
+                                fhash = hash_
+                                break
+                            fhash = int(fhash,16)
+                            print("fhash is {}".format(fhash))
+                            c_0 = symbol_factory.BitVecVal(fhash >> 24,8)
+                            c_1 = symbol_factory.BitVecVal((fhash >> 16) & 0xff,8)
+                            c_2 = symbol_factory.BitVecVal((fhash >> 8) & 0xff ,8)
+                            c_3 = symbol_factory.BitVecVal(fhash & 0xff, 8)
+                            global_state.environment.calldata.assign_value_at_index(0,c_0)
+                            global_state.environment.calldata.assign_value_at_index(1,c_1)
+                            global_state.environment.calldata.assign_value_at_index(2,c_2)
+                            global_state.environment.calldata.assign_value_at_index(3,c_3)
+                            
+                            # print("calldata[0,4] is {},{},{},{}".format(global_state.environment.calldata[0], global_state.environment.calldata[1],global_state.environment.calldata[2],global_state.environment.calldata[3]))
+                            raise TransactionStartSignal([], self.op_code, global_state, None,"reenter")
+                        else:
+                            print("Warning, reentrancy by old way")
+                            exit(1)
+                else:
+                    print("Other exit case")
+
+                return [global_state]
+            
+            # 这里添加了 fallback 处理， 就是我们让 当 fallback 生成新的 函数call 的时候 让他生成 自动calldata 可以调用任何人。
+            if (global_state.environment.active_account.address.value == int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16) 
+                and global_state.environment.active_function_name == "fallback"):
+                print("current in attackBridge contract's fallback function, assign new calldata to")
+                call_data = {}
+                call_data["symbol"] = True
+
+            
             
             if callee_account is None and callable_sc != []:
                 print("------------------ get callable target call -------------------------------")
@@ -2867,6 +3366,23 @@ class Instruction:
                     transactions.append(transaction)
 
                 raise TransactionStartSignal(transactions, self.op_code, global_state, newconstraints)
+   
+            if callee_account is None:
+                print("warinig, callee is None, no callable target!!")
+                sender = environment.active_account.address
+                receiver = callee_account.address
+                # if value.value is not None and value.value != 0:
+                transfer_ether(global_state, sender, receiver, value)
+
+                self._write_symbolic_returndata(
+                    global_state, memory_out_offset, memory_out_size
+                )
+
+                global_state.mstate.stack.append(
+                    global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
+                )
+
+                return [global_state]
 
             
         except ValueError as e:
@@ -3034,21 +3550,136 @@ class Instruction:
                 gas,
                 memory_out_offset,
                 memory_out_size,
-            ) = get_call_parameters(global_state, self.dynamic_loader)
-
-            if callee_account is not None and callee_account.code.bytecode == "":
+            ) = get_call_parameters(global_state, self.dynamic_loader, )
+            # 除了 弹栈 读数据以外在里面也会 给 global_state.last_return_data 赋值
+            # 所以此时 global_state 已经具有了 last_return_data
+            if global_state.current_transaction.call_chain[0][2][1] != global_state.environment.active_function_name:
+                global_state.current_transaction.call_chain[0][2][1] = global_state.environment.active_function_name
+            # 情况一: callee account 以符号的形式存在 并且 不含有代码, 
+            # if callee_account is not None and callee_account.code.bytecode == "" and global_state.environment.active_account.address.value != int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16):
+            Tx_stack = global_state.transaction_stack
+            # temp = []
+            print("output the tx stack depth in static call{}".format(len(Tx_stack)))
+            if len(Tx_stack) > 8:
+                print("------------------ Doesn't call and  return -------------------------------")
                 log.debug("The call is related to ether transfer between accounts")
-                sender = environment.active_account.address
-                receiver = callee_account.address
-                transfer_ether(global_state, sender, receiver, value)
+                
                 self._write_symbolic_returndata(
                     global_state, memory_out_offset, memory_out_size
                 )
+
+                global_state.mstate.stack.append(
+                    global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
+                )
+                # global_state.mstate.stack.append(symbol_factory.BitVecVal(1,256))
+            
+                sender = environment.active_account.address
+                receiver = callee_account.address
+                transfer_ether(global_state, sender, receiver, value)
+                return [global_state]
+
+            # 处理一下 callable_sc 比如当 环境中存在： Main, Sub, Attacker 的时候， Main 调用unknown sc的时候 可以调用 Attacker 也可以调用 Sub，
+            # 我们看看是否 function signature 是 确定的就好了啦。 
+            return_flag = False
+            
+            attack_flag = False
+            reentrancy_flag = False
+            # 没有 value 的话会让他是0
+            
+            sub_flag = True
+
+            attcker_sc = global_state.world_state.accounts[0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF]
+            callable_sc = None
+            if callee_account is None:
+                
+                callable_sc = get_callable_sc_list(global_state)
+                
+                if callable_sc == [] or callable_sc is None:
+                    return_flag = True
+                    print("warning, Empty callable list, we will just return.")
+
+                elif len(callable_sc) == 1:
+                    # 只剩下 调用attacker的情况 或者 从 attacker 调用main
+                    pass
+                # 当 callable_sc 是一个以上的时候， 并且不是attacker
+                # sub_flag 是当 value是 0的情况，所以这个分支是当 value 大于0的情况就 call attacker
+                elif(not sub_flag) and environment.active_account.contract_name != "AttackBridge":
+                    print("Call attacker")
+                    # 剔除 tx_stack中出现过的 sc，只有 理论上只剩下 attacker 和 sub
+                    # 如果 是 0 我们就让他连接到 sub 否则就连接到 attacker （我们放弃两个都连的情况）
+                    callable_sc = [attcker_sc]
+                # 大于一个以上并且是 caller 不是 attacker时候那就在 calllist中 剔除掉 attacker
+                elif sub_flag:
+                    print("call sub")
+                    # 只留下sub 剔除 attacker
+                    if attcker_sc in callable_sc:
+                        callable_sc.remove(attcker_sc)
+                else:
+                    pass
+                    # print("call sub")
+                    # # 只留下sub 剔除 attacker
+                    # if attcker_sc in callable_sc:
+                    #     callable_sc.remove(attcker_sc)
+                    # sub_flag = True
+                ############################ 至此， 我们更新好了 callable_sc 
+
+
+            # 如果 transfer， 那么就不call过去了， 如果 循环超过了 那么也不call过去了，如果 没有callee_account 那么也不call过去了
+            ############################################################
+            
+            ################## 当我当前的 callee是 attacker 并且 tx_stack callee中也有的话那么就 算重复了哦 ############################
+            
+            
+            # 这里添加了 fallback 处理， 就是我们让 当 fallback 生成新的 函数call 的时候 让他生成 自动calldata 可以调用任何人。
+            if (global_state.environment.active_account.address.value == int("0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF", 16) 
+                and global_state.environment.active_function_name == "fallback"):
+                print("current in attackBridge contract's fallback function, assign new calldata to")
+                call_data = {}
+                call_data["symbol"] = True
+           
+            if callee_account is None and callable_sc != []:
+                print("------------------ get callable target call -------------------------------")
+                transactions = []
+                newconstraints = []
+                main_addr = None
+
+                for callee_account_ in callable_sc:
+
+                    sender = environment.active_account.address
+                    receiver = callee_account_.address
+                
+                    # transfer_ether(global_state, sender, receiver, value)
+
+                    transaction = {}
+                    transaction["type"] = "MessageCallTransaction"              
+                    transaction["call_data"]=call_data                
+                    transaction["gas_limit"]=gas
+                    transaction["call_value"]=value
+                    transaction["callee_account"]=callee_account_
+                    transaction["txtype"] = "Internal_MessageCall"
+                    transaction["fork"]=False
+                    # print("callee_address is {}".format(callee_address))
+                    newconstraints.append((callee_address, callee_account_.address))
+                    transactions.append(transaction)
+
+                raise TransactionStartSignal(transactions, self.op_code, global_state, newconstraints)        
+                 
+            if callee_account is None:
+                print("warinig, callee is None, no callable target!!")
+                sender = environment.active_account.address
+                receiver = callee_account.address
+                
+
+                self._write_symbolic_returndata(
+                    global_state, memory_out_offset, memory_out_size
+                )
+
                 global_state.mstate.stack.append(
                     global_state.new_bitvec("retval_" + str(instr["address"])+"_"+str(global_state.current_transaction.id), 256)
                 )
 
                 return [global_state]
+
 
         except ValueError as e:
             print("Weak Warning in [staticcall]: Could not determine required parameters for call, putting fresh symbol on the stack. \n{}".format(
@@ -3075,19 +3706,6 @@ class Instruction:
         if native_result:
             return native_result
 
-        # transaction = MessageCallTransaction(
-        #     world_state=global_state.world_state,
-        #     gas_price=environment.gasprice,
-        #     gas_limit=gas,
-        #     identifier = 1,
-        #     origin=environment.origin,
-        #     code=callee_account.code,
-        #     caller=environment.address,
-        #     callee_account=callee_account,
-        #     call_data=call_data,
-        #     call_value=value,
-        #     static=True,
-        # )
         transaction = {}
         transaction["type"] = "MessageCallTransaction"              
         transaction["call_data"]=call_data                
@@ -3195,6 +3813,7 @@ class Instruction:
             memory_out_offset, min(memory_out_size, global_state.last_return_data.size)
         )
         if global_state.last_return_data.size.symbolic:
+            print("set returndatasize 500")
             ret_size = 500
         else:
             ret_size = global_state.last_return_data.size.value

@@ -524,7 +524,7 @@ class MixedSymbolicCalldata(BaseCalldata):
         # print("max and index is {}, {}".format(max_, index.value))
         if index.value is not None and (index.value > max_):
             print("warning! index biger than max bound in calldata load")
-
+            return symbol_factory.BitVecVal(0, 8)
         
         condi = If(
                         index < max_,

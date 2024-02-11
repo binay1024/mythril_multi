@@ -41,6 +41,8 @@ class WorldState:
         self.transaction_sequence = transaction_sequence or []
         self._annotations = annotations or []
         # self.internal_transaction_sequence = []
+        self.old_worldstate = None
+        self.timestamp = 0
 
     @property
     def accounts(self):
@@ -130,6 +132,7 @@ class WorldState:
         # init 过程
         new_world_state.constraints = copy.deepcopy(self.constraints) # 一个列表里面都是表达式
         new_world_state.starting_balances = copy.deepcopy(self.starting_balances)
+        new_world_state.old_worldstate = copy.deepcopy(self.old_worldstate)
         # 我现在希望从 account 拷贝到 new_world_state.account 里面
         for account in self._accounts.values():
             new_account = copy.deepcopy(account)

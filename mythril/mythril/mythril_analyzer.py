@@ -34,7 +34,7 @@ class MythrilAnalyzer:
         self,
         disassembler: MythrilDisassembler,
         cmd_args: Namespace,
-        strategy: str = "dfs",
+        strategy: str = "bfs",
         address: Optional[str] = None,
         sub: Optional[list[MythrilDisassembler]] = None,
         sig : list[dict] = None,

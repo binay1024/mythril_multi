@@ -246,9 +246,9 @@ class LaserEVM:
                     "Increase the resources for creation execution (--max-depth or --create-timeout) "
                     "Check whether the bytecode is indeed the creation code, otherwise use the --bin-runtime flag"
                 )
-            if not self.open_states[0].accounts[0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF]:
-                print("cannot get attacker account error")
-                exit(0)
+            # if not self.open_states[0].accounts[0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF]:
+                # print("cannot get attacker account error")
+                # exit(0)
             attackBridge_addr = symbol_factory.BitVecVal(0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF, 256)
             accounts_ = self.open_states[0].accounts
             for (addr, acc) in accounts_.items():
@@ -259,11 +259,26 @@ class LaserEVM:
         log.info("Finished symbolic execution")
         print("Finished symbolic execution")
         print("\n\n================ Print openstates call_chain ================")
+        # for i in range(len(self.open_states)):
+        #     world_stt = self.open_states[i]
+        #     print("print {}th world_state`s call_chain".format(i))
+        #     print(world_stt.transaction_sequence[-1].call_chain)
+        #     print("----------------------------------------------------")
+        
         for i in range(len(self.open_states)):
-            world_stt = self.open_states[i]
-            print("print {}th world_state`s call_chain".format(i))
-            print(world_stt.transaction_sequence[-1].call_chain)
-            print("----------------------------------------------------")
+            print("++++++++++++++++++++ In {}th open_state ++++++++++++++++++++".format(i))
+            
+            tx = self.open_states[i].transaction_sequence[-1]
+                
+            print(tx.call_chain)
+            fallback_record = ['AttackBridge', 'fallback']
+            count = sum(1 for item in tx.call_chain if item[2] == fallback_record)
+            print("fallback num is {}".format(count))
+            if count >= 2:
+                print("********************** Reentrancy Vulnerability found ***********************") 
+            if count >=1 and self.check_cross(tx.call_chain):
+                print("********************** May Cross Reentrancy Vulnerability found ***********************")
+
         print("\n\n================ Print openstates call_chain finish ================")
         if self.requires_statespace:
             log.info(
@@ -361,22 +376,40 @@ class LaserEVM:
             for hook in self._stop_sym_trans_hooks:
                 hook()
 
-            # print("Excute %d TX Loop finish!!!\noutput the call_chain"%i)
-            # for i in range(len(self.open_states)):
-            #     print("++++++++++++++++++++ In {}th open_state ++++++++++++++++++++".format(i))
-            #     for j in range(len(self.open_states[i].transaction_sequence)):
-            #         tx = self.open_states[i].transaction_sequence[j]
-            #         print("    -------- output {}th TX --------".format(j))
-            #         print(tx.call_chain)
-            #         fallback_record = ['AttackBridge', 'fallback']
-            #         count = sum(1 for item in tx.call_chain if item == fallback_record)
-            #         print("fallback num is {}".format(count))
-            #         if count >= 3:
-            #             print("********************** Reentrancy Vulnerability found ***********************") 
+            print("Excute %d TX Loop finish!!!\noutput the call_chain"%i)
+            for i in range(len(self.open_states)):
+                print("++++++++++++++++++++ In {}th open_state ++++++++++++++++++++".format(i))
+                
+                tx = self.open_states[i].transaction_sequence[-1]
+                    
+                print(tx.call_chain)
+                fallback_record = ['AttackBridge', 'fallback']
+                count = sum(1 for item in tx.call_chain if item[2] == fallback_record)
+                print("fallback num is {}".format(count))
+                if count >= 2:
+                    print("********************** Reentrancy Vulnerability found ***********************") 
+                if count >=1 and self.check_cross(tx.call_chain):
+                    print("********************** May Cross Reentrancy Vulnerability found ***********************")
 
         self.executed_transactions = True
 
-
+    def check_cross(self, lst):
+        # print(lst)
+        groups = lst
+        counter = 0
+        temp = ""
+        for group in groups:
+            if 'MAIN' in group[-2]:
+                if group[-1]=="REVERT":
+                    continue
+                if temp == "":
+                    temp = group[-2][1]
+                else:
+                    if temp == group[-2][1]:
+                        continue
+                    else: # 找到了不一样的两个函数名
+                        return True
+        return False
 
     def _check_create_termination(self) -> bool:
         if len(self.open_states) != 0:
@@ -413,6 +446,13 @@ class LaserEVM:
             
             # print("=========================")
             # print("current opcode is {}".format(global_state.environment.code.instruction_list[global_state.mstate.pc]))
+            # if (global_state.current_transaction.id == "3"):
+            #     print("transaction id is 3")
+            #     print(global_state.environment.active_account.contract_name)
+            
+            # opcode = global_state.environment.code.instruction_list[global_state.mstate.pc]
+            # if opcode["address"] == 471 and opcode["opcode"] == "ISZERO":
+                # print("catch it")
             # opcode = global_state.environment.code.instruction_list[global_state.mstate.pc]
             # if opcode["address"] == 242 and opcode["opcode"] == "JUMPDEST":
                 # print("reach true path")
@@ -461,6 +501,7 @@ class LaserEVM:
             #     return final_states + [global_state] if track_gas else None
             try:
                 new_states, op_code = self.execute_state(global_state)
+                
                 # print("op code is {}".format(op_code))
             except NotImplementedError:
                 log.debug("Encountered unimplemented instruction")
@@ -483,9 +524,11 @@ class LaserEVM:
                 
                 for state in new_states:
                     if state.world_state.constraints.is_possible():
+                        state.world_state.timestamp +=1
                         temp.append(state)
                     else:
-                        print("constraint not satisify")
+                        print("constraint not satisify, drop path")
+                        # print(state.world_state.constraints)
                 new_states = temp
                 # new_states = [
                 #     state
@@ -527,21 +570,36 @@ class LaserEVM:
         #         # return
         #         continue
 
-        self.open_states.append(deepcopy(global_state.world_state))
-        # new_state = deepcopy(global_state.world_state)
-        # flag = False
-        # try:
-        #     for state_ in self.open_states:
-        #         if not check_worldstate_change(state_, new_state):
-        #             print("found same worldsate state, pass")
-        #             flag = True
-        #             break
-        # except:
-        #     print("match error in _add_world_state")
-        #     flag = True
+        # self.open_states.append(deepcopy(global_state.world_state))
+        # print("in addworld 1")
+        new_state = global_state.world_state
+        flag = False
+        try:
+            if self.open_states == []:
+                flag = False
+                # print("in add 3.3")
+            else:
+                for world_state_ in self.open_states:
+                    # print("in 6")
+                    f = check_worldstate_change(world_state_, new_state)
+                    # print("in 7")
+                    if f:
+                        print("found same worldsate state, pass")
+                        flag = True
+                        break
+                    # print("in add 3.4")
+                # print("in addworld 2")
+        except:
+            # print("in addworld 3")
+            print("match error in _add_world_state")
+            flag = True
 
-        # if not flag:
-        #     self.open_states.append(new_state)
+        if not flag:
+            # print("in addworld 4")
+            self.open_states.append(deepcopy(new_state))
+            # if global_state.re_pc is not None:
+            #     # print("in addworld 5")
+            #     print("add new changed world state after reentrant, cross reentrancy")
 
 
 
@@ -632,11 +690,11 @@ class LaserEVM:
             #start_signal = (transactions, op_code, global_state)
             new_global_states = []
             index = 0
-            if start_signal.mode == "reenter":
-                new_global_states.append(start_signal.global_state)
-                self.work_list.clear()
-                print("clear worklist")
-                return new_global_states, start_signal.op_code
+            # if start_signal.mode == "reenter":
+            #     new_global_states.append(start_signal.global_state)
+            #     self.work_list.clear()
+            #     print("clear worklist")
+            #     return new_global_states, start_signal.op_code
             for tx in start_signal.transaction:
                 # step 1: 因为已经有了 TX 了, 利用 TX 生成 新的 global_stack 
                 # step 2: 深拷贝 旧 GlobalState 然后放入新的 global_stack 中
@@ -657,8 +715,17 @@ class LaserEVM:
                 calldata_data = calldata_.get("calldata") if calldata_ is not None else None
                 constructor_arguments = MixedSymbolicCalldata(tx_id=next_transaction_id, calldata=calldata_data, total_length=calldata_total_length)
 
-
-                if tx.get("type") == "ContractCreationTransaction":
+                if tx.get("type") == "crossreenter":
+                    new_transaction = tx.get("transaction")
+                    new_global_state = new_transaction.initial_global_state()
+                    new_global_state.re_pc = ["cross", "cross"]
+                elif tx.get("type") == "reenter":
+                    new_transaction = tx.get("transaction")
+                    new_global_state = new_transaction.initial_global_state()
+                    re_pc = tx.get("re_pc")
+                    new_global_state.re_pc = re_pc
+                    
+                elif tx.get("type") == "ContractCreationTransaction":
                     new_transaction = ContractCreationTransaction(
                         world_state=forked_new_world_state,
                         caller=forked_caller_global_state.environment.active_account.address,
@@ -732,35 +799,50 @@ class LaserEVM:
                         new_global_state = new_transaction.initial_global_state()
                     
                 
-                # 这一步才是负责与之前 global_state 的链接
+                    # 这一步才是负责与之前 global_state 的链接
                 new_global_state.transaction_stack = forked_caller_global_state.transaction_stack + [(new_transaction, forked_caller_global_state)]
-                # 对于 prev TX来说 已经更新好了, 要更新 new tx的 caller function
-                new_global_state.current_transaction.call_chain[0][1][1] = forked_caller_global_state.environment.active_function_name
+                    # 对于 prev TX来说 已经更新好了, 要更新 new tx的 caller function
+                if tx.get("type") != "reenter":
+                    new_global_state.current_transaction.call_chain[0][1][1] = forked_caller_global_state.environment.active_function_name
                 
+                if tx.get("type") =="reenter":
+                    record = ["start",[start_signal.global_state.environment.active_account.contract_name,start_signal.global_state.environment.active_function_name+"RE"],["AttackBridge","fallback"],""]
+                    new_global_state.current_transaction.call_chain.append(record)
+                    new_global_state.current_transaction.call_chain[0][2][1] = new_global_state.current_transaction.call_chain[0][2][1]+"_RE"
+                    new_global_state.current_transaction.call_chain[0][1][1] = "fallback_virtual"
+                    new_global_state.current_transaction.call_chain[0][0] = "START_REENTRANT"
+                    
+                if new_global_state.re_pc is None and forked_caller_global_state.re_pc is not None:
+                    new_global_state.re_pc = forked_caller_global_state.re_pc
                 new_global_state.node = forked_caller_global_state.node
-                # # 要加上 call 对象的 匹配这个 constraint
-                if (start_signal.constraints is not None and start_signal.constraints != []) and tx.__class__.__name__ != "ContractCreationTransaction":
-                    new_constraint = start_signal.constraints[index]
-                    a = new_constraint[0]
-                    b = new_constraint[1]
-                    if type(a) == BitVec:
-                        new_global_state.world_state.constraints.append(a == b)
+                if tx.get("type") !="crossreenter" and tx.get("type") !="reenter":
+                    # # 要加上 call 对象的 匹配这个 constraint
+                    if (start_signal.constraints is not None and start_signal.constraints != []) and tx.__class__.__name__ != "ContractCreationTransaction":
+                        new_constraint = start_signal.constraints[index]
+                        a = new_constraint[0]
+                        b = new_constraint[1]
+                        if type(a) == BitVec:
+                            new_global_state.world_state.constraints.append(a == b)
                 
+                    
                 # gaslimit_ = tx.get("gas_limit",0)
                 # if not isinstance(gaslimit_, BitVec):
                 #     gaslimit_ = cast(BitVec, gaslimit_)
                 # new_global_state.world_state.constraints.append(UGT(gaslimit_, symbol_factory.BitVecVal(2300, 256)))
 
-                if not new_global_state.world_state.constraints.is_possible():
-                    print("warning ! after the global_state inint, constraint unsolveable !!")
-                    index += 1
-                    continue
+                # if not new_global_state.world_state.constraints.is_possible():
+                #     print("warning ! after the global_state inint, constraint unsolveable !!")
+                #     index += 1
+                #     continue
                 # print("\n======= Print forked caller stack ========== {}\n".format(forked_caller_global_state.mstate.stack))
-                log.debug("Setup new transaction %s", new_transaction)
-                print("Setup new transaction %s", new_transaction)
+                log.debug("Setup new transaction %s", new_global_state.current_transaction)
+                print("Setup new transaction %s", new_global_state.current_transaction)
                 new_global_states.append(new_global_state)
                 index += 1
-            
+                if tx.get("type") == "reenter":
+                    self.work_list.clear()
+                    print("clear worklist")
+                    break
             return new_global_states, start_signal.op_code
         
         # 因为在每次执行的时候只添加当前的 callfunction 所以, 当当前环境执行结束的时候需要将这次执行的记录传递给之前的环境 这样才能记录上
@@ -772,9 +854,13 @@ class LaserEVM:
             ) = end_signal.global_state.transaction_stack[-1]
             # 打印 约束条件们
             # calldata_exp = global_state.world_state.constraints.as_list
-            # print(calldata_exp)            
-           
-            
+            # print(calldata_exp)
+            # print("in except endsignal")            
+            # if end_signal.end_type == "reenter":
+            #     # 加到 EVM open_states 里面
+            #     self._add_world_state(end_signal.global_state)
+            #     return [], None
+            # print("1")            
             for hook in self._transaction_end_hooks:
                 hook(
                     end_signal.global_state,
@@ -784,16 +870,21 @@ class LaserEVM:
                 )
             # 检查一下 返回来的 globa_state.world_state 是否存在问题, 
             # 检查一下 world_state 的 tx_transaction[-1].world_state 是否是同一个
+            # print("2")
             if end_signal.global_state.world_state != end_signal.global_state.world_state.transaction_sequence[-1].world_state:
                 print("Error +++++++++++++++++++ world_sate not match")
 
             # 要处理一下 call_chain的问题
+            # print("3")
             callee_tx = end_signal.global_state.current_transaction
             callee_tx.call_chain[0][2][1] = end_signal.global_state.environment.active_function_name
             callee_tx.call_chain[0][3] = "REVERT" if end_signal.revert else "END"
+            if end_signal.end_type == "reenter" and callee_tx.call_chain[0][3] != "REVERT":
+                callee_tx.call_chain[0][3] = callee_tx.call_chain[0][3] + "_RE"
             # 情况一 结束 creation TX
             # from an EOA send a TX to a smartcontract case
             if return_global_state is None:
+                # print("4")
                 # print("END with EOA TX CASE: {} ***********".format(transaction))
                 
                 # 对于 callee是新的， 所以没什么好做的，但是对于 caller 需要定义一个 index_来标记自己现在的 index 在哪里 返回的时候要更新这个
@@ -814,9 +905,9 @@ class LaserEVM:
                             end_signal.global_state, end_signal.global_state.world_state.constraints
                             )
                     except UnsatError:
-                        # print("global_state constraints solve failed!")
+                        print("global_state constraints solve failed!")
                         return [], None
-                    # print("[Good!!] global_state constraints get solved passed!")
+                    print("[Good!!] global_state constraints get solved passed!")
                     end_signal.global_state.world_state.node = global_state.node
                     # 加到 EVM open_states 里面
                     self._add_world_state(end_signal.global_state)
@@ -830,6 +921,7 @@ class LaserEVM:
             # from an smartcontract send a TX to a smartcontract case, end internal messageTX
             # 这里 应该传回 annotations 
             else:
+                # print("5")
                 # print("END WITH Internal MessageCALLTX: {} **************************".format(transaction))
                 return_global_state = deepcopy(return_global_state)
                 # First execute the post hook for the transaction ending instruction
@@ -845,9 +937,26 @@ class LaserEVM:
                 #     callee_tx.call_chain[-1][3] = "REVERT" if end_signal.revert else "END"
 
                 return_global_state.current_transaction.call_chain += callee_tx.call_chain                    
+                # if (not end_signal.revert) and end_signal.end_type == "reenter" and end_signal.global_state.re_pc is not None and end_signal.global_state.re_pc[0] == "cross":
+                #     print("check worldstate change or not")
+                #     flag = False
+                #     try:
+                #         if end_signal.global_state.world_state.old_worldstate is None:
+                #             print("warning, lack old_world_state")
+                #         else:
+                #             if not check_worldstate_change(end_signal.global_state.world_state, end_signal.global_state.world_state.old_worldstate):
+                #                 print("worldsate state change ")
+                #                 flag = True
+                #     except:
+                #         print("match error in _add_world_state")
+                #         flag = True
 
+                #     if flag:
+                #     #     self.open_states.append(new_state)
+                #         print("find cross function reentrancy")
+                    
+               
                 
-
                 # Propagate annotations
                 # new_annotations = [
                 #     annotation
@@ -856,7 +965,7 @@ class LaserEVM:
                 # ]
                 # modified 06.20 kevin
                 # 如果不是 revert 情况
-                if not end_signal.revert:
+                if not end_signal.revert and end_signal.end_type != "reenter":
                     # 正常结束 messagecallTX 处理 call_chain
                     
                     new_annotations = end_signal.global_state.annotations
@@ -866,16 +975,16 @@ class LaserEVM:
                     return_global_state.update_world_state(end_signal.global_state)
                     # print("End Transaction with MessageTX Normally: {}".format(end_signal.global_state.current_transaction))
                     # print("call_chain is {}".format(end_signal.global_state.world_state.transaction_sequence[-1].call_chain))
-
+                    return_global_state.world_state.timestamp = end_signal.global_state.world_state.timestamp
                 # 如果是 revert 要不要给 revert的那个 constraint 一个 Not 公式 然后 还回去。
                 else:
                     pass
                     # print("End Transaction with Revert: {}".format(end_signal.global_state.current_transaction))
                     # print("call_chain is {}\n".format(end_signal.global_state.world_state.transaction_sequence[-1].call_chain))
-
+                
                 revert_changes = end_signal.end_type
                 
-
+                # print("6")
                 new_global_states = self._end_message_call(
                     return_global_state,
                     global_state,

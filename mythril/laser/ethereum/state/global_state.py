@@ -287,5 +287,14 @@ class GlobalState:
         # 更新 environment 的 activate_account
         self.environment.active_account = self.world_state.transaction_sequence[-1].callee_account
 
-    def update_mstate(self,):
-        self.mstate = MachineState(gas_limit=self.mstate.gas_limit, depth=self.mstate.depth, max_gas_used=self.mstate.max_gas_used,min_gas_used=self.mstate.min_gas_used)
+    def update_mstate(self,target=None):
+        if target is None:
+            self.mstate = MachineState(gas_limit=self.mstate.gas_limit, depth=self.mstate.depth, max_gas_used=self.mstate.max_gas_used,min_gas_used=self.mstate.min_gas_used)
+        else:
+            target_ = deepcopy(target)
+            self.mstate = MachineState(gas_limit=target_.mstate.gas_limit, depth=target_.mstate.depth, max_gas_used=target_.mstate.max_gas_used,min_gas_used=target_.mstate.min_gas_used)
+            self.environment=target_.environment
+            cc = self.current_transaction.call_chain
+            target_.current_transaction.call_chain = cc
+            new_item = (target_.current_transaction,self.transaction_stack[-1][1])
+            self.transaction_stack[-1] = new_item
