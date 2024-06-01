@@ -2351,10 +2351,12 @@ class Instruction:
             reentrancy_flag = False
             transfercall = False
             singleRE = False
+            value_is_zero = False
             if global_state.environment.active_account.address.value != 0xDEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF:
                 # 没有 value 的话会让他是0
                 if value.value is not None and value.value == 0:
                     sub_flag = True
+                    value_is_zero = True
                 elif value.value is not None and value.value != 0:
                     # transfer_ether(global_state, sender, receiver, value)
                     # attack_flag = True
@@ -2368,6 +2370,7 @@ class Instruction:
                         pass
                     else:
                         value = symbol_factory.BitVecVal(0,256)
+                        value_is_zero = True
                         sub_flag = True
             else:
                 sub_flag = True

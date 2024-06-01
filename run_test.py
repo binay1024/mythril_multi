@@ -16,9 +16,10 @@ import gc
 # data_dir = "/home/kevinj/Desktop/evaluation/dataset/paper_dataset/contract/ReentrancyStudy-Data-main/reentrancy_byte_sol/gezhong/Multi-Create-based"
 # data_dir = "/home/kevinj/Desktop/evaluation/dataset/paper_dataset/contract/ReentrancyStudy-Data-main/reentrancy_byte_sol/gezhong/t1"
 # data_dir = "/home/kevinj/Desktop/evaluation/dataset/paper_dataset/contract/ReentrancyStudy-Data-main/reentrancy_byte_sol/gezhong/t3"
-data_dir = "/home/kevinj/Desktop/evaluation/dataset/paper_dataset/contract/ReentrancyStudy-Data-main/reentrancy_byte_sol/gezhong/retest/6"
+# data_dir = "/home/kevinj/Desktop/evaluation/dataset/paper_dataset/contract/ReentrancyStudy-Data-main/reentrancy_byte_sol/gezhong/retest/6"
 # data_dir = "/opt/paper_byte_sol"
 # data_dir = "/opt/t1"
+data_dir = "/home/kevinj/Desktop/evaluation/dataset/paper_dataset/contract/ReentrancyStudy-Data-main/reentrancy_byte_sol/gezhong/retest/safe"
 
 # 存储结果的列表
 results = []
@@ -57,7 +58,7 @@ for subdir in os.listdir(data_dir):
                 print(command)
                 result = subprocess.run(command, shell=True, text=True)
 
-                command = "python3 myth.py analyze -mc {} {}  --solver-timeout 60000  -t 2 --strategy bfs > {}".format(bin_path,attack_bridge_path, output_path)
+                command = "python3 myth.py analyze -mc {} {}  --solver-timeout 600000 --execution-timeout 2400 -t 1 --strategy bfs > {}".format(bin_path,attack_bridge_path, output_path)
                 print(command)
                 # 执行命令并捕获输出
                 time_start = time.time()
